@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="picker_app_label" msgid="5487796494405738578">"Выбор фотографий"</string>
+    <string name="picker_category_videos" msgid="8792703517064649453">"Видео"</string>
+    <string name="add" msgid="2894574044585549298">"Добавить"</string>
+    <string name="deselect" msgid="4297825044827769490">"Отменить выбор"</string>
+    <string name="deselected" msgid="8488133193326208475">"Выбор отменен"</string>
+    <string name="select" msgid="2704765470563027689">"Выбрать"</string>
+    <string name="selected" msgid="9151797369975828124">"Выбрано"</string>
+    <string name="select_up_to_single">"Выберите не более <xliff:g id="COUNT_0">%1$d</xliff:g> объекта."</string>
+    <string name="select_up_to">"Выберите не более <xliff:g id="COUNT_1">%1$d</xliff:g> объекта."</string>
+    <string name="recent" msgid="6694613584743207874">"Недавние"</string>
+    <string name="picker_photos_empty_message" msgid="5980619500554575558">"Фото или видео нет."</string>
+    <string name="picker_albums_empty_message" msgid="8341079772950966815">"Альбомов нет."</string>
+    <string name="picker_view_selected" msgid="2266031384396143883">"Посмотреть выбранное"</string>
+    <string name="picker_photos" msgid="7415035516411087392">"Фотографии"</string>
+    <string name="picker_albums" msgid="4822511902115299142">"Альбомы"</string>
+    <string name="picker_preview" msgid="6257414886055861039">"Предварительный просмотр"</string>
+    <string name="picker_privacy_message" msgid="9132700451027116817">"Этому приложению доступны только выбранные вами фото."</string>
+    <string name="picker_album_item_count_1" msgid="4420723302534177596">"<xliff:g id="COUNT_0">%1$d</xliff:g> объект"</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"<xliff:g id="COUNT_1">%1$d</xliff:g> объекта"</string>
+    <string name="picker_add_button_multi_select" msgid="4005164092275518399">"Добавить (<xliff:g id="COUNT">^1</xliff:g>)"</string>
+    <string name="picker_category_camera" msgid="4857367052026843664">"Камера"</string>
+    <string name="picker_category_downloads" msgid="793866660287361900">"Скачанные"</string>
+    <string name="picker_category_favorites" msgid="7008495397818966088">"Избранное"</string>
+    <string name="picker_category_screenshots" msgid="7216102327587644284">"Скриншоты"</string>
+    <!-- no translation found for picker_category_videos (1478458836380241356) -->
+    <skip />
+    <string name="picker_motion_photo_text" msgid="5016603812468180816">"Фото с движением"</string>
+    <string name="picker_item_content_desc" msgid="7680591530155286423">"<xliff:g id="ITEM_NAME">%1$s</xliff:g>, дата и время съемки: <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="picker_video_item_content_desc" msgid="7828900089119214801">"Время съемки: <xliff:g id="TIME">%1$s</xliff:g>. Длительность: <xliff:g id="DURATION">%2$s</xliff:g>."</string>
+    <string name="picker_photo" msgid="1739342083494962153">"Фото"</string>
+    <string name="picker_gif" msgid="8333318083107368726">"GIF"</string>
+    <string name="picker_motion_photo" msgid="4385182195289546308">"Фото с движением"</string>
+    <string name="picker_mute_video" msgid="2496585809229800096">"Отключить звук видео"</string>
+    <string name="picker_unmute_video" msgid="6611741290641963568">"Включить звук видео"</string>
+    <string name="not_selected" msgid="2244008151669896758">"не выбрано"</string>
+
+    <string name="ucrop_rotate">вращение</string>
+    <string name="ucrop_scale">масштаб</string>
+    <string name="ucrop_crop">кроить</string>
+    <string name="ucrop_label_original">масштаб</string>
+    <string name="ucrop_label_edit_photo">кроить</string>
+    <string name="ucrop_menu_crop">кроить</string>
+    <string name="ucrop_not_crop">Неподдерживаемый тип вырезки</string>
+</resources>

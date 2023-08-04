@@ -1,37 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-Copyright 2014 David Morrissey
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="PictureLongScaleImageView">
-        <attr name="src" format="reference" />
-        <attr name="assetName" format="string" />
-        <attr name="panEnabled" format="boolean" />
-        <attr name="zoomEnabled" format="boolean" />
-        <attr name="quickScaleEnabled" format="boolean" />
-        <attr name="tileBackgroundColor" format="color" />
+    <declare-styleable name="ucrop_UCropView">
+        <!--Crop image view-->
+        <attr name="ucrop_aspect_ratio_x" format="float" />
+        <attr name="ucrop_aspect_ratio_y" format="float" />
+
+        <!--Overlay view-->
+        <attr name="ucrop_show_oval_crop_frame" format="boolean" />
+        <attr name="ucrop_circle_dimmed_layer" format="boolean" />
+        <attr name="ucrop_dimmed_color" format="color" />
+
+        <attr name="ucrop_grid_stroke_size" format="dimension" />
+        <attr name="ucrop_grid_color" format="color" />
+        <attr name="ucrop_grid_row_count" format="integer" />
+        <attr name="ucrop_grid_column_count" format="integer" />
+        <attr name="ucrop_show_grid" format="boolean" />
+
+        <attr name="ucrop_frame_stroke_size" format="dimension" />
+        <attr name="ucrop_frame_color" format="color" />
+        <attr name="ucrop_show_frame" format="boolean" />
+
     </declare-styleable>
 
-    <declare-styleable name="PictureMediumBoldTextView">
-        <attr name="stroke_Width" format="float" />
-    </declare-styleable>
+    <declare-styleable name="ucrop_AspectRatioTextView">
 
-    <declare-styleable name="PictureRoundCornerRelativeLayout">
-        <attr name="psCorners" format="dimension" />
-        <attr name="psTopNormal" format="boolean" />
-        <attr name="psBottomNormal" format="boolean" />
-    </declare-styleable>
+        <attr name="ucrop_artv_ratio_title" format="string" />
 
+        <attr name="ucrop_artv_ratio_x" format="float" />
+        <attr name="ucrop_artv_ratio_y" format="float" />
+
+    </declare-styleable>
+    <!-- The color of the drag bar in the photo picker -->
+    <attr name="pickerDragBarColor" format="reference|color" />
+
+    <!-- The highlight color of the photo picker. E.g. Add button -->
+    <attr name="pickerHighlightColor" format="reference|color" />
+
+    <!-- The most prominent highlight text color of the photo picker. E.g. Add button -->
+    <attr name="pickerHighlightTextColor" format="reference|color" />
+
+    <!-- The selected background color of the tab. -->
+    <attr name="pickerSelectedTabBackgroundColor" format="reference|color" />
+
+    <!-- The selected text color of the tab. -->
+    <attr name="pickerSelectedTabTextColor" format="reference|color" />
+
+    <!-- The default background color of the tab. -->
+    <attr name="pickerTabBackgroundColor" format="reference|color" />
+
+    <!-- The most prominent text color of the photo picker.  -->
+    <attr name="pickerTextColor" format="reference|color" />
+
+    <!-- The selected color of the view selected button and check icon -->
+    <attr name="pickerSelectedColor" format="reference|color" />
+
+    <!-- Photo Picker Profile Dialog button and icon color. -->
+    <attr name="pickerProfileDialogButtonAndIconColor" format="reference|color" />
+
+    <!-- Photo Picker Profile Dialog title color. -->
+    <attr name="pickerProfileDialogTitleColor" format="reference|color" />
+
+    <!-- Photo Picker Profile Dialog body color. -->
+    <attr name="pickerProfileDialogBodyColor" format="reference|color" />
+
+    <!-- Photo Picker Profile Dialog background color. -->
+    <attr name="pickerProfileDialogBackgroundColor" format="reference|color" />
+    <!-- 裁剪图片界面标题栏样式 -->
+    <attr name="CropToolbarStyle" format="reference" />
+    <!-- 标题栏上裁剪图标 -->
+    <attr name="toolbarCropMenuDrawable" format="reference" />
 </resources>

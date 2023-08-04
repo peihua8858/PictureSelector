@@ -1,61 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Base.Theme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
-
-    <style name="Picture.Theme.Translucent" parent="Base.Theme.NoActionBar">
-        <item name="android:windowBackground">@color/ps_color_transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsTranslucent">true</item>
+    <style name="MaterialBorderlessButtonStyle" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAppearance">@style/PickerButtonTextAppearance</item>
     </style>
 
-    <style name="PictureThemeWindowStyle">
-        <item name="android:windowEnterAnimation">@anim/ps_anim_album_show</item>
-        <item name="android:windowExitAnimation">@anim/ps_anim_album_dismiss</item>
+    <style name="MaterialButtonStyle" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textAppearance">@style/PickerButtonTextAppearance</item>
     </style>
 
-    <style name="PictureThemeDialogWindowStyle">
-        <item name="android:windowEnterAnimation">@anim/ps_anim_modal_in</item>
-        <item name="android:windowExitAnimation">@anim/ps_anim_modal_out</item>
+    <style name="ShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/picker_profile_dialog_radius</item>
     </style>
 
-    <style name="Picture.Theme.Dialog.AudioStyle">
-        <item name="android:windowEnterAnimation">@anim/ps_anim_enter</item>
-        <item name="android:windowExitAnimation">@anim/ps_anim_exit</item>
+    <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/pickerProfileDialogButtonAndIconColor</item>
     </style>
 
-    <style name="Picture.Theme.AlertDialog" parent="android:Theme.Dialog">
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowBackground">@color/ps_color_transparent</item>
-        <item name="android:windowAnimationStyle">@null</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:backgroundDimAmount">0.4</item>
+    <style name="MaterialAlertDialogTitleStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Text.CenterStacked">
+        <item name="android:textAppearance">@style/PickerProfileDialogTitle</item>
     </style>
 
-    <style name="PictureThemeDialogFragmentAnim" mce_bogus="1" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/ps_anim_up_in</item>
-        <item name="android:windowExitAnimation">@anim/ps_anim_down_out</item>
+    <style name="MaterialAlertDialogBodyStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/PickerProfileDialogBody</item>
     </style>
 
-    <style name="Picture.Theme.Dialog" parent="@android:style/Theme.Dialog">
-
-        <!-- 边框 -->
-        <item name="android:windowFrame">@android:color/transparent</item>
-        <!-- 是否浮现在activity之上 -->
-        <item name="android:windowIsFloating">true</item>
-        <!-- 半透明 -->
-        <item name="android:windowIsTranslucent">false</item>
-        <!-- 无标题 -->
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-
-        <!-- 自己想要的背景 -->
+    <style name="MaterialAlertDialogIconStyle" parent="@style/MaterialAlertDialog.MaterialComponents.Title.Icon.CenterStacked">
+        <item name="android:tint">?attr/pickerProfileDialogButtonAndIconColor</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="android:layout_width">@dimen/picker_profile_dialog_icon_width</item>
+        <item name="android:layout_height">@dimen/picker_profile_dialog_icon_height</item>
+    </style>
+    <!-- 图片选择器TabLayout样式 -->
+    <style name="PickerTabLayoutStyle" parent="@style/Widget.Design.TabLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/picker_tab_height</item>
+        <item name="tabBackground">@drawable/picker_tab_background</item>
+        <item name="tabGravity">center</item>
+        <item name="tabIndicatorAnimationMode">linear</item>
+        <item name="tabIndicatorColor">?attr/pickerSelectedTabBackgroundColor</item>
+        <item name="tabIndicatorFullWidth">true</item>
+        <item name="tabIndicatorGravity">center</item>
+        <item name="tabInlineLabel">true</item>
+        <item name="tabMinWidth">@dimen/picker_tab_min_width</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabPaddingEnd">@dimen/picker_tab_horizontal_gap</item>
+        <item name="tabPaddingStart">@dimen/picker_tab_horizontal_gap</item>
+        <item name="tabRippleColor">@null</item>
+        <item name="tabSelectedTextColor">?attr/pickerSelectedTabTextColor</item>
+        <item name="tabTextAppearance">@style/PickerTabTextAppearance</item>
+        <item name="tabTextColor">?attr/tabTextColor</item>
+        <item name="android:background">@color/picker_background_color</item>
+    </style>
+    <!-- 图片选择器主题样式 -->
+    <style name="PickerMaterialTheme" parent="@style/Theme.Material3.Light.NoActionBar">
+        <item name="android:navigationBarColor">@color/picker_background_color</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--设置Dialog的windowFrame框为无-->
+        <item name="android:windowFrame">@null</item>
+        <!--设置无标题-->
+        <item name="android:windowNoTitle">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">false</item>
+        <!--设置窗口内容不覆盖-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!--背景是否模糊显示-->
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:textColorPrimary">#ff1c1b1f</item>
+        <item name="tabStyle">@style/Widget.Material3.TabLayout</item>
+        <item name="pickerDragBarColor">#DCE3E9</item>
+        <item name="pickerHighlightColor">#C1E8FF</item>
+        <item name="pickerHighlightTextColor">?android:attr/textColorPrimary</item>
+        <item name="pickerSelectedTabBackgroundColor">#C1E8FF</item>
+        <item name="pickerSelectedTabTextColor">#ff1c1b1f</item>
+        <item name="pickerTabBackgroundColor">#f0f0f3</item>
+        <item name="pickerTextColor">#ff1c1b1f</item>
+        <item name="pickerSelectedColor">#00668B</item>
+        <item name="tabTextColor">#ff1c1b1f</item>
+    </style>
+    <!-- 图片裁剪页面主题样式 -->
+    <style name="CropMaterialTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorControlNormal">@color/picker_default_white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:textColorPrimary">#ff1c1b1f</item>
+        <item name="tabStyle">@style/Widget.Material3.TabLayout</item>
+        <item name="toolbarStyle">@style/CropToolbarStyle</item>
+        <item name="pickerDragBarColor">#DCE3E9</item>
+        <item name="pickerHighlightColor">#C1E8FF</item>
+        <item name="pickerHighlightTextColor">?android:attr/textColorPrimary</item>
+        <item name="pickerSelectedTabBackgroundColor">#C1E8FF</item>
+        <item name="pickerSelectedTabTextColor">#ff1c1b1f</item>
+        <item name="pickerTabBackgroundColor">#f0f0f3</item>
+        <item name="pickerTextColor">#ff1c1b1f</item>
+        <item name="pickerSelectedColor">#00668B</item>
+        <item name="tabTextColor">#ff1c1b1f</item>
     </style>
 
+
+    <style name="CropToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="navigationIcon">@drawable/ic_arrow_back</item>
+        <item name="android:background">@color/ucrop_color_black</item>
+        <item name="titleTextAppearance">@style/CropToolbarTitleTextAppearance</item>
+        <item name="android:minHeight">?attr/actionBarSize</item>
+    </style>
+
+    <style name="CropToolbarTitleTextAppearance">
+        <item name="android:textSize">@dimen/picker_toolbar_title_text_size</item>
+        <item name="android:textColor">@color/ucrop_color_black</item>
+    </style>
+
+
+    <style name="ucrop_ImageViewWidgetIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:duplicateParentState">true</item>
+    </style>
+
+    <style name="ucrop_WrapperIconState">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="background">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="ucrop_WrapperRotateButton">
+        <item name="android:layout_width">@dimen/ucrop_size_wrapper_rotate_button</item>
+        <item name="android:layout_height">@dimen/ucrop_size_wrapper_rotate_button</item>
+        <item name="background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ucrop_TextViewCropAspectRatio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/ucrop_height_crop_aspect_ratio_text</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:textColor">@color/ucrop_scale_text_view_selector</item>
+    </style>
+
+    <style name="ucrop_TextViewWidgetText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ucrop_color_widget_text</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_widget_text</item>
+        <item name="android:textSize">@dimen/ucrop_text_size_widget_text</item>
+    </style>
+
+    <style name="ucrop_TextViewWidget">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">@dimen/ucrop_margin_top_controls_text</item>
+        <item name="android:textColor">@color/ucrop_color_widget_active</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/ucrop_text_size_controls_text</item>
+    </style>
 </resources>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/picker_background_color"
+        android:clipToOutline="true"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:id="@+id/drag_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/picker_drag_margin_top"
+            android:layout_marginBottom="@dimen/picker_drag_margin_bottom"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_drag" />
+
+        <TextView
+            android:id="@+id/privacy_text"
+            style="?android:attr/textAppearanceListItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="@dimen/picker_privacy_text_horizontal_gap"
+            android:layout_marginTop="@dimen/picker_privacy_text_margin_top"
+            android:layout_marginBottom="@dimen/picker_privacy_text_margin_bottom"
+            android:gravity="center_horizontal"
+            android:text="@string/picker_privacy_message"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="@dimen/picker_privacy_text_size" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="yes" />
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:background="@android:color/transparent"
+                app:liftOnScroll="true">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:accessibilityTraversalAfter="@+id/privacy_text"
+                    android:accessibilityTraversalBefore="@+id/fragment_container"
+                    android:background="@color/picker_background_color"
+                    android:importantForAccessibility="yes"
+                    app:titleTextAppearance="@style/PickerToolbarTitleTextAppearance"
+                    app:titleTextColor="?attr/pickerTextColor">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tab_layout"
+                        style="@style/PickerTabLayoutStyle"
+                        android:layout_gravity="center" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/picker_bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/picker_bottom_bar_size"
+                android:layout_gravity="bottom"
+                android:background="@color/picker_background_color"
+                android:elevation="@dimen/picker_bottom_bar_elevation"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/button_view_selected"
+                    style="@style/MaterialBorderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginHorizontal="@dimen/picker_bottom_bar_horizontal_gap"
+                    android:paddingVertical="@dimen/picker_bottom_bar_buttons_vertical_gap"
+                    android:text="@string/picker_view_selected"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/pickerSelectedColor"
+                    app:icon="@drawable/ic_collections"
+                    app:iconPadding="@dimen/picker_viewselected_icon_padding"
+                    app:iconSize="@dimen/picker_viewselected_icon_size"
+                    app:iconTint="?attr/pickerSelectedColor" />
+
+                <Button
+                    android:id="@+id/button_add"
+                    style="@style/MaterialButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginHorizontal="@dimen/picker_bottom_bar_horizontal_gap"
+                    android:backgroundTint="?attr/pickerHighlightColor"
+                    android:paddingVertical="@dimen/picker_bottom_bar_buttons_vertical_gap"
+                    android:text="@string/add"
+                    android:textAllCaps="false"
+                    android:textColor="?attr/pickerHighlightTextColor" />
+
+            </FrameLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

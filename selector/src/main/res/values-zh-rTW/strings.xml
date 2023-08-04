@@ -1,78 +1,44 @@
-<resources>
-    <string name="ps_camera_roll">相機膠卷</string>
-    <string name="ps_camera_roll_num">%1$s (%2$d)</string>
-    <string name="ps_cancel">取消</string>
-    <string name="ps_take_picture">拍攝</string>
-    <string name="ps_rule">不能同時選擇圖片或影片</string>
-    <string name="ps_message_max_num">最多只能選擇%1$s張照片</string>
-    <string name="ps_min_video_num">影片不能少於%1$s個</string>
-    <string name="ps_min_audio_num">錄音不能少於%1$s個</string>
-    <string name="ps_message_video_max_num">最多只能選擇%1$s個影片</string>
-    <string name="ps_message_audio_max_num">最多只能選擇%1$s個錄音</string>
-    <string name="ps_preview">預覽</string>
-    <string name="ps_please">請稍候…</string>
-    <string name="ps_done_front_num">%1$d/%2$d 完成</string>
-    <string name="ps_completed">已完成</string>
-    <string name="ps_done">完 成</string>
-    <string name="ps_please_select">請選擇</string>
-    <string name="ps_empty_title">無影片或照片\n</string>
-    <string name="ps_empty_audio_title">無錄音檔案\n</string>
-    <string name="ps_empty">可以使用相機拍攝照片或影片</string>
-    <string name="ps_audio_empty">可以使用系統錄音錄制錄音</string>
-    <string name="ps_min_img_num">圖片不能少於%1$s張</string>
-    <string name="ps_gif_tag">gif</string>
-    <string name="ps_webp_tag">webp</string>
-    <string name="ps_jurisdiction">讀取記憶卡權限被拒絕</string>
-    <string name="ps_camera">獲取系統相機權限被拒絕</string>
-    <string name="ps_audio">獲取系統錄音權限被拒絕</string>
-    <string name="ps_video_toast">影片不可預覽</string>
-    <string name="ps_record_video">錄影</string>
-    <string name="ps_photograph">拍照</string>
-    <string name="ps_long_chart">長圖</string>
-    <string name="ps_warning">暫無媒體文件！</string>
-    <string name="ps_prompt">提示</string>
-    <string name="ps_prompt_image_content">是否保存圖片至手機？</string>
-    <string name="ps_prompt_video_content">是否保存影片至手機？</string>
-    <string name="ps_prompt_audio_content">是否保存錄音至手機？</string>
-    <string name="ps_save_image_error">圖片保存失敗</string>
-    <string name="ps_save_video_error">影片保存失敗</string>
-    <string name="ps_save_audio_error">錄音保存失敗</string>
-    <string name="ps_save_success">檔案保存成功至</string>
-    <string name="ps_all_audio">所有錄音</string>
-    <string name="ps_tape">錄音</string>
-    <string name="ps_play_audio">播放</string>
-    <string name="ps_stop_audio">停止</string>
-    <string name="ps_quit_audio">退出</string>
-    <string name="ps_pause_audio">暫停</string>
-    <string name="ps_error">圖片已損壞</string>
-    <string name="ps_video_error">影片已損壞</string>
-    <string name="ps_audio_error">錄音已損壞</string>
-    <string name="ps_confirm">確定</string>
-    <string name="ps_preview_image_num">%1$d/%2$d</string>
-    <string name="ps_not_crop_data">無可用裁剪資料</string>
-    <string name="ps_original_image">原圖 (%1$s)</string>
-    <string name="ps_default_original_image">原圖</string>
-    <string name="ps_send">完成</string>
-    <string name="ps_send_num">完成(%1$d/%2$d)</string>
-    <string name="ps_preview_num">預覽(%1$d)</string>
-    <string name="ps_select">選擇</string>
-    <string name="ps_data_exception">獲取相冊資料異常…</string>
-    <string name="ps_choose_max_seconds">最大只能選擇 %1$ds 以內的影片</string>
-    <string name="ps_choose_min_seconds">不能選擇低於 %1$ds 內的影片</string>
-    <string name="ps_choose_limit_seconds">只能選擇 %1$ds 至 %2$ds內的影片</string>
-    <string name="ps_go_setting">去設定</string>
-    <string name="ps_know">我知道了</string>
-    <string name="ps_data_null">這裏空空如也…</string>
-    <string name="ps_editor">編輯</string>
-    <string name="ps_use_camera">正在使用相機</string>
-    <string name="ps_use_sound">正在使用錄音功能</string>
-    <string name="ps_current_week">本周</string>
-    <string name="ps_current_month">本月</string>
-    <string name="ps_select_max_size">選擇檔案大於%1$s</string>
-    <string name="ps_select_min_size">選擇檔案小於%1$s</string>
-    <string name="ps_select_video_max_second">選擇影片大於%1$d秒</string>
-    <string name="ps_select_video_min_second">選擇影片小於%1$d秒</string>
-    <string name="ps_select_audio_max_second">選擇錄音大於%1$d秒</string>
-    <string name="ps_select_audio_min_second">選擇錄音小於%1$d秒</string>
-    <string name="ps_select_no_support">不支援的選擇類型</string>
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="picker_app_label" msgid="5487796494405738578">"相片挑選器"</string>
+    <string name="picker_category_videos" msgid="8792703517064649453">"影片"</string>
+    <string name="add" msgid="2894574044585549298">"新增"</string>
+    <string name="deselect" msgid="4297825044827769490">"取消選取"</string>
+    <string name="deselected" msgid="8488133193326208475">"已取消選取"</string>
+    <string name="select" msgid="2704765470563027689">"選取"</string>
+    <string name="selected" msgid="9151797369975828124">"已選取"</string>
+    <string name="select_up_to_single">"最多可選取 <xliff:g id="COUNT_0">%1$d</xliff:g> 個項目"</string>
+    <string name="select_up_to">"最多可選取 <xliff:g id="COUNT_1">%1$d</xliff:g> 個項目"</string>
+    <string name="recent" msgid="6694613584743207874">"最近"</string>
+    <string name="picker_photos_empty_message" msgid="5980619500554575558">"沒有相片或影片"</string>
+    <string name="picker_albums_empty_message" msgid="8341079772950966815">"沒有相簿"</string>
+    <string name="picker_view_selected" msgid="2266031384396143883">"查看所選項目"</string>
+    <string name="picker_photos" msgid="7415035516411087392">"相片"</string>
+    <string name="picker_albums" msgid="4822511902115299142">"相簿"</string>
+    <string name="picker_preview" msgid="6257414886055861039">"預覽"</string>
+    <string name="picker_privacy_message" msgid="9132700451027116817">"這個應用程式只能存取你選取的相片"</string>
+    <string name="picker_album_item_count_1" msgid="4420723302534177596">"<xliff:g id="COUNT_0">%1$d</xliff:g> 個項目"</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"<xliff:g id="COUNT_1">%1$d</xliff:g> 個項目"</string>
+    <string name="picker_add_button_multi_select" msgid="4005164092275518399">"新增 (<xliff:g id="COUNT">^1</xliff:g>)"</string>
+    <string name="picker_category_camera" msgid="4857367052026843664">"相機"</string>
+    <string name="picker_category_downloads" msgid="793866660287361900">"下載的內容"</string>
+    <string name="picker_category_favorites" msgid="7008495397818966088">"收藏的內容"</string>
+    <string name="picker_category_screenshots" msgid="7216102327587644284">"螢幕截圖"</string>
+    <!-- no translation found for picker_category_videos (1478458836380241356) -->
+    <skip />
+    <string name="picker_motion_photo_text" msgid="5016603812468180816">"動態相片"</string>
+    <string name="picker_item_content_desc" msgid="7680591530155286423">"<xliff:g id="ITEM_NAME">%1$s</xliff:g>拍攝時間：<xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="picker_video_item_content_desc" msgid="7828900089119214801">"影片拍攝日期：<xliff:g id="TIME">%1$s</xliff:g>，片長：<xliff:g id="DURATION">%2$s</xliff:g>"</string>
+    <string name="picker_photo" msgid="1739342083494962153">"相片"</string>
+    <string name="picker_gif" msgid="8333318083107368726">"GIF"</string>
+    <string name="picker_motion_photo" msgid="4385182195289546308">"動態相片"</string>
+    <string name="picker_mute_video" msgid="2496585809229800096">"將影片靜音"</string>
+    <string name="picker_unmute_video" msgid="6611741290641963568">"將影片取消靜音"</string>
+    <string name="not_selected" msgid="2244008151669896758">"未選取"</string>
+
+    <string name="ucrop_label_original">原始比例</string>
+    <string name="ucrop_label_edit_photo">裁切</string>
+    <string name="ucrop_menu_crop">裁切</string>
+    <string name="ucrop_not_crop">不支持的裁剪類型</string>
 </resources>

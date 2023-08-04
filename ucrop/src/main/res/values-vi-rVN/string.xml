@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="ucrop_gif_tag">gif</string>
-    <string name="ucrop_label_edit_photo">Editar foto</string>
-    <string name="ucrop_label_original">Original</string>
-    <string name="ucrop_menu_crop">Recortar</string>
-    <string name="ucrop_not_crop">Kiểu cắt chưa sắp xếp</string>
-</resources>

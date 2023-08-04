@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="picker_app_label" msgid="5487796494405738578">"Seletor de fotos"</string>
+    <string name="picker_category_videos" msgid="8792703517064649453">"Vídeos"</string>
+    <string name="add" msgid="2894574044585549298">"Adicionar"</string>
+    <string name="deselect" msgid="4297825044827769490">"Desmarcar"</string>
+    <string name="deselected" msgid="8488133193326208475">"Desmarcada"</string>
+    <string name="select" msgid="2704765470563027689">"Selecionar"</string>
+    <string name="selected" msgid="9151797369975828124">"Selecionada"</string>
+    <string name="select_up_to_single">"Selecione até <xliff:g id="COUNT_0">%1$d</xliff:g> item"</string>
+    <string name="select_up_to">"Selecione até <xliff:g id="COUNT_1">%1$d</xliff:g> itens"</string>
+    <string name="recent" msgid="6694613584743207874">"Recentes"</string>
+    <string name="picker_photos_empty_message" msgid="5980619500554575558">"Sem fotos ou vídeos"</string>
+    <string name="picker_albums_empty_message" msgid="8341079772950966815">"Sem álbuns"</string>
+    <string name="picker_view_selected" msgid="2266031384396143883">"Mostrar selecionados"</string>
+    <string name="picker_photos" msgid="7415035516411087392">"Fotos"</string>
+    <string name="picker_albums" msgid="4822511902115299142">"Álbuns"</string>
+    <string name="picker_preview" msgid="6257414886055861039">"Visualização"</string>
+    <string name="picker_privacy_message" msgid="9132700451027116817">"Este app só pode acessar as fotos que você selecionar"</string>
+    <string name="picker_album_item_count_1"><xliff:g id="COUNT_0">%1$d</xliff:g> item</string>
+    <string name="picker_album_item_count">"<xliff:g id="COUNT_1">%1$d</xliff:g> itens"</string>
+    <string name="picker_add_button_multi_select" msgid="4005164092275518399">"Adicionar (<xliff:g id="COUNT">^1</xliff:g>)"</string>
+    <string name="picker_category_camera" msgid="4857367052026843664">"Câmera"</string>
+    <string name="picker_category_downloads" msgid="793866660287361900">"Downloads"</string>
+    <string name="picker_category_favorites" msgid="7008495397818966088">"Favoritos"</string>
+    <string name="picker_category_screenshots" msgid="7216102327587644284">"Capturas de tela"</string>
+    <!-- no translation found for picker_category_videos (1478458836380241356) -->
+    <skip />
+    <string name="picker_motion_photo_text" msgid="5016603812468180816">"Foto com movimento"</string>
+    <string name="picker_item_content_desc" msgid="7680591530155286423">"Item <xliff:g id="ITEM_NAME">%1$s</xliff:g> criado em <xliff:g id="TIME">%2$s</xliff:g>"</string>
+    <string name="picker_video_item_content_desc" msgid="7828900089119214801">"Vídeo gravado em <xliff:g id="TIME">%1$s</xliff:g>, com <xliff:g id="DURATION">%2$s</xliff:g> de duração"</string>
+    <string name="picker_photo" msgid="1739342083494962153">"Foto"</string>
+    <string name="picker_gif" msgid="8333318083107368726">"GIF"</string>
+    <string name="picker_motion_photo" msgid="4385182195289546308">"Foto com movimento"</string>
+    <string name="picker_mute_video" msgid="2496585809229800096">"Desativar o som do vídeo"</string>
+    <string name="picker_unmute_video" msgid="6611741290641963568">"Ativar o som do vídeo"</string>
+    <string name="not_selected" msgid="2244008151669896758">"não selecionado"</string>
+
+    <string name="ucrop_rotate">Rotação</string>
+    <string name="ucrop_scale">Proporção</string>
+    <string name="ucrop_crop">Recorte</string>
+    <string name="ucrop_label_original">Norma</string>
+    <string name="ucrop_label_edit_photo">Recorte</string>
+    <string name="ucrop_menu_crop">Recorte</string>
+    <string name="ucrop_not_crop">Tipo de corte não suportado</string>
+</resources>

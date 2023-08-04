@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center">
+        <shape android:shape="rectangle">
+            <padding android:left="4dp" android:right="4dp"/>
+            <size
+                android:width="@dimen/picker_tab_width"
+                android:height="@dimen/picker_tab_height" />
+            <corners android:radius="@dimen/picker_tab_radius"/>
+            <solid android:color="?attr/pickerTabBackgroundColor"/>
+        </shape>
+    </item>
+</layer-list>
