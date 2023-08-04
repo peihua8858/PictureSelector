@@ -28,7 +28,7 @@ class TabContainerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_picker_tab_container, container, false)
+        return inflater.inflate(R.layout.picker_fragment_picker_tab_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

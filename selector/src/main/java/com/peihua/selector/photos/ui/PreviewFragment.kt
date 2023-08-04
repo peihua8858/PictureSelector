@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.fz.common.utils.getColorCompat
 import com.peihua.photopicker.R
-import com.peihua.photopicker.databinding.FragmentPreviewBinding
+import com.peihua.photopicker.databinding.PickerFragmentPreviewBinding
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
@@ -34,7 +34,7 @@ import java.util.Locale
  */
 class PreviewFragment : Fragment() {
     private val mViewModel by lazy { ViewModelProvider(requireActivity())[PickerViewModel::class.java] }
-    private val binding by lazy { FragmentPreviewBinding.bind(requireView()) }
+    private val binding by lazy { PickerFragmentPreviewBinding.bind(requireView()) }
     private val mSelection: Selection by lazy { mViewModel.selection }
     private var mViewPager2Wrapper: ViewPager2Wrapper? = null
     private var mShouldShowGifBadge = false
@@ -64,7 +64,7 @@ class PreviewFragment : Fragment() {
         inflater: LayoutInflater, parent: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_preview, parent,  /* attachToRoot */false)
+        return inflater.inflate(R.layout.picker_fragment_preview, parent,  /* attachToRoot */false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -301,14 +301,14 @@ class PreviewFragment : Fragment() {
             selectButton: Button,
             isSelected: Boolean
         ) {
-            selectButton.setText(if (isSelected) R.string.deselect else R.string.select)
+            selectButton.setText(if (isSelected) R.string.picker_deselect else R.string.picker_select)
         }
 
         private fun updateSelectedCheckButtonStateAndText(
             selectedCheckButton: Button,
             isSelected: Boolean
         ) {
-            selectedCheckButton.setText(if (isSelected) R.string.selected else R.string.deselected)
+            selectedCheckButton.setText(if (isSelected) R.string.picker_selected else R.string.picker_deselected)
             selectedCheckButton.isSelected = isSelected
         }
 

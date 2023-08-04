@@ -21,7 +21,7 @@ class UCropGalleryAdapter(private val list: List<String>?) : RecyclerView.Adapte
     var currentSelectPosition = 0
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.ucrop_gallery_adapter_item,
+            R.layout.picker_crop_gallery_adapter_item,
             parent, false
         )
         return ViewHolder(view)
@@ -34,12 +34,12 @@ class UCropGalleryAdapter(private val list: List<String>?) : RecyclerView.Adapte
         if (currentSelectPosition == position) {
             holder.mViewCurrentSelect.visibility = View.VISIBLE
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(holder.itemView.context, R.color.ucrop_color_80),
+                ContextCompat.getColor(holder.itemView.context, R.color.picker_color_80),
                 BlendModeCompat.SRC_ATOP
             )
         } else {
             colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(holder.itemView.context, R.color.ucrop_color_20),
+                ContextCompat.getColor(holder.itemView.context, R.color.picker_color_20),
                 BlendModeCompat.SRC_ATOP
             )
             holder.mViewCurrentSelect.visibility = View.GONE

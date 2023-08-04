@@ -44,7 +44,7 @@ class PhotosTabAdapter(
                 // only to avoid that it says selected twice.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     itemHolder.itemView.stateDescription =
-                        if (isSelected) null else context.getString(R.string.not_selected)
+                        if (isSelected) null else context.getString(R.string.picker_not_selected)
                 }
             }
         }

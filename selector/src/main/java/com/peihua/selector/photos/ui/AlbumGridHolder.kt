@@ -13,7 +13,7 @@ import com.peihua.selector.data.model.Category
  */
 class AlbumGridHolder(
     context: Context, screenWidth: Int, parent: ViewGroup, hasMimeTypeFilter: Boolean
-) : BaseViewHolder(context, parent, R.layout.item_album_grid) {
+) : BaseViewHolder(context, parent, R.layout.picker_item_album_grid) {
     private val mIconThumb: SquareImageView = itemView.findViewById(R.id.icon_thumbnail)
     private val mAlbumName: TextView = itemView.findViewById(R.id.album_name)
     private val mItemCount: TextView = itemView.findViewById(R.id.item_count)

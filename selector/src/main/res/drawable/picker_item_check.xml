@@ -24,8 +24,8 @@
                     <solid android:color="@color/picker_background_color"/>
                 </shape>
             </item>
-            <item android:drawable="@drawable/ic_check_circle_filled"/>
+            <item android:drawable="@drawable/picker_ic_check_circle_filled"/>
         </layer-list>
     </item>
-    <item android:drawable="@drawable/ic_radio_button_unchecked"/>
+    <item android:drawable="@drawable/picker_ic_radio_button_unchecked"/>
 </selector>

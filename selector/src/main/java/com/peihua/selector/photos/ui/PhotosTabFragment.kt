@@ -121,7 +121,10 @@ class PhotosTabFragment : TabFragment() {
             } else {
                 if (!mSelection.isSelectionAllowed) {
                     val maxCount = mSelection.maxSelectionLimit
-                    val message= getString(if(maxCount>1) R.string.select_up_to else R.string.select_up_to_single,maxCount)
+                    val message = getString(
+                        if (maxCount > 1) R.string.picker_select_up_to else R.string.picker_select_up_to_single,
+                        maxCount
+                    )
                     Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
                     return
                 } else {
@@ -133,7 +136,7 @@ class PhotosTabFragment : TabFragment() {
             // selected state, but it doesn't say not selected state. Add the not selected only to
             // avoid that it says selected twice.
             if (isAtLeastR) {
-                view.stateDescription = if (isSelectedBefore) getString(R.string.not_selected) else null
+                view.stateDescription = if (isSelectedBefore) getString(R.string.picker_not_selected) else null
             }
         } else {
             val item = view.tag as Item

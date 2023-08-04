@@ -1,14 +1,14 @@
 <resources  xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="picker_app_label" msgid="5487796494405738578">"写真選択ツール"</string>
     <string name="picker_category_videos" msgid="8792703517064649453">"動画"</string>
-    <string name="add" msgid="2894574044585549298">"追加"</string>
-    <string name="deselect" msgid="4297825044827769490">"選択を解除"</string>
-    <string name="deselected" msgid="8488133193326208475">"選択解除済み"</string>
-    <string name="select" msgid="2704765470563027689">"選択"</string>
-    <string name="selected" msgid="9151797369975828124">"選択済み"</string>
-    <string name="select_up_to_single" msgid="6994294169508439957">"<xliff:g id="COUNT_0">%1$d</xliff:g> 件まで選択できます"</string>
-    <string name="select_up_to" msgid="6994294169508439957">"<xliff:g id="COUNT_1">%1$d</xliff:g> 件まで選択できます"</string>
-    <string name="recent" msgid="6694613584743207874">"最近"</string>
+    <string name="picker_add" msgid="2894574044585549298">"追加"</string>
+    <string name="picker_deselect" msgid="4297825044827769490">"選択を解除"</string>
+    <string name="picker_deselected" msgid="8488133193326208475">"選択解除済み"</string>
+    <string name="picker_select" msgid="2704765470563027689">"選択"</string>
+    <string name="picker_selected" msgid="9151797369975828124">"選択済み"</string>
+    <string name="picker_select_up_to_single" msgid="6994294169508439957">"<xliff:g id="COUNT_0">%1$d</xliff:g> 件まで選択できます"</string>
+    <string name="picker_select_up_to" msgid="6994294169508439957">"<xliff:g id="COUNT_1">%1$d</xliff:g> 件まで選択できます"</string>
+    <string name="picker_recent" msgid="6694613584743207874">"最近"</string>
     <string name="picker_photos_empty_message" msgid="5980619500554575558">"画像または動画はありません"</string>
     <string name="picker_albums_empty_message" msgid="8341079772950966815">"アルバムはありません"</string>
     <string name="picker_view_selected" msgid="2266031384396143883">"選択した写真を見る"</string>
@@ -33,11 +33,11 @@
     <string name="picker_motion_photo" msgid="4385182195289546308">"モーション フォト"</string>
     <string name="picker_mute_video" msgid="2496585809229800096">"動画をミュートします"</string>
     <string name="picker_unmute_video" msgid="6611741290641963568">"動画のミュートを解除します"</string>
-    <string name="not_selected" msgid="2244008151669896758">"未選択"</string>
+    <string name="picker_not_selected" msgid="2244008151669896758">"未選択"</string>
 
 
-    <string name="ucrop_label_original">元の比率</string>
-    <string name="ucrop_label_edit_photo">切り取り</string>
-    <string name="ucrop_menu_crop">切り取り</string>
-    <string name="ucrop_not_crop">サポートされていないクリップタイプ</string>
+    <string name="picker_crop_label_original">元の比率</string>
+    <string name="picker_crop_label_edit_photo">切り取り</string>
+    <string name="picker_crop_menu_crop">切り取り</string>
+    <string name="picker_crop_not_crop">サポートされていないクリップタイプ</string>
 </resources>

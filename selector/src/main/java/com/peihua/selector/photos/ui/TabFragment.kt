@@ -15,7 +15,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.peihua.photopicker.R
 import com.peihua.selector.data.Selection
@@ -38,8 +37,8 @@ abstract class TabFragment : Fragment() {
     private var mIsAccessibilityEnabled = false
     private var mAddButton: Button? = null
     private var mBottomBar: View? = null
-    private val mSlideUpAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.slide_up) }
-    private val mSlideDownAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.slide_down) }
+    private val mSlideUpAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.picker_slide_up) }
+    private val mSlideDownAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.picker_slide_down) }
 
     private var mRecyclerViewBottomPadding = 0
     private val mIsBottomBarVisible = MutableLiveData(false)
@@ -49,7 +48,7 @@ abstract class TabFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_picker_tab, container, false)
+        return inflater.inflate(R.layout.picker_fragment_picker_tab, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

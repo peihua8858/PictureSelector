@@ -25,13 +25,12 @@ import com.fz.common.utils.getDrawableCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.peihua.photopicker.R
-import com.peihua.photopicker.databinding.ActivityPhotoPickerBinding
+import com.peihua.photopicker.databinding.PickerActivityPhotoPickerBinding
 import com.peihua.selector.data.PickerResult
 import com.peihua.selector.data.Selection
 import com.peihua.selector.photos.ui.TabContainerFragment
 import com.peihua.selector.util.LayoutModeUtils
 import com.peihua.selector.util.LayoutModeUtils.MODE_PHOTOS_TAB
-import com.peihua.selector.util.isAtLeastPie
 import com.peihua.selector.util.isAtLeastT
 import com.peihua.selector.viewmodel.PickerViewModel
 import kotlin.math.roundToInt
@@ -42,7 +41,7 @@ import kotlin.math.roundToInt
  */
 class PhotoPickerActivity : AppCompatActivity() {
     private val mPickerViewModel by viewModels<PickerViewModel>()
-    private val binding by lazy { ActivityPhotoPickerBinding.bind(findViewById(R.id.cl_root_view)) }
+    private val binding by lazy { PickerActivityPhotoPickerBinding.bind(findViewById(R.id.cl_root_view)) }
     private val mSelection: Selection by lazy { mPickerViewModel.selection }
     private val mBottomSheetBehavior: BottomSheetBehavior<*> by lazy { BottomSheetBehavior.from(mBottomSheetView) }
     private val mBottomBar: View by lazy { binding.pickerBottomBar }
@@ -66,7 +65,7 @@ class PhotoPickerActivity : AppCompatActivity() {
         // in the base theme will be copied.
         theme.applyStyle(R.style.PickerMaterialTheme,  /* force */false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photo_picker)
+        setContentView(R.layout.picker_activity_photo_picker)
         setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val attrs = intArrayOf(R.attr.actionBarSize, R.attr.pickerTextColor)
@@ -301,9 +300,9 @@ class PhotoPickerActivity : AppCompatActivity() {
         // 3. Set the toolbar icon.
         val icon: Drawable?
         if (shouldShowTabLayout) {
-            icon = getDrawableCompat(R.drawable.ic_close)
+            icon = getDrawableCompat(R.drawable.picker_ic_close)
         } else {
-            icon = getDrawableCompat(R.drawable.ic_arrow_back)
+            icon = getDrawableCompat(R.drawable.picker_ic_arrow_back)
             // Preview mode has dark background, hence icons will be WHITE in color
             icon?.setTint(if (isPreview) Color.WHITE else mToolBarIconColor)
         }

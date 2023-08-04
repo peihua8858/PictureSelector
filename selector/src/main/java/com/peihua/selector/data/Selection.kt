@@ -160,6 +160,7 @@ class Selection {
             selectedUris.forEach {
                 mSelectedItems[it] = Item.EMPTY
             }
+            updateSelectionAllowed()
             val isExtraPickImagesMaxSet = containsKey(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX)
             // Check EXTRA_PICK_IMAGES_MAX value only if the flag is set.
             if (isExtraPickImagesMaxSet) {

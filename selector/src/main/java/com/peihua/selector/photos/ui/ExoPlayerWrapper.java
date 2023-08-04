@@ -239,7 +239,7 @@ class ExoPlayerWrapper {
 
     private void updateMuteButtonIcon(ImageButton muteButton, boolean isVolumeMuted) {
         muteButton.setImageResource(
-                isVolumeMuted ? R.drawable.ic_volume_off : R.drawable.ic_volume_up);
+                isVolumeMuted ? R.drawable.picker_ic_volume_off : R.drawable.picker_ic_volume_up);
     }
 
     private void releaseIfNecessary() {

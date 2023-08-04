@@ -15,12 +15,12 @@
             android:name="com.peihua.selector.crop.UCropActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/CropMaterialTheme" />
+            android:theme="@style/PickerCropMaterialTheme" />
         <activity
             android:name="com.peihua.selector.crop.UCropMultipleActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/CropMaterialTheme" />
+            android:theme="@style/PickerCropMaterialTheme" />
     </application>
 
 </manifest>

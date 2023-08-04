@@ -18,14 +18,14 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="picker_app_label" msgid="5487796494405738578">"Pemilih foto"</string>
     <string name="picker_category_videos" msgid="8792703517064649453">"Video"</string>
-    <string name="add" msgid="2894574044585549298">"Tambahkan"</string>
-    <string name="deselect" msgid="4297825044827769490">"Batalkan pilihan"</string>
-    <string name="deselected" msgid="8488133193326208475">"Batal dipilih"</string>
-    <string name="select" msgid="2704765470563027689">"Pilih"</string>
-    <string name="selected" msgid="9151797369975828124">"Dipilih"</string>
-    <string name="select_up_to_single">"Pilih hingga <xliff:g id="COUNT_0">%1$d</xliff:g> item"</string>
-    <string name="select_up_to">"Pilih hingga <xliff:g id="COUNT_1">%1$d</xliff:g> item"</string>
-    <string name="recent" msgid="6694613584743207874">"Terbaru"</string>
+    <string name="picker_add" msgid="2894574044585549298">"Tambahkan"</string>
+    <string name="picker_deselect" msgid="4297825044827769490">"Batalkan pilihan"</string>
+    <string name="picker_deselected" msgid="8488133193326208475">"Batal dipilih"</string>
+    <string name="picker_select" msgid="2704765470563027689">"Pilih"</string>
+    <string name="picker_selected" msgid="9151797369975828124">"Dipilih"</string>
+    <string name="picker_select_up_to_single">"Pilih hingga <xliff:g id="COUNT_0">%1$d</xliff:g> item"</string>
+    <string name="picker_select_up_to">"Pilih hingga <xliff:g id="COUNT_1">%1$d</xliff:g> item"</string>
+    <string name="picker_recent" msgid="6694613584743207874">"Terbaru"</string>
     <string name="picker_photos_empty_message" msgid="5980619500554575558">"Tidak ada foto atau video"</string>
     <string name="picker_albums_empty_message" msgid="8341079772950966815">"Tidak ada album"</string>
     <string name="picker_view_selected" msgid="2266031384396143883">"Lihat yang dipilih"</string>
@@ -50,5 +50,5 @@
     <string name="picker_motion_photo" msgid="4385182195289546308">"Foto Motion"</string>
     <string name="picker_mute_video" msgid="2496585809229800096">"Bisukan video"</string>
     <string name="picker_unmute_video" msgid="6611741290641963568">"Bunyikan video"</string>
-    <string name="not_selected" msgid="2244008151669896758">"tidak dipilih"</string>
+    <string name="picker_not_selected" msgid="2244008151669896758">"tidak dipilih"</string>
 </resources>

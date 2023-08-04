@@ -63,9 +63,9 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
     private var aspectRatioList: ArrayList<AspectRatio>? = null
     private val filterSet = HashSet<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
-        theme.applyStyle(R.style.CropMaterialTheme,  /* force */false)
+        theme.applyStyle(R.style.PickerCropMaterialTheme,  /* force */false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ucrop_activity_multiple)
+        setContentView(R.layout.picker_crop_activity_multiple)
         //        mToolbarWidgetColor = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_COLOR_TOOLBAR, ContextCompat.getColor(this, R.color.ucrop_color_toolbar_widget));
 //        mToolbarCropDrawable = intent.getIntExtra(UCrop.Options.EXTRA_UCROP_WIDGET_CROP_DRAWABLE, R.drawable.ucrop_ic_done);
         setupViews(intent)
@@ -197,11 +197,11 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
             )
         }
         val animation = AnimationUtils
-            .loadLayoutAnimation(this, R.anim.ucrop_layout_animation_fall_down)
+            .loadLayoutAnimation(this, R.anim.picker_crop_layout_animation_fall_down)
         galleryRecycle.layoutAnimation = animation
         val galleryBarBackground = intent.getIntExtra(
             UCrop.Options.EXTRA_GALLERY_BAR_BACKGROUND,
-            R.drawable.ucrop_gallery_bg
+            R.drawable.picker_crop_gallery_bg
         )
         galleryRecycle.setBackgroundResource(galleryBarBackground)
         galleryAdapter = UCropGalleryAdapter(uCropSupportList)
@@ -214,7 +214,7 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
             if (filterSet.contains(mimeType)) {
                 Toast.makeText(
                     applicationContext,
-                    getString(R.string.ucrop_not_crop), Toast.LENGTH_SHORT
+                    getString(R.string.picker_crop_not_crop), Toast.LENGTH_SHORT
                 ).show()
                 return@OnItemClickListener
             }
@@ -256,7 +256,7 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
         outputCropFileName = intent.getStringExtra(UCrop.Options.EXTRA_CROP_OUTPUT_FILE_NAME)
         mToolbarTitle = intent.getStringExtra(UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR)
         mToolbarTitle =
-            if (mToolbarTitle != null) mToolbarTitle else resources.getString(R.string.ucrop_label_edit_photo)
+            if (mToolbarTitle != null) mToolbarTitle else resources.getString(R.string.picker_crop_label_edit_photo)
         setupAppBar()
     }
 
@@ -264,9 +264,9 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
      * Configures and styles both status bar and toolbar.
      */
     private fun setupAppBar() {
-        val attrs = intArrayOf(R.attr.toolbarCropMenuDrawable, android.R.attr.colorControlNormal)
+        val attrs = intArrayOf(R.attr.pickerToolbarCropMenuDrawable, android.R.attr.colorControlNormal)
         val ta = obtainStyledAttributes(attrs)
-        mToolbarCropDrawable = ta.getResourceId( /* index */0,  /* defValue */R.drawable.ucrop_ic_done)
+        mToolbarCropDrawable = ta.getResourceId( /* index */0,  /* defValue */R.drawable.picker_crop_ic_done)
         // Save toolbar height so that we can use it as padding for FragmentContainerView
         mToolBarIconColor = ta.getColor( /* index */1,  /* defValue */Color.WHITE)
         ta.recycle()
@@ -395,7 +395,7 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.ucrop_menu_activity, menu)
+        menuInflater.inflate(R.menu.picker_menu_activity, menu)
 
         // Change crop & loader menu icons color to match the rest of the UI colors
         val menuItemLoader = menu.findItem(R.id.menu_loader)

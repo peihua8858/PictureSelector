@@ -21,10 +21,10 @@
         android:id="@+id/preview_gif"
         android:title="@null"
         app:showAsAction="always"
-        app:actionLayout="@layout/preview_gif"/>
+        app:actionLayout="@layout/picker_preview_gif"/>
     <item
         android:id="@+id/preview_motion_photo"
         android:title="@null"
         app:showAsAction="always"
-        app:actionLayout="@layout/preview_motion_photo"/>
+        app:actionLayout="@layout/picker_preview_motion_photo"/>
 </menu>

@@ -90,9 +90,9 @@ class UCropActivity : AppCompatActivity() {
     @DrawableRes
     private var mToolbarCropDrawable = 0
     public override fun onCreate(savedInstanceState: Bundle?) {
-        theme.applyStyle(R.style.CropMaterialTheme,  /* force */false)
+        theme.applyStyle(R.style.PickerCropMaterialTheme,  /* force */false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ucrop_activity_photobox)
+        setContentView(R.layout.picker_crop_activity_photobox)
         val intent = intent
         setupViews(intent)
         setImageData(intent)
@@ -101,7 +101,7 @@ class UCropActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.ucrop_menu_activity, menu)
+        menuInflater.inflate(R.menu.picker_menu_activity, menu)
 
         // Change crop & loader menu icons color to match the rest of the UI colors
         val menuItemLoader = menu.findItem(R.id.menu_loader)
@@ -112,7 +112,7 @@ class UCropActivity : AppCompatActivity() {
                 drawable.setTint(mToolBarIconColor)
                 menuItemLoader.icon = drawable
             } catch (e: Exception) {
-                Log.i(TAG, String.format("%s - %s", e.message, getString(R.string.ucrop_mutate_exception_hint)))
+                Log.i(TAG, String.format("%s - %s", e.message, getString(R.string.picker_crop_mutate_exception_hint)))
             }
             (menuItemLoader.icon as Animatable?)?.start()
         }
@@ -163,7 +163,7 @@ class UCropActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            setResultError(NullPointerException(getString(R.string.ucrop_error_input_data_is_absent)))
+            setResultError(NullPointerException(getString(R.string.picker_crop_error_input_data_is_absent)))
             finish()
         }
     }
@@ -215,13 +215,13 @@ class UCropActivity : AppCompatActivity() {
         mOverlayView!!.setDimmedColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_DIMMED_LAYER_COLOR,
-                resources.getColor(R.color.ucrop_color_default_dimmed)
+                resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
         mOverlayView!!.setCircleStrokeColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_COLOR,
-                resources.getColor(R.color.ucrop_color_default_dimmed)
+                resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
         mOverlayView!!.setCircleDimmedLayer(
@@ -239,13 +239,13 @@ class UCropActivity : AppCompatActivity() {
         mOverlayView!!.setCropFrameColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_FRAME_COLOR,
-                resources.getColor(R.color.ucrop_color_default_crop_frame)
+                resources.getColor(R.color.picker_color_default_crop_frame)
             )
         )
         mOverlayView!!.setCropFrameStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_FRAME_STROKE_WIDTH,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_frame_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_frame_stoke_width)
             )
         )
         mOverlayView!!.setShowCropGrid(
@@ -269,19 +269,19 @@ class UCropActivity : AppCompatActivity() {
         mOverlayView!!.setCropGridColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_COLOR,
-                resources.getColor(R.color.ucrop_color_default_crop_grid)
+                resources.getColor(R.color.picker_color_default_crop_grid)
             )
         )
         mOverlayView!!.setCropGridStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
             )
         )
         mOverlayView!!.setDimmedStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_WIDTH_LAYER,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
             )
         )
         // Aspect ratio options
@@ -318,15 +318,15 @@ class UCropActivity : AppCompatActivity() {
         isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)
         mActiveControlsWidgetColor = intent.getIntExtra(
             UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE,
-            ContextCompat.getColor(this, R.color.ucrop_color_active_controls_color)
+            ContextCompat.getColor(this, R.color.picker_color_active_controls_color)
         )
         mToolbarTitle = intent.getStringExtra(UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR)
         mToolbarTitle =
-            if (mToolbarTitle.isNonEmpty()) mToolbarTitle else resources.getString(R.string.ucrop_label_edit_photo)
+            if (mToolbarTitle.isNonEmpty()) mToolbarTitle else resources.getString(R.string.picker_crop_label_edit_photo)
         mShowBottomControls = !intent.getBooleanExtra(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false)
         mRootViewBackgroundColor = intent.getIntExtra(
             UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR,
-            ContextCompat.getColor(this, R.color.ucrop_color_crop_background)
+            ContextCompat.getColor(this, R.color.picker_color_crop_background)
         )
         setupAppBar()
         initiateRootViews()
@@ -334,7 +334,7 @@ class UCropActivity : AppCompatActivity() {
             val viewGroup = findViewById<ViewGroup>(R.id.ucrop_photobox)
             val wrapper = viewGroup.findViewById<ViewGroup>(R.id.controls_wrapper)
             wrapper.visibility = View.VISIBLE
-            LayoutInflater.from(this).inflate(R.layout.ucrop_controls, wrapper, true)
+            LayoutInflater.from(this).inflate(R.layout.picker_crop_controls, wrapper, true)
             mControlsTransition = AutoTransition()
             mControlsTransition!!.duration = CONTROLS_ANIMATION_DURATION
             mWrapperStateAspectRatio = findViewById(R.id.state_aspect_ratio)
@@ -357,9 +357,9 @@ class UCropActivity : AppCompatActivity() {
      * Configures and styles both status bar and toolbar.
      */
     private fun setupAppBar() {
-        val attrs = intArrayOf(R.attr.toolbarCropMenuDrawable, android.R.attr.colorControlNormal)
+        val attrs = intArrayOf(R.attr.pickerToolbarCropMenuDrawable, android.R.attr.colorControlNormal)
         val ta = obtainStyledAttributes(attrs)
-        mToolbarCropDrawable = ta.getResourceId( /* index */0,  /* defValue */R.drawable.ucrop_ic_done)
+        mToolbarCropDrawable = ta.getResourceId( /* index */0,  /* defValue */R.drawable.picker_crop_ic_done)
         // Save toolbar height so that we can use it as padding for FragmentContainerView
         mToolBarIconColor = ta.getColor( /* index */1,  /* defValue */Color.WHITE)
         ta.recycle()
@@ -473,7 +473,7 @@ class UCropActivity : AppCompatActivity() {
             aspectRatioList.add(AspectRatio(null, 3f, 4f))
             aspectRatioList.add(
                 AspectRatio(
-                    getString(R.string.ucrop_label_original).uppercase(Locale.getDefault()),
+                    getString(R.string.picker_crop_label_original).uppercase(Locale.getDefault()),
                     CropImageView.SOURCE_IMAGE_ASPECT_RATIO, CropImageView.SOURCE_IMAGE_ASPECT_RATIO
                 )
             )
@@ -486,7 +486,7 @@ class UCropActivity : AppCompatActivity() {
         val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
         lp.weight = 1f
         for (aspectRatio in aspectRatioList) {
-            wrapperAspectRatio = layoutInflater.inflate(R.layout.ucrop_aspect_ratio, null) as FrameLayout
+            wrapperAspectRatio = layoutInflater.inflate(R.layout.picker_crop_aspect_ratio, null) as FrameLayout
             wrapperAspectRatio.layoutParams = lp
             aspectRatioTextView = wrapperAspectRatio.getChildAt(0) as AspectRatioTextView
             aspectRatioTextView.setActiveColor(mActiveControlsWidgetColor)

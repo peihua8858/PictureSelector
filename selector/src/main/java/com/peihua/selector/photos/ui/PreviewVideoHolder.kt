@@ -15,7 +15,7 @@ class PreviewVideoHolder internal constructor(
     context: Context?,
     parent: ViewGroup?,
 ) : BaseViewHolder(
-    context!!, parent!!, R.layout.item_video_preview
+    context!!, parent!!, R.layout.picker_item_video_preview
 ) {
     val thumbnailView: ImageView = itemView.findViewById(R.id.preview_video_image)
 

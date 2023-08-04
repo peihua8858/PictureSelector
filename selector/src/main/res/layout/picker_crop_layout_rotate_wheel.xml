@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    tools:showIn="@layout/picker_crop_controls"
+    tools:visibility="visible">
+
+    <TextView
+        android:id="@+id/text_view_rotate"
+        style="@style/PickerTextViewWidgetText"
+        tools:text="100°" />
+
+    <com.peihua.selector.crop.widget.HorizontalProgressWheelView
+        android:id="@+id/rotate_scroll_wheel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/text_view_rotate"
+        android:layout_toStartOf="@+id/wrapper_rotate_by_angle"
+        android:layout_toLeftOf="@+id/wrapper_rotate_by_angle"
+        android:layout_toEndOf="@+id/wrapper_reset_rotate"
+        android:layout_toRightOf="@+id/wrapper_reset_rotate" />
+
+    <FrameLayout
+        android:id="@+id/wrapper_reset_rotate"
+        style="@style/PickerWrapperRotateButton"
+        android:layout_centerVertical="true"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            style="@style/PickerImageViewWidgetIcon"
+            app:srcCompat="@drawable/picker_crop_ic_reset" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/wrapper_rotate_by_angle"
+        style="@style/PickerWrapperRotateButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            style="@style/PickerImageViewWidgetIcon"
+            android:src="@drawable/picker_crop_ic_angle"
+            app:tint="@color/picker_color_widget_rotate_angle" />
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -20,7 +20,6 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
@@ -84,7 +83,7 @@ class UCropFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.ucrop_fragment_photobox, container, false)
+        val rootView = inflater.inflate(R.layout.picker_crop_fragment_photobox, container, false)
         val bundle = arguments ?: Bundle()
         setupViews(rootView, bundle)
         setImageData(bundle)
@@ -113,19 +112,19 @@ class UCropFragment : Fragment() {
     fun setupViews(view: View, args: Bundle) {
         mActiveControlsWidgetColor = args.getInt(
             UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE, getColorCompat(
-                R.color.ucrop_color_active_controls_color
+                R.color.picker_color_active_controls_color
             )
         )
         mShowBottomControls = !args.getBoolean(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false)
         mRootViewBackgroundColor = args.getInt(
-            UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, getColorCompat(R.color.ucrop_color_crop_background)
+            UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR, getColorCompat(R.color.picker_color_crop_background)
         )
         initiateRootViews(view)
         callback!!.loadingProgress(true)
         if (mShowBottomControls) {
             val wrapper = view.findViewById<ViewGroup>(R.id.controls_wrapper)
             wrapper.visibility = View.VISIBLE
-            LayoutInflater.from(context).inflate(R.layout.ucrop_controls, wrapper, true)
+            LayoutInflater.from(context).inflate(R.layout.picker_crop_controls, wrapper, true)
             mControlsTransition.duration = CONTROLS_ANIMATION_DURATION
             mWrapperStateAspectRatio = view.findViewById(R.id.state_aspect_ratio)
             mWrapperStateAspectRatio?.setOnClickListener(mStateClickListener)
@@ -160,7 +159,7 @@ class UCropFragment : Fragment() {
                 callback!!.onCropFinish(getError(e))
             }
         } else {
-            callback!!.onCropFinish(getError(NullPointerException(getString(R.string.ucrop_error_input_data_is_absent))))
+            callback!!.onCropFinish(getError(NullPointerException(getString(R.string.picker_crop_error_input_data_is_absent))))
         }
     }
 
@@ -212,13 +211,13 @@ class UCropFragment : Fragment() {
         mOverlayView!!.setDimmedColor(
             bundle.getInt(
                 UCrop.Options.EXTRA_DIMMED_LAYER_COLOR,
-                resources.getColor(R.color.ucrop_color_default_dimmed)
+                resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
         mOverlayView!!.setCircleStrokeColor(
             bundle.getInt(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_COLOR,
-                resources.getColor(R.color.ucrop_color_default_dimmed)
+                resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
         mOverlayView!!.setCircleDimmedLayer(
@@ -236,13 +235,13 @@ class UCropFragment : Fragment() {
         mOverlayView!!.setCropFrameColor(
             bundle.getInt(
                 UCrop.Options.EXTRA_CROP_FRAME_COLOR,
-                resources.getColor(R.color.ucrop_color_default_crop_frame)
+                resources.getColor(R.color.picker_color_default_crop_frame)
             )
         )
         mOverlayView!!.setCropFrameStrokeWidth(
             bundle.getInt(
                 UCrop.Options.EXTRA_CROP_FRAME_STROKE_WIDTH,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_frame_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_frame_stoke_width)
             )
         )
         mOverlayView!!.setShowCropGrid(
@@ -266,19 +265,19 @@ class UCropFragment : Fragment() {
         mOverlayView!!.setCropGridColor(
             bundle.getInt(
                 UCrop.Options.EXTRA_CROP_GRID_COLOR,
-                resources.getColor(R.color.ucrop_color_default_crop_grid)
+                resources.getColor(R.color.picker_color_default_crop_grid)
             )
         )
         mOverlayView!!.setCropGridStrokeWidth(
             bundle.getInt(
                 UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
             )
         )
         mOverlayView!!.setDimmedStrokeWidth(
             bundle.getInt(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_WIDTH_LAYER,
-                resources.getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)
+                resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
             )
         )
         // Aspect ratio options
@@ -383,7 +382,7 @@ class UCropFragment : Fragment() {
             aspectRatioList.add(AspectRatio(null, 3f, 4f))
             aspectRatioList.add(
                 AspectRatio(
-                    getString(R.string.ucrop_label_original).uppercase(Locale.getDefault()),
+                    getString(R.string.picker_crop_label_original).uppercase(Locale.getDefault()),
                     CropImageView.SOURCE_IMAGE_ASPECT_RATIO, CropImageView.SOURCE_IMAGE_ASPECT_RATIO
                 )
             )
@@ -396,7 +395,7 @@ class UCropFragment : Fragment() {
         val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
         lp.weight = 1f
         for (aspectRatio in aspectRatioList) {
-            wrapperAspectRatio = layoutInflater.inflate(R.layout.ucrop_aspect_ratio, null) as FrameLayout
+            wrapperAspectRatio = layoutInflater.inflate(R.layout.picker_crop_aspect_ratio, null) as FrameLayout
             wrapperAspectRatio.layoutParams = lp
             aspectRatioTextView = wrapperAspectRatio.getChildAt(0) as AspectRatioTextView
             aspectRatioTextView.setActiveColor(mActiveControlsWidgetColor)

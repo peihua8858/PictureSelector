@@ -16,7 +16,7 @@ import com.peihua.selector.data.model.Item
  */
 class PhotoGridHolder(
     context: Context, screenWidth:Int, parent: ViewGroup, canSelectMultiple: Boolean
-) : BaseViewHolder(context, parent, R.layout.item_photo_grid) {
+) : BaseViewHolder(context, parent, R.layout.picker_item_photo_grid) {
     private val mIconThumb: RatioImageView = itemView.findViewById(R.id.icon_thumbnail)
     private val mIconGif: ImageView = itemView.findViewById(R.id.icon_gif)
     private val mIconMotionPhoto: ImageView = itemView.findViewById(R.id.icon_motion_photo)

@@ -2,7 +2,6 @@ package com.peihua.selector.photos.ui
 
 import android.content.Context
 import android.view.ViewGroup
-import android.widget.ImageView
 import com.fz.imageloader.widget.RatioImageView
 import com.peihua.photopicker.R
 import com.peihua.selector.data.model.Item
@@ -12,7 +11,7 @@ import com.peihua.selector.data.model.Item
  */
 class PreviewImageHolder(
     context: Context, parent: ViewGroup,
-) : BaseViewHolder(context, parent, R.layout.item_image_preview) {
+) : BaseViewHolder(context, parent, R.layout.picker_item_image_preview) {
     private val mImageView: RatioImageView = itemView.findViewById(R.id.preview_imageView)
 
     override fun bind() {
