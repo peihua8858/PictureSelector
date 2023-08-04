@@ -72,6 +72,7 @@ class MainActivity : ComponentActivity() {
             val outputFile = "IMG_".createFile("jpg")
             val outputUri = Uri.fromFile(outputFile)
 //            state.value = it
+            selectedUris = it.toArrayList()
             stateUris.value = it
             launchCrop.launch(
                 PhotoCropVisualMediaRequestBuilder(it.toArrayList(), outputUri)
@@ -190,7 +191,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun toSystemCropActivity(uri: Uri?) {
-        if(uri==null)return
+        if (uri == null) return
         val fis = contentResolver.openInputStream(uri)
         if (fis != null) {
             val file = createFile(this)
@@ -255,6 +256,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    var selectedUris: ArrayList<Uri> = arrayListOf()
 
     @Composable
     fun CustomImageViewWrapper() {
@@ -270,6 +272,7 @@ class MainActivity : ComponentActivity() {
             launchMultipleImage.launch(
                 PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
                     .setForceCustomUi(false)
+                    .setSelectedUris(selectedUris)
                     .setShowGif(false)
                     .build()
             )

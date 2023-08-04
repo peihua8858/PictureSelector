@@ -22,6 +22,7 @@ import com.peihua.selector.util.MimeUtils;
  * Base class representing one single entity/item in the PhotoPicker.
  */
 public class Item {
+    public static final Item EMPTY = new Item();
     private String mId;
     private long mDateTaken;
     private long mGenerationModified;

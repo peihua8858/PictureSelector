@@ -57,6 +57,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
         /* Don't include SYSTEM_FALLBACK in the action */
         const val ACTION_SYSTEM_FALLBACK_PICK_IMAGES =
             "androidx.activity.result.contract.action.PICK_IMAGES"
+
         /**
          * Extra that will be sent by [PickMultipleVisualMedia] to an Activity that handles
          * [ACTION_SYSTEM_FALLBACK_PICK_IMAGES] that indicates that maximum number of photos
@@ -77,6 +78,12 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
         internal const val GMS_EXTRA_PICK_IMAGES_MAX =
             "com.google.android.gms.provider.extra.PICK_IMAGES_MAX"
         const val EXTRA_PICK_IMAGES_MAX = "android.provider.extra.PICK_IMAGES_MAX"
+
+        /**
+         * 已选中图片列表
+         */
+        const val EXTRA_SELECTED_PICK_IMAGES = "SELECTED_PICK_IMAGES"
+
         /**
          * Check if the current device has support for the photo picker by checking the running
          * Android version, the SDK extension version or the picker provided by
@@ -206,6 +213,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
 
         internal fun createCustomIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
             return Intent(context, PhotoPickerActivity::class.java).apply {
+                putExtra(EXTRA_SELECTED_PICK_IMAGES,input.selectedUris)
                 var mediaType = getVisualMimeType(input)
                 if (mediaType != null) {
                     type = mediaType

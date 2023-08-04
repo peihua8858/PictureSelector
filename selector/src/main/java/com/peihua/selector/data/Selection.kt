@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.fz.common.utils.getParcelableArrayListCompat
 import com.peihua.selector.data.model.Item
 import com.peihua.selector.result.contract.PhotoVisualMedia
 import java.util.Collections
@@ -96,7 +97,14 @@ class Selection {
      * [.mSelectedItems], `false` otherwise
      */
     fun isItemSelected(item: Item): Boolean {
-        return mSelectedItems.containsKey(item.contentUri)
+        if (mSelectedItems.containsKey(item.contentUri)) {
+            val selItem = mSelectedItems[item.contentUri]
+            if (selItem == null || selItem == Item.EMPTY) {
+                mSelectedItems[item.contentUri] = item
+            }
+            return true
+        }
+        return false
     }
 
     private fun updateSelectionAllowed() {
@@ -145,42 +153,28 @@ class Selection {
      * Parse values from `intent` and set corresponding fields
      */
     fun parseSelectionValuesFromIntent(intent: Intent) {
-        val extras = intent.extras
-        val isExtraPickImagesMaxSet = extras != null && extras.containsKey(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX)
-
-        // Support Intent.EXTRA_ALLOW_MULTIPLE flag only for ACTION_GET_CONTENT
-        if (intent.action != null && intent.action == Intent.ACTION_GET_CONTENT) {
-            require(!isExtraPickImagesMaxSet) {
-                ("EXTRA_PICK_IMAGES_MAX is not supported for "
-                        + "ACTION_GET_CONTENT")
+        val bundle = intent.extras
+        bundle?.apply {
+            val selectedUris =
+                getParcelableArrayListCompat(PhotoVisualMedia.EXTRA_SELECTED_PICK_IMAGES, Uri::class.java)
+            selectedUris.forEach {
+                mSelectedItems[it] = Item.EMPTY
             }
-            mSelectMultiple = intent.getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
-            if (mSelectMultiple) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    maxSelectionLimit = MediaStore.getPickImagesMaxLimit()
+            val isExtraPickImagesMaxSet = containsKey(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX)
+            // Check EXTRA_PICK_IMAGES_MAX value only if the flag is set.
+            if (isExtraPickImagesMaxSet) {
+                val extraMax = getInt(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX,  /* defaultValue */ -1)
+                // Multi selection max limit should always be greater than 1 and less than or equal
+                // to PICK_IMAGES_MAX_LIMIT.
+                val pickImageMaxLimit: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    MediaStore.getPickImagesMaxLimit()
                 } else {
-                    maxSelectionLimit = PICK_IMAGES_MAX_LIMIT
+                    PICK_IMAGES_MAX_LIMIT
                 }
+                require(!(extraMax <= 1 || extraMax > pickImageMaxLimit)) { "Invalid EXTRA_PICK_IMAGES_MAX value" }
+                mSelectMultiple = true
+                maxSelectionLimit = extraMax
             }
-            return
-        }
-
-        // Check EXTRA_PICK_IMAGES_MAX value only if the flag is set.
-        if (isExtraPickImagesMaxSet) {
-            val extraMax = intent.getIntExtra(
-                PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX,  /* defaultValue */
-                -1
-            )
-            // Multi selection max limit should always be greater than 1 and less than or equal
-            // to PICK_IMAGES_MAX_LIMIT.
-            val pickImageMaxLimit: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                MediaStore.getPickImagesMaxLimit()
-            } else {
-                PICK_IMAGES_MAX_LIMIT
-            }
-            require(!(extraMax <= 1 || extraMax > pickImageMaxLimit)) { "Invalid EXTRA_PICK_IMAGES_MAX value" }
-            mSelectMultiple = true
-            maxSelectionLimit = extraMax
         }
     }
 
