@@ -25,6 +25,7 @@ import com.peihua.selector.viewmodel.PickerViewModel
 class PhotosTabFragment : TabFragment() {
     private var mCategory = Category.DEFAULT
     private var mAdapter: PhotosTabAdapter? = null
+    private var mPage = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // After the configuration is changed, if the fragment is now shown, onViewCreated will not
@@ -38,7 +39,7 @@ class PhotosTabFragment : TabFragment() {
     override val mPickerViewModel: PickerViewModel
         get() = ViewModelProvider(requireActivity())[PickerViewModel::class.java]
 
-
+    private var isHasMore = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAdapter = PhotosTabAdapter(
@@ -46,13 +47,9 @@ class PhotosTabFragment : TabFragment() {
             { v: View -> onItemClick(v) }) { v: View -> onItemLongClick(v) }
         setEmptyMessage(R.string.picker_photos_empty_message)
         if (mCategory.isDefault) {
-            mPickerViewModel.items.observe(this) {
-                result(it)
-            }
+            mPickerViewModel.items.observe(this, ::result)
         } else {
-            mPickerViewModel.categoryItems.observe(this) {
-                result(it)
-            }
+            mPickerViewModel.categoryItems.observe(this, ::result)
         }
         if (isAtLeastPie) {
             // Set the pane title for A11y
@@ -61,7 +58,8 @@ class PhotosTabFragment : TabFragment() {
 
         this.requestPermissionsDsl(mPickerViewModel.configModel) {
             onGranted {
-                mPickerViewModel.requestMediasAsync(1, mCategory)
+                mLoadingData = true
+                mPickerViewModel.requestMediasAsync(mPage, mCategory)
             }
             onDenied {
                 updateVisibilityForEmptyView( /* shouldShowEmptyView */true)
@@ -76,20 +74,50 @@ class PhotosTabFragment : TabFragment() {
             this.layoutManager = layoutManager
             this.adapter = mAdapter
             addItemDecoration(itemDecoration)
+            setReachBottomRow(PhotosTabAdapter.COLUMN_COUNT)
         }
     }
 
-    private fun result(it: ViewModelState<List<Item>>) {
+    var mLoadingData = false
+    var isLoadMoreData = false
+    override val isEnabledLoadMore: Boolean
+        get() = true
+
+    override fun onLoadMore() {
+        if (mLoadingData || !isHasMore) {
+            return
+        }
+        mPage++
+        mLoadingData = true
+        isLoadMoreData = true
+        mPickerViewModel.requestMediasAsync(mPage, mCategory, true)
+    }
+
+    private fun result(it: ViewModelState<MutableList<Item>>) {
         if (it.isSuccess()) {
             val items = it.data
             if (items.isNonEmpty()) {
-                mAdapter?.updateItemList(items)
+                if (isLoadMoreData) {
+                    mAdapter?.addItems(items)
+                } else {
+                    mAdapter?.updateItemList(items)
+                }
                 // Handle emptyView's visibility
             }
-            updateVisibilityForEmptyView(items.isNullOrEmpty())
+            if (!isLoadMoreData || mAdapter?.itemCount == 0) {
+                updateVisibilityForEmptyView(items.isNullOrEmpty())
+            }
+            isHasMore = (items?.size ?: 0) > 0
+            mLoadingData = false
+            isLoadMoreData = false
         } else if (it.isError()) {
-            updateVisibilityForEmptyView(true)
+            mLoadingData = false
+            isLoadMoreData = false
+            if (mAdapter?.itemCount == 0) {
+                updateVisibilityForEmptyView(true)
+            }
         }
+
     }
 
     /**

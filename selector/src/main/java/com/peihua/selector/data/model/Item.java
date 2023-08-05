@@ -135,8 +135,6 @@ public class Item {
         return item;
     }
 
-    public static final String AUTHORITY = "authority";
-
     /**
      * Update the item based on the cursor
      *
@@ -155,11 +153,9 @@ public class Item {
         //            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
         //            MediaStore.MediaColumns.DATE_ADDED,
         //            MediaStore.MediaColumns.ORIENTATION,
-
-
         mId = getCursorString(cursor, MediaStore.MediaColumns._ID);
-        mMimeType = getCursorString(cursor, MediaStore.MediaColumns.MIME_TYPE);
-        mDateTaken = getCursorLong(cursor, MediaStore.MediaColumns.DATE_MODIFIED);
+        mMimeType = getCursorString(cursor, MediaStore.Files.FileColumns.MIME_TYPE);
+        mDateTaken = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
         mGenerationModified = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
         mDuration = getCursorLong(cursor, MediaStore.MediaColumns.DURATION);
         mSpecialFormat = getCursorInt(cursor, MediaStore.MediaColumns.MIME_TYPE);

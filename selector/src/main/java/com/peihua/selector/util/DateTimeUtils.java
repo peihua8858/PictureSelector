@@ -35,6 +35,7 @@ public class DateTimeUtils {
     private static final String DATE_FORMAT_SKELETON_WITH_TIME = "MMMdyhmmss";
     private static final String LA_DATE_FORMAT = "yyyyMMdd";
     static final SimpleDateFormat format = new SimpleDateFormat(LA_DATE_FORMAT);
+
     /**
      * Formats a time according to the local conventions for PhotoGrid.
      * <p>
@@ -51,10 +52,12 @@ public class DateTimeUtils {
      * @return the formatted string
      */
     public static String getDateHeaderString(long when) {
+        if (when < 1000000000000L) {
+            when *= 1000;
+        }
         // Get the system time zone
-        final ZoneId zoneId;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            zoneId = ZoneId.systemDefault();
+            ZoneId zoneId = ZoneId.systemDefault();
             final LocalDate nowDate = LocalDate.now(zoneId);
             return getDateHeaderString(when, nowDate);
         }

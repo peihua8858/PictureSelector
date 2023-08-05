@@ -37,13 +37,13 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     // data set to reduce memories.
     // The list of Items with all photos and videos
-    private val mItemList: MutableLiveData<ViewModelState<List<Item>>> = MutableLiveData()
+    private val mItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
 
     // The list of Items with all photos and videos in category
-    private val mCategoryItemList: MutableLiveData<ViewModelState<List<Item>>> = MutableLiveData()
+    private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
 
     // The list of categories.
-    private val mCategoryList: MutableLiveData<ViewModelState<List<Category>>> = MutableLiveData()
+    private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> = MutableLiveData()
     private var mItemsProvider: ItemsProvider
     var configModel = ConfigModel.default()
         private set(value) {
@@ -75,20 +75,21 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     fun setItemsProvider(itemsProvider: ItemsProvider) {
         mItemsProvider = itemsProvider
     }
-    val categoryItems: LiveData<ViewModelState<List<Item>>>
+
+    val categoryItems: LiveData<ViewModelState<MutableList<Item>>>
         get() {
             return mCategoryItemList
         }
-    val items: LiveData<ViewModelState<List<Item>>>
+    val items: LiveData<ViewModelState<MutableList<Item>>>
         get() {
             return mItemList
         }
-    val categories: LiveData<ViewModelState<List<Category>>>
+    val categories: LiveData<ViewModelState<MutableList<Category>>>
         get() {
             return mCategoryList
         }
 
-    fun requestMediasAsync(page: Int, category: Category = Category.DEFAULT) {
+    fun requestMediasAsync(page: Int, category: Category = Category.DEFAULT, isLoadMore: Boolean = false) {
         request(if (category == Category.DEFAULT) mItemList else mCategoryItemList) {
             val items: MutableList<Item> = ArrayList()
             mItemsProvider.queryMediaByPage(category, page, configModel.pageSize).use { cursor ->
@@ -102,7 +103,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
                 // We only add the RECENT header on the PhotosTabFragment with CATEGORY_DEFAULT. In this
                 // case, we call this method {loadItems} with null category. When the category is not
                 // empty, we don't show the RECENT header.
-                val showRecent = category.isDefault
+                val showRecent = category.isDefault && !isLoadMore
                 var recentSize = 0
                 var currentDateTaken: Long = 0
                 if (showRecent) {

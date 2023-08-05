@@ -41,7 +41,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         if (category != Category.DEFAULT) {
             selectionArgs?.add(category.bucketId.toString())
         }
-        val offset=page-1
+        val offset=(page - 1) * pageSize
         return if (isAtLeastR) {
             val queryArgs = createQueryArgsBundle(
                 selection(category), selectionArgs?.toTypedArray(),

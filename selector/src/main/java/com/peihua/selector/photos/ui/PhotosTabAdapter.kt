@@ -17,7 +17,7 @@ class PhotosTabAdapter(
     private val mOnClickListener: View.OnClickListener,
     private val mOnLongClickListener: View.OnLongClickListener
 ) : RecyclerView.Adapter<BaseViewHolder>() {
-    private var mItemList: List<Item> = ArrayList()
+    private var mItemList: MutableList<Item> = ArrayList()
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
         return if (viewType == ITEM_TYPE_DATE_HEADER) {
             DateHeaderHolder(viewGroup.context, viewGroup)
@@ -64,11 +64,23 @@ class PhotosTabAdapter(
     fun getItem(position: Int): Item {
         return mItemList[position]
     }
-    fun updateItemList(itemList: List<Item>) {
+    fun updateItemList(itemList: MutableList<Item>) {
         mItemList = itemList
         notifyDataSetChanged()
     }
-
+    fun addItems(itemList: List<Item>) {
+        mItemList.addAll(itemList)
+        notifyItemInserted(this.mItemList.size)
+        compatibilityDataSizeChanged(1);
+    }
+    private fun compatibilityDataSizeChanged(size: Int) {
+        if (mItemList.isEmpty()) {
+            return
+        }
+        if (this.mItemList.size == size) {
+            notifyDataSetChanged()
+        }
+    }
     fun createSpanSizeLookup(
         layoutManager: GridLayoutManager
     ): GridLayoutManager.SpanSizeLookup {

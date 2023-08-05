@@ -27,22 +27,30 @@ import java.util.Locale
  * The base abstract Tab fragment
  */
 abstract class TabFragment : Fragment() {
-    protected abstract val mPickerViewModel:PickerViewModel
+    protected abstract val mPickerViewModel: PickerViewModel
 
     protected val mSelection: Selection by lazy { mPickerViewModel.selection }
 
-    protected var mRecyclerView: RecyclerView? = null
+    protected var mRecyclerView: RecyclerPreloadView? = null
     private var mEmptyView: View? = null
     private var mEmptyTextView: TextView? = null
     private var mIsAccessibilityEnabled = false
     private var mAddButton: Button? = null
     private var mBottomBar: View? = null
     private val mSlideUpAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.picker_slide_up) }
-    private val mSlideDownAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.picker_slide_down) }
+    private val mSlideDownAnimation: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            context,
+            R.anim.picker_slide_down
+        )
+    }
 
     private var mRecyclerViewBottomPadding = 0
     private val mIsBottomBarVisible = MutableLiveData(false)
     private val mIsProfileButtonVisible = MutableLiveData(false)
+   open val isEnabledLoadMore: Boolean
+        get() = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,6 +68,8 @@ abstract class TabFragment : Fragment() {
         mAddButton = requireActivity().findViewById(R.id.button_add)
         mBottomBar = requireActivity().findViewById(R.id.picker_bottom_bar)
         mRecyclerView?.setHasFixedSize(true)
+        mRecyclerView?.isEnabledLoadMore = isEnabledLoadMore
+        mRecyclerView?.setOnRecyclerViewPreloadListener { onLoadMore() }
         mRecyclerViewBottomPadding = resources.getDimensionPixelSize(
             R.dimen.picker_recycler_view_bottom_padding
         )
@@ -87,6 +97,10 @@ abstract class TabFragment : Fragment() {
         accessibilityManager.addAccessibilityStateChangeListener { enabled: Boolean ->
             mIsAccessibilityEnabled = enabled
         }
+    }
+
+    open fun onLoadMore() {
+
     }
 
     private fun updateRecyclerViewBottomPadding() {
