@@ -18,14 +18,17 @@ class PhotoMultipleVisualMedia(
 ) : ActivityResultContract<PhotoVisualMediaRequest, List<@JvmSuppressWildcards Uri>>() {
 
     init {
-        require(maxItems > 1) {
-            "Max items must be higher than 1"
-        }
+        require(maxItems > 1) { "Max items must be higher than 1" }
     }
 
     @CallSuper
     @SuppressLint("NewApi", "ClassVerificationFailure")
     override fun createIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
+        var maxItems = input.maxItems
+        if (maxItems <= 0) {
+            maxItems = this.maxItems
+        }
+        require(maxItems > 1) { "Max items must be higher than 1" }
         // Check to see if the photo picker is available
         return if (input.isForceCustomUi || input.mediaType is PhotoVisualMedia.MultipleMimeType) {
             PhotoVisualMedia.createCustomIntent(context, input).apply {

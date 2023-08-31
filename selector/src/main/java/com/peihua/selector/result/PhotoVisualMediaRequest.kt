@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.activity.result.PickVisualMediaRequest
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.result.contract.PhotoVisualMedia
-import java.util.ArrayList
 
 fun PhotoVisualMediaRequestBuilder(
     mediaType: PhotoVisualMedia.VisualMediaType = PhotoVisualMedia.ImageOnly
@@ -29,6 +28,8 @@ class PhotoVisualMediaRequest internal constructor() {
         internal set
     var selectedUris: ArrayList<Uri> = arrayListOf()
         internal set
+    var maxItems: Int = -1
+        internal set
 
     /**
      * A builder for constructing [PickVisualMediaRequest] instances.
@@ -39,6 +40,7 @@ class PhotoVisualMediaRequest internal constructor() {
         private var configModel: ConfigModel = ConfigModel.default()
         private var isForceCustomUi: Boolean = false
         private var selectedUris: ArrayList<Uri> = arrayListOf()
+        private var maxItems: Int = -1
 
         /**
          * Set the media type for the [PickVisualMediaRequest].
@@ -54,7 +56,7 @@ class PhotoVisualMediaRequest internal constructor() {
             return this
         }
 
-        fun setSelectedUris(selectedUris:  ArrayList<Uri>): Builder {
+        fun setSelectedUris(selectedUris: ArrayList<Uri>): Builder {
             this.selectedUris = selectedUris
             return this
         }
@@ -122,6 +124,11 @@ class PhotoVisualMediaRequest internal constructor() {
             return this
         }
 
+        fun setMaxItemCount(maxCount: Int): Builder {
+            this.maxItems = maxCount
+            return this
+        }
+
         /**
          * Build the PickVisualMediaRequest specified by this builder.
          *
@@ -132,6 +139,7 @@ class PhotoVisualMediaRequest internal constructor() {
             this.selectedUris = this@Builder.selectedUris
             this.configModel = this@Builder.configModel
             this.isForceCustomUi = this@Builder.isForceCustomUi
+            this.maxItems = this@Builder.maxItems
         }
     }
 }
