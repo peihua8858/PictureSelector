@@ -18,7 +18,7 @@ class PhotoMultipleVisualMedia(
 ) : ActivityResultContract<PhotoVisualMediaRequest, List<@JvmSuppressWildcards Uri>>() {
 
     init {
-        require(maxItems > 0) { "Max items must be higher than 0" }
+        require(maxItems > 1) { "Max items must be higher than 0" }
     }
 
     @CallSuper
@@ -32,7 +32,7 @@ class PhotoMultipleVisualMedia(
         // Check to see if the photo picker is available
         return if (input.isForceCustomUi || input.mediaType is PhotoVisualMedia.MultipleMimeType) {
             PhotoVisualMedia.createCustomIntent(context, input).apply {
-                putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
+                if (maxItems > 1) putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else if (PhotoVisualMedia.isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
@@ -40,24 +40,24 @@ class PhotoMultipleVisualMedia(
                 require(maxItems <= MediaStore.getPickImagesMaxLimit()) {
                     "Max items must be less or equals MediaStore.getPickImagesMaxLimit()"
                 }
-                putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
+                if (maxItems > 1) putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else if (PhotoVisualMedia.isSystemFallbackPickerAvailable(context)) {
             val fallbackPicker = checkNotNull(PhotoVisualMedia.getSystemFallbackPicker(context)).activityInfo
             Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
                 type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
-                putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
+                if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else if (PhotoVisualMedia.isGmsPickerAvailable(context)) {
             val gmsPicker = checkNotNull(PhotoVisualMedia.getGmsPicker(context)).activityInfo
             Intent(PhotoVisualMedia.GMS_ACTION_PICK_IMAGES).apply {
                 setClassName(gmsPicker.applicationInfo.packageName, gmsPicker.name)
-                putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
+                if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else {
             PhotoVisualMedia.createCustomIntent(context, input).apply {
-                putExtra(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX, maxItems)
+                if (maxItems > 1) putExtra(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         }
     }

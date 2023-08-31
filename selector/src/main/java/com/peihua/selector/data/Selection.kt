@@ -172,7 +172,7 @@ class Selection {
                 } else {
                     PICK_IMAGES_MAX_LIMIT
                 }
-                require(!(extraMax <= 0 || extraMax > pickImageMaxLimit)) { "Invalid EXTRA_PICK_IMAGES_MAX value" }
+                require(!(extraMax <= 1 || extraMax > pickImageMaxLimit)) { "Invalid EXTRA_PICK_IMAGES_MAX value" }
                 mSelectMultiple = true
                 maxSelectionLimit = extraMax
             }
