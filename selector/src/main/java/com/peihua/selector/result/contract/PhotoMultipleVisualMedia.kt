@@ -18,7 +18,7 @@ class PhotoMultipleVisualMedia(
 ) : ActivityResultContract<PhotoVisualMediaRequest, List<@JvmSuppressWildcards Uri>>() {
 
     init {
-        require(maxItems > 1) { "Max items must be higher than 0" }
+        require(maxItems > 1) { "Max items must be higher than 1" }
     }
 
     @CallSuper
