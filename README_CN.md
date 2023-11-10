@@ -3,7 +3,7 @@
     
    [English🇺🇸](README.md)
 
-   [效果体验](https://github.com/peihua8858/PictureSelector/raw/version_component/app/demo/demo_2023-04-16_100140_v3.11.1.apk)<br>
+   [效果体验](https://github.com/peihua8858/PictureSelector/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
 
 [![Jitpack](https://jitpack.io/v/peihua8858/PictureSelector.svg)](https://github.com/peihua8858)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/peihua8858)
@@ -51,7 +51,7 @@ dependencies {
 
 ## 权限
 
-权限使用说明，请参阅 [文档](https://github.com/peihua8858/PictureSelector/wiki/PictureSelector-3.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
+权限使用说明，请参阅 [文档](https://github.com/peihua8858/PictureSelector/wiki/PictureSelector-4.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
 
 ```xml
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
