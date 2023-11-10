@@ -7,7 +7,7 @@
 
 [![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.1-yellow)](https://github.com/LuckSiege)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/LuckSiege)
-[![Star](https://img.shields.io/github/stars/LuckSiege/PictureSelector.svg)](https://github.com/LuckSiege/PictureSelector)
+[![Star](https://img.shields.io/github/stars/peihua8858/PictureSelector.svg)](https://github.com/peihua8858/PictureSelector)
 
 
 ## Contents
