@@ -11,7 +11,7 @@
 
 
 ## 目录
--[最新版本](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0-beta7)<br>
+-[最新版本](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0)<br>
 -[如何引用](#如何引用)<br>
 -[进阶使用](#进阶使用)<br>
 -[权限](#权限)<br>
@@ -35,7 +35,7 @@ repositories {
 
 dependencies {
   // PictureSelector
-  implementation 'com.github.peihua8858:PictureSelector:4.0.0-beta7'
+  implementation 'com.github.peihua8858:PictureSelector:4.0.0'
 }
 ```
 
