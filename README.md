@@ -5,13 +5,13 @@
 
    [Download Demo Apk](https://github.com/peihua8858/PictureSelector/raw/master/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
 
-[![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.1-yellow)](https://github.com/peihua8858)
+[![Jitpack](https://jitpack.io/v/peihua8858/PictureSelector.svg)](https://github.com/peihua8858)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/peihua8858)
 [![Star](https://img.shields.io/github/stars/peihua8858/PictureSelector.svg)](https://github.com/peihua8858/PictureSelector)
 
 
 ## Contents
--[Latest version](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0-beta7)<br>
+-[Latest version](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0)<br>
 -[Download](#Download)<br>
 -[Usage](#Usage)<br>
 -[Permission](#Permission)<br>
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
   // PictureSelector
-  implementation 'com.github.peihua8858:PictureSelector:4.0.0-beta7'
+  implementation 'com.github.peihua8858:PictureSelector:4.0.0'
 }
 ```
 
