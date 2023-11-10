@@ -3,7 +3,7 @@
    
    [简体中文🇨🇳](README_CN.md)
 
-   [Download Demo Apk](https://github.com/peihua8858/PictureSelector/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
+   [Download Demo Apk](https://github.com/peihua8858/PictureSelector/blob/master/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
 
 [![Maven Central](https://img.shields.io/badge/maven%20central-v3.11.1-yellow)](https://github.com/peihua8858)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/peihua8858)
