@@ -18,8 +18,6 @@
 -[演示效果](#演示效果)<br>
 -[混淆配置](#混淆配置)<br>
 -[如何提Issues](https://github.com/peihua8858/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
--[兼容性测试](#兼容性测试)<br>
--[联系方式](#联系方式)<br>
 -[License](#License)<br>
 
 
@@ -164,12 +162,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-
-## 兼容性测试
-******腾讯优测-深度测试-通过率达到100%******
-
-![image](https://github.com/peihua8858/PictureSelector/blob/version_component/image/test.png)
 
 
 ## 演示效果
