@@ -23,7 +23,8 @@
 
 
 ## 如何引用
-
+* 把 `maven { url 'https://jitpack.io' }` 加入到 repositories 中
+* 添加如下依赖，末尾的「latestVersion」指的是PictureSelector [![Download](https://jitpack.io/v/peihua8858/PictureSelector.svg)](https://jitpack.io/#peihua8858/PictureSelector) 里的版本名称，请自行替换。
 使用Gradle
 ```sh
 repositories {
@@ -33,7 +34,7 @@ repositories {
 
 dependencies {
   // PictureSelector
-  implementation 'com.github.peihua8858:PictureSelector:4.0.0'
+  implementation 'com.github.peihua8858:PictureSelector:latestVersion'
 }
 ```
 
@@ -43,7 +44,7 @@ dependencies {
 <dependency>
   <groupId>com.github.peihua8858</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>4.0.0-beta7</version>
+  <version>latestVersion</version>
 </dependency>
 ```
 
