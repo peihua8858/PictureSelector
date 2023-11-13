@@ -1,30 +1,29 @@
 # PictureSelector 4.0
-   A PictureSelector for Android platform, which supports obtaining pictures, videos, audio & photos from photo albums, cutting (single picture or multi picture cutting) and other functions, and supports dynamic access & an open source picture selection framework suitable for Android 5.0 + system<br> 
-   
-   [简体中文🇨🇳](README_CN.md)
+   一款针对Android平台下的图片选择器，支持从相册获取图片、视频、音频，支持裁剪(单图or多图裁剪)等功能，支持动态获取权限&适配Android 5.0+系统的开源图片选择框架。<br>
 
-   [Download Demo Apk](https://github.com/peihua8858/PictureSelector/raw/master/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
+   [效果体验](https://github.com/peihua8858/PictureSelector/raw/master/demo/demo_2023-11-10_1721_v4.0.0.apk)<br>
 
 [![Jitpack](https://jitpack.io/v/peihua8858/PictureSelector.svg)](https://github.com/peihua8858)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/peihua8858)
 [![Star](https://img.shields.io/github/stars/peihua8858/PictureSelector.svg)](https://github.com/peihua8858/PictureSelector)
 
 
-## Contents
--[Latest version](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0)<br>
--[Download](#Download)<br>
--[Usage](#Usage)<br>
--[Permission](#Permission)<br>
--[Effect](#Effect)<br>
--[ProGuard](#ProGuard)<br>
--[Issues](https://github.com/peihua8858/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
+## 目录
+-[最新版本](https://github.com/peihua8858/PictureSelector/releases/tag/4.0.0)<br>
+-[如何引用](#如何引用)<br>
+-[进阶使用](#进阶使用)<br>
+-[权限](#权限)<br>
+-[演示效果](#演示效果)<br>
+-[混淆配置](#混淆配置)<br>
+-[如何提Issues](https://github.com/peihua8858/PictureSelector/wiki/%E5%A6%82%E4%BD%95%E6%8F%90Issues%3F)<br>
 -[License](#License)<br>
 
 
-## Download
 
-Use Gradle
-
+## 如何引用
+* 把 `maven { url 'https://jitpack.io' }` 加入到 repositories 中
+* 添加如下依赖，末尾的「latestVersion」指的是PictureSelector [![Download](https://jitpack.io/v/peihua8858/PictureSelector.svg)](https://jitpack.io/#peihua8858/PictureSelector) 里的版本名称，请自行替换。
+使用Gradle
 ```sh
 repositories {
   google()
@@ -33,23 +32,23 @@ repositories {
 
 dependencies {
   // PictureSelector
-  implementation 'com.github.peihua8858:PictureSelector:4.0.0'
+  implementation 'com.github.peihua8858:PictureSelector:latestVersion'
 }
 ```
 
-Or Maven:
+或者Maven:
 
 ```xml
 <dependency>
   <groupId>com.github.peihua8858</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>4.0.0-beta7</version>
+  <version>latestVersion</version>
 </dependency>
 ```
 
-## Permission  
+## 权限
 
-Permission describe，see [documentation](https://github.com/peihua8858/PictureSelector/wiki/PictureSelector-4.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
+权限使用说明，请参阅 [文档](https://github.com/peihua8858/PictureSelector/wiki/PictureSelector-4.0-%E6%9D%83%E9%99%90%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
 
 ```xml
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -62,7 +61,7 @@ Permission describe，see [documentation](https://github.com/peihua8858/PictureS
 <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 ```
 
-Android 11 use camera，AndroidManifest.xm add the code：
+Android 11 使用相机，需要再AndroidManifest.xm 添加如下代码：
 
 ```xml
 <queries package="${applicationId}">
@@ -80,14 +79,15 @@ Android 11 use camera，AndroidManifest.xm add the code：
 ```
 
 ## ImageEngine
-[RatioImageView](https://github.com/peihua8858/ImageLoader/blob/master/imageloader/src/main/java/com/fz/imageloader/widget/RatioImageView.kt)<br>
+[RatioImageView](https://github.com/peihua8858/ImageLoader/blob/master/imageloader/src/main/java/com/fz/imageloader/widget/RatioImageView.kt)<br> 
 [ImageLoader](https://github.com/peihua8858/ImageLoader/blob/master/imageloader/src/main/java/com/fz/imageloader/ImageLoader.kt)<br>
 
-## Usage
 
-A simple use case is shown below:
+## 进阶使用
 
-1、Get picture 
+简单用例如下所示:
+
+1、获取图片
 
 ```kotlin
 //注册获取图片ActivityResultContract
@@ -140,7 +140,8 @@ private val takeCropLaunch = mActivity.registerForActivityResult(PhotoCropVisual
 
 ```
 
-## ProGuard
+
+## 混淆配置 
 ```sh
 -keep class com.peihua.selector.** { *; }
 ```
@@ -162,8 +163,7 @@ limitations under the License.
 ```
 
 
-
-## Effect
+## 演示效果
 
 |          单选图片          |           预览           |           相册           |
 |:----------------------:|:----------------------:|:----------------------:|
@@ -176,3 +176,5 @@ limitations under the License.
 |           单图裁剪           |          多图裁剪           |
 |:------------------------:|:-----------------------:|
 |  ![](images/image4.jpg)  | ![](images/image10.jpg) |
+
+
