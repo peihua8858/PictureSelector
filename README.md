@@ -27,12 +27,12 @@
 ```sh
 repositories {
   google()
-  mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
   // PictureSelector
-  implementation 'com.github.peihua8858:PictureSelector:latestVersion'
+  implementation 'com.github.peihua8858:PictureSelector:${latestVersion}'
 }
 ```
 
@@ -42,7 +42,7 @@ dependencies {
 <dependency>
   <groupId>com.github.peihua8858</groupId>
   <artifactId>pictureselector</artifactId>
-  <version>latestVersion</version>
+  <version>${latestVersion}</version>
 </dependency>
 ```
 
