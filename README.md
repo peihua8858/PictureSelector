@@ -145,6 +145,21 @@ private val takeCropLaunch = mActivity.registerForActivityResult(PhotoCropVisual
 ```sh
 -keep class com.peihua.selector.** { *; }
 ```
+
+## 演示效果
+
+|          单选图片          |           预览           |           相册           |
+|:----------------------:|:----------------------:|:----------------------:|
+| ![](images/image1.jpg) | ![](images/image7.jpg) | ![](images/image3.jpg) |
+
+|          多选图片          |           预览           |           相册           |
+|:----------------------:|:----------------------:|:----------------------:|
+| ![](images/image5.jpg) | ![](images/image8.jpg) | ![](images/image9.jpg) |
+
+|           单图裁剪           |          多图裁剪           |
+|:------------------------:|:-----------------------:|
+|  ![](images/image4.jpg)  | ![](images/image10.jpg) |
+
 ## License
 ```sh
 Copyright 2023 peihua
@@ -161,20 +176,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-
-## 演示效果
-
-|          单选图片          |           预览           |           相册           |
-|:----------------------:|:----------------------:|:----------------------:|
-| ![](images/image1.jpg) | ![](images/image7.jpg) | ![](images/image3.jpg) |
-
-|          多选图片          |           预览           |           相册           |
-|:----------------------:|:----------------------:|:----------------------:|
-| ![](images/image5.jpg) | ![](images/image8.jpg) | ![](images/image9.jpg) |
-
-|           单图裁剪           |          多图裁剪           |
-|:------------------------:|:-----------------------:|
-|  ![](images/image4.jpg)  | ![](images/image10.jpg) |
 
 
