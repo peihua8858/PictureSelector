@@ -206,7 +206,14 @@ class MainActivity : ComponentActivity() {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 ContentValues()
             )
-            launchSystemCrop.launch(SystemPhotoCropVisualMediaRequestBuilder(mImageUri, outputUri!!).build())
+            launchSystemCrop.launch(SystemPhotoCropVisualMediaRequestBuilder(mImageUri, outputUri!!)
+                .setCircleCrop(true)
+                .setAspectY(1f)
+                .setAspectX(1f)
+                .setAutoCustomCorp(true)
+                .setOutputX(200f)
+                .setOutputY(200f)
+                .build())
         }
     }
 

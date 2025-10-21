@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContract
@@ -36,16 +37,19 @@ open class SytemPhotoCropVisualMedia : ActivityResultContract<SystemPhotoCropVis
         }
 
         @JvmStatic
-        internal fun isSystemFallbackCorpAvailable(context: Context): Boolean {
-            return getSystemFallbackCrop(context) != null
+        internal fun isSystemFallbackCorpAvailable(context: Context, input: SystemPhotoCropVisualMediaRequest): Boolean {
+            return getSystemFallbackCrop(context, input.inputUri)!=null
         }
 
         @JvmStatic
-        internal fun getSystemFallbackCrop(context: Context): ResolveInfo? {
-            return context.packageManager.resolveActivity(
-                Intent(ACTION_SYSTEM_CROP),
+        internal fun getSystemFallbackCrop(context: Context, uri: Uri): ResolveInfo? {
+            val intent = Intent(ACTION_SYSTEM_CROP)
+            intent.setDataAndType(uri, "image/*")
+            val result = context.packageManager.resolveActivity(
+                intent,
                 PackageManager.MATCH_DEFAULT_ONLY or PackageManager.MATCH_SYSTEM_ONLY
             )
+            return result
         }
     }
 
@@ -53,7 +57,7 @@ open class SytemPhotoCropVisualMedia : ActivityResultContract<SystemPhotoCropVis
     @CallSuper
     override fun createIntent(context: Context, input: SystemPhotoCropVisualMediaRequest): Intent {
         // Check if Photo Picker is available on the device
-        if (isSystemFallbackCorpAvailable(context)) {
+        if (isSystemFallbackCorpAvailable(context, input = input)) {
             return Intent(ACTION_SYSTEM_CROP).apply {
                 setDataAndType(input.inputUri, getVisualMimeType(input.mediaType))
                 // 授权应用读取 Uri，这一步要有，不然裁剪程序会崩溃
