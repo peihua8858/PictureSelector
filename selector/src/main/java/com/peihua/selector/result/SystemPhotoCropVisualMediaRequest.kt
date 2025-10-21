@@ -3,14 +3,16 @@ package com.peihua.selector.result
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.*
+
 fun SystemPhotoCropVisualMediaRequestBuilder(
     inputUri: Uri, outputUri: Uri,
-    mediaType: VisualMediaType = ImageOnly
+    mediaType: VisualMediaType = ImageOnly,
 ) = SystemPhotoCropVisualMediaRequest.Builder().setMediaType(mediaType).setInputUri(inputUri)
     .setOutputUri(outputUri)
+
 fun SystemPhotoCropVisualMediaRequest(
     inputUri: Uri, outputUri: Uri,
-    mediaType: VisualMediaType = ImageOnly
+    mediaType: VisualMediaType = ImageOnly,
 ) = SystemPhotoCropVisualMediaRequest.Builder().setMediaType(mediaType).setInputUri(inputUri)
     .setOutputUri(outputUri).build()
 
@@ -33,14 +35,15 @@ class SystemPhotoCropVisualMediaRequest internal constructor() {
         internal set
     var outputY: Float = 150F
         internal set
-    var inputUri: Uri = Uri.parse("")
+    var inputUri: Uri = Uri.EMPTY
         internal set
-    var outputUri: Uri = Uri.parse("")
+    var outputUri: Uri = Uri.EMPTY
         internal set
     var outputFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
         internal set
     var circleCrop: Boolean = false
         internal set
+    var isAutoCustomCorp: Boolean = false
 
     /**
      * A builder for constructing [PickCropVisualMediaRequest] instances.
@@ -54,10 +57,11 @@ class SystemPhotoCropVisualMediaRequest internal constructor() {
         private var aspectY: Float = 1F
         private var outputX: Float = 150F
         private var outputY: Float = 150F
-        private var inputUri: Uri = Uri.parse("")
-        private var outputUri: Uri = Uri.parse("")
+        private var inputUri: Uri = Uri.EMPTY
+        private var outputUri: Uri = Uri.EMPTY
         private var outputFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
         private var circleCrop: Boolean = false
+        private var isAutoCustomCorp: Boolean = false
 
         /**
          * Set the media type for the [PickVisualMediaRequest].
@@ -87,10 +91,12 @@ class SystemPhotoCropVisualMediaRequest internal constructor() {
             this.crop = crop
             return this
         }
+
         fun setCircleCrop(circleCrop: Boolean): Builder {
             this.circleCrop = circleCrop
             return this
         }
+
         fun setAspectX(aspectX: Float): Builder {
             this.aspectX = aspectX
             return this
@@ -126,6 +132,11 @@ class SystemPhotoCropVisualMediaRequest internal constructor() {
             return this
         }
 
+        fun setAutoCustomCorp(isAutoCustomCorp: Boolean): Builder {
+            this.isAutoCustomCorp = isAutoCustomCorp
+            return this
+        }
+
         /**
          * Build the PickVisualMediaRequest specified by this builder.
          *
@@ -144,6 +155,7 @@ class SystemPhotoCropVisualMediaRequest internal constructor() {
             this.outputUri = this@Builder.outputUri
             this.outputFormat = this@Builder.outputFormat
             this.circleCrop = this@Builder.circleCrop
+            this.isAutoCustomCorp = this@Builder.isAutoCustomCorp
         }
     }
 }
