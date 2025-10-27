@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.fz.imageloader.ImageLoader;
+import com.fz.imageloader.ImageOptions;
 import com.peihua.selector.crop.callback.BitmapLoadCallback;
 import com.peihua.selector.crop.model.ExifInfo;
 import com.peihua.selector.crop.util.BitmapLoadUtils;
@@ -146,9 +148,6 @@ public class TransformImageView extends AppCompatImageView {
      * @param imageUri - image Uri
      */
     public void setImageUri(@NonNull Uri imageUri, @Nullable Uri outputUri, boolean isUseCustomBitmap) {
-//        ImageLoader.getInstance().loadImage(new ImageOptions.Builder()
-//                .setImageUrl()
-//                .build());
         useDefaultLoaderCrop(imageUri, outputUri);
     }
 

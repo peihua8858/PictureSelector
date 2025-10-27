@@ -1,226 +1,220 @@
-package com.peihua.selector.crop.task;
+package com.peihua.selector.crop.task
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.peihua.selector.crop.OkHttpClientStore;
-import com.peihua.selector.crop.callback.BitmapLoadCallback;
-import com.peihua.selector.crop.model.ExifInfo;
-import com.peihua.selector.crop.util.BitmapLoadUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okio.BufferedSource;
-import okio.Okio;
-import okio.Sink;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.net.Uri
+import android.util.Log
+import com.fz.common.coroutine.ModernAsyncTask
+import com.peihua.selector.crop.OkHttpClientStore
+import com.peihua.selector.crop.callback.BitmapLoadCallback
+import com.peihua.selector.crop.model.ExifInfo
+import com.peihua.selector.crop.task.BitmapLoadTask.BitmapWorkerResult
+import com.peihua.selector.crop.util.BitmapLoadUtils
+import com.peihua.selector.util.adjustBitmapOrientation
+import com.peihua.selector.util.orientationMatrix
+import okhttp3.Request
+import okhttp3.Response
+import okio.BufferedSource
+import okio.Sink
+import okio.sink
+import java.io.IOException
+import java.lang.ref.WeakReference
 
 /**
  * Creates and returns a Bitmap for a given Uri(String url).
  * inSampleSize is calculated based on requiredWidth property. However can be adjusted if OOM occurs.
  * If any EXIF config is found - bitmap is transformed properly.
  */
-public class BitmapLoadTask extends AsyncTask<Void, Void, BitmapLoadTask.BitmapWorkerResult> {
+class BitmapLoadTask(
+    context: Context,
+    private var inputUri: Uri,
+    private val outputUri: Uri?,
+    private val requiredWidth: Int,
+    private val requiredHeight: Int,
+    private val loadCallback: BitmapLoadCallback,
+) : ModernAsyncTask<Void, Void, BitmapWorkerResult>() {
+    private val mContext: WeakReference<Context> = WeakReference<Context>(context)
 
-    private static final String TAG = "BitmapWorkerTask";
+    class BitmapWorkerResult {
+        var mBitmapResult: Bitmap? = null
+        var mExifInfo: ExifInfo? = null
+        var mBitmapWorkerException: Exception? = null
 
-    private final WeakReference<Context> mContext;
-    private Uri mInputUri;
-    private Uri mOutputUri;
-    private final int mRequiredWidth;
-    private final int mRequiredHeight;
-
-    private final BitmapLoadCallback mBitmapLoadCallback;
-
-    public static class BitmapWorkerResult {
-
-        Bitmap mBitmapResult;
-        ExifInfo mExifInfo;
-        Exception mBitmapWorkerException;
-
-        public BitmapWorkerResult(@NonNull Bitmap bitmapResult, @NonNull ExifInfo exifInfo) {
-            mBitmapResult = bitmapResult;
-            mExifInfo = exifInfo;
+        constructor(bitmapResult: Bitmap, exifInfo: ExifInfo) {
+            mBitmapResult = bitmapResult
+            mExifInfo = exifInfo
         }
 
-        public BitmapWorkerResult(@NonNull Exception bitmapWorkerException) {
-            mBitmapWorkerException = bitmapWorkerException;
+        constructor(bitmapWorkerException: Exception) {
+            mBitmapWorkerException = bitmapWorkerException
         }
-
     }
 
-    public BitmapLoadTask(@NonNull Context context,
-                          @NonNull Uri inputUri, @Nullable Uri outputUri,
-                          int requiredWidth, int requiredHeight,
-                          BitmapLoadCallback loadCallback) {
-        mContext = new WeakReference<>(context);
-        mInputUri = inputUri;
-        mOutputUri = outputUri;
-        mRequiredWidth = requiredWidth;
-        mRequiredHeight = requiredHeight;
-        mBitmapLoadCallback = loadCallback;
-    }
-
-
-    @Override
-    @NonNull
-    protected BitmapWorkerResult doInBackground(Void... params) {
-        Context context = mContext.get();
+    @SuppressLint("Recycle")
+    override suspend fun doInBackground(vararg params: Void): BitmapWorkerResult {
+        val context = mContext.get()
         if (context == null) {
-            return new BitmapWorkerResult(new NullPointerException("context is null"));
-        }
-
-        if (mInputUri == null) {
-            return new BitmapWorkerResult(new NullPointerException("Input Uri cannot be null"));
+            return BitmapWorkerResult(NullPointerException("context is null"))
         }
 
         try {
-            processInputUri();
-        } catch (NullPointerException | IOException e) {
-            return new BitmapWorkerResult(e);
+            processInputUri()
+        } catch (e: NullPointerException) {
+            return BitmapWorkerResult(e)
+        } catch (e: IOException) {
+            return BitmapWorkerResult(e)
         }
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
         try {
-            InputStream stream = context.getContentResolver().openInputStream(mInputUri);
-            BitmapFactory.decodeStream(stream, null, options);
-            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth,options.outHeight);
-        } catch (Exception e) {
-            e.printStackTrace();
+            val stream = context.contentResolver.openInputStream(inputUri)
+            BitmapFactory.decodeStream(stream, null, options)
+            options.inSampleSize = BitmapLoadUtils.computeSize(options.outWidth, options.outHeight)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        options.inJustDecodeBounds = false;
+        options.inJustDecodeBounds = false
 
-        Bitmap decodeSampledBitmap = null;
+        var decodeSampledBitmap: Bitmap? = null
 
-        boolean decodeAttemptSuccess = false;
+        var decodeAttemptSuccess = false
         while (!decodeAttemptSuccess) {
             try {
-                InputStream stream = context.getContentResolver().openInputStream(mInputUri);
+                val stream = context.contentResolver.openInputStream(inputUri)
                 try {
-                    decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options);
+                    decodeSampledBitmap = BitmapFactory.decodeStream(stream, null, options)
                     if (options.outWidth == -1 || options.outHeight == -1) {
-                        return new BitmapWorkerResult(new IllegalArgumentException("Bounds for bitmap could not be retrieved from the Uri: [" + mInputUri + "]"));
+                        return BitmapWorkerResult(IllegalArgumentException("Bounds for bitmap could not be retrieved from the Uri: [$inputUri]"))
                     }
                 } finally {
-                    BitmapLoadUtils.close(stream);
+                    BitmapLoadUtils.close(stream)
                 }
-                if (BitmapLoadUtils.checkSize(decodeSampledBitmap, options)) continue;
-                decodeAttemptSuccess = true;
-            } catch (OutOfMemoryError error) {
-                Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error);
-                options.inSampleSize *= 2;
-            } catch (IOException e) {
-                Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e);
-                return new BitmapWorkerResult(new IllegalArgumentException("Bitmap could not be decoded from the Uri: [" + mInputUri + "]", e));
+                if (BitmapLoadUtils.checkSize(decodeSampledBitmap, options)) continue
+                decodeAttemptSuccess = true
+            } catch (error: OutOfMemoryError) {
+                Log.e(TAG, "doInBackground: BitmapFactory.decodeFileDescriptor: ", error)
+                options.inSampleSize *= 2
+            } catch (e: IOException) {
+                Log.e(TAG, "doInBackground: ImageDecoder.createSource: ", e)
+                return BitmapWorkerResult(
+                    IllegalArgumentException(
+                        "Bitmap could not be decoded from the Uri: [$inputUri]",
+                        e
+                    )
+                )
             }
         }
 
         if (decodeSampledBitmap == null) {
-            return new BitmapWorkerResult(new IllegalArgumentException("Bitmap could not be decoded from the Uri: [" + mInputUri + "]"));
+            return BitmapWorkerResult(IllegalArgumentException("Bitmap could not be decoded from the Uri: [$inputUri]"))
+        }
+        val exifOrientation = BitmapLoadUtils.getExifOrientation(context, inputUri)
+        val exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation)
+        val exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation)
+
+        val exifInfo = ExifInfo(exifOrientation, exifDegrees, exifTranslation)
+        try {
+            context.contentResolver.openInputStream(inputUri)
+                .use {
+                    val bitmap = it.adjustBitmapOrientation(decodeSampledBitmap)
+                    if (bitmap != null) {
+                        return BitmapWorkerResult(bitmap, exifInfo)
+                    }
+                }
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
 
-        int exifOrientation = BitmapLoadUtils.getExifOrientation(context, mInputUri);
-        int exifDegrees = BitmapLoadUtils.exifToDegrees(exifOrientation);
-        int exifTranslation = BitmapLoadUtils.exifToTranslation(exifOrientation);
-
-        ExifInfo exifInfo = new ExifInfo(exifOrientation, exifDegrees, exifTranslation);
-
-        Matrix matrix = new Matrix();
-        if (exifDegrees != 0) {
-            matrix.preRotate(exifDegrees);
-        }
-        if (exifTranslation != 1) {
-            matrix.postScale(exifTranslation, 1);
-        }
-        if (!matrix.isIdentity()) {
-            return new BitmapWorkerResult(BitmapLoadUtils.transformBitmap(decodeSampledBitmap, matrix), exifInfo);
-        }
-
-        return new BitmapWorkerResult(decodeSampledBitmap, exifInfo);
+        return BitmapWorkerResult(decodeSampledBitmap, exifInfo)
     }
 
-    private void processInputUri() throws NullPointerException, IOException {
-        String inputUriScheme = mInputUri.getScheme();
-        Log.d(TAG, "Uri scheme: " + inputUriScheme);
-        if ("http".equals(inputUriScheme) || "https".equals(inputUriScheme)) {
+    @Throws(NullPointerException::class, IOException::class)
+    private fun processInputUri() {
+        val inputUriScheme = inputUri.scheme
+        Log.d(TAG, "Uri scheme: $inputUriScheme")
+        if ("http" == inputUriScheme || "https" == inputUriScheme) {
             try {
-                downloadFile(mInputUri, mOutputUri);
-            } catch (NullPointerException | IOException e) {
-                Log.e(TAG, "Downloading failed", e);
-                throw e;
+                downloadFile(inputUri, outputUri)
+            } catch (e: NullPointerException) {
+                Log.e(TAG, "Downloading failed", e)
+                throw e
+            } catch (e: IOException) {
+                Log.e(TAG, "Downloading failed", e)
+                throw e
             }
-        } else if (!"file".equals(inputUriScheme) && !"content".equals(inputUriScheme)) {
-            Log.e(TAG, "Invalid Uri scheme " + inputUriScheme);
-            throw new IllegalArgumentException("Invalid Uri scheme" + inputUriScheme);
+        } else if ("file" != inputUriScheme && "content" != inputUriScheme) {
+            Log.e(TAG, "Invalid Uri scheme $inputUriScheme")
+            throw IllegalArgumentException("Invalid Uri scheme$inputUriScheme")
         }
     }
 
-    private void downloadFile(@NonNull Uri inputUri, @Nullable Uri outputUri) throws NullPointerException, IOException {
-        Log.d(TAG, "downloadFile");
+    @Throws(NullPointerException::class, IOException::class)
+    private fun downloadFile(inputUri: Uri, outputUri: Uri?) {
+        Log.d(TAG, "downloadFile")
 
         if (outputUri == null) {
-            throw new NullPointerException("Output Uri is null - cannot download image");
+            throw NullPointerException("Output Uri is null - cannot download image")
         }
 
-        Context context = mContext.get();
+        val context = mContext.get()
         if (context == null) {
-            throw new NullPointerException("Context is null");
+            throw NullPointerException("Context is null")
         }
 
-        OkHttpClient client = OkHttpClientStore.INSTANCE.getClient();
+        val client = OkHttpClientStore.INSTANCE.getClient()
 
-        BufferedSource source = null;
-        Sink sink = null;
-        Response response = null;
+        var source: BufferedSource? = null
+        var sink: Sink? = null
+        var response: Response? = null
         try {
-            Request request = new Request.Builder()
+            val request = Request.Builder()
                 .url(inputUri.toString())
-                .build();
-            response = client.newCall(request).execute();
-            source = response.body().source();
+                .build()
+            response = client.newCall(request).execute()
+            source = response.body?.source()
 
-            OutputStream outputStream = context.getContentResolver().openOutputStream(outputUri);
+            val outputStream = context.contentResolver.openOutputStream(outputUri)
             if (outputStream != null) {
-                sink = Okio.sink(outputStream);
-                source.readAll(sink);
+                sink = outputStream.sink()
+                source?.readAll(sink)
             } else {
-                throw new NullPointerException("OutputStream for given output Uri is null");
+                throw NullPointerException("OutputStream for given output Uri is null")
             }
         } finally {
-            BitmapLoadUtils.close(source);
-            BitmapLoadUtils.close(sink);
+            BitmapLoadUtils.close(source)
+            BitmapLoadUtils.close(sink)
             if (response != null) {
-                BitmapLoadUtils.close(response.body());
+                BitmapLoadUtils.close(response.body)
             }
-            client.dispatcher().cancelAll();
+            client.dispatcher.cancelAll()
 
             // swap uris, because input image was downloaded to the output destination
             // (cropped image will override it later)
-            mInputUri = mOutputUri;
+            this.inputUri = outputUri
         }
     }
 
-    @Override
-    protected void onPostExecute(@NonNull BitmapWorkerResult result) {
+    override fun onPostExecute(result: BitmapWorkerResult?) {
+        if (result == null) {
+            return
+        }
         if (result.mBitmapWorkerException == null) {
-            mBitmapLoadCallback.onBitmapLoaded(result.mBitmapResult, result.mExifInfo, mInputUri, mOutputUri);
+            loadCallback.onBitmapLoaded(
+                result.mBitmapResult!!,
+                result.mExifInfo!!,
+                inputUri,
+                outputUri
+            )
         } else {
-            mBitmapLoadCallback.onFailure(result.mBitmapWorkerException);
+            loadCallback.onFailure(result.mBitmapWorkerException!!)
         }
     }
 
+    companion object {
+        private const val TAG = "BitmapWorkerTask"
+    }
 }

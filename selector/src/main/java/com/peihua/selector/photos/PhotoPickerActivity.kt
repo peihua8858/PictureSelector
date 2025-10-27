@@ -68,7 +68,7 @@ class PhotoPickerActivity : AppCompatActivity() {
         setContentView(R.layout.picker_activity_photo_picker)
         setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val attrs = intArrayOf(R.attr.actionBarSize, R.attr.pickerTextColor)
+        val attrs = intArrayOf(android.R.attr.actionBarSize, R.attr.pickerTextColor)
         val ta = obtainStyledAttributes(attrs)
         // Save toolbar height so that we can use it as padding for FragmentContainerView
         mToolbarHeight = ta.getDimensionPixelSize( /* index */0,  /* defValue */-1)
@@ -309,7 +309,7 @@ class PhotoPickerActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setBackgroundDrawable(toolbarColor)
             setHomeAsUpIndicator(icon)
-            setHomeActionContentDescription(if (shouldShowTabLayout) android.R.string.cancel else R.string.abc_action_bar_up_description)
+            setHomeActionContentDescription(if (shouldShowTabLayout) android.R.string.cancel else androidx.appcompat.R.string.abc_action_bar_up_description)
         }
     }
 

@@ -12,7 +12,7 @@ import android.os.RemoteException
 import android.provider.MediaStore
 import android.util.Log
 import com.fz.common.text.isNonEmpty
-import com.fz.common.utils.isN
+import com.fz.common.utils.isAtLeastN
 import com.fz.common.utils.toLong
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
@@ -115,7 +115,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
 
         @JvmStatic
         fun getItemsUri(id: String, mimeType: String?, realPath: String): Uri {
-            if (isN) {
+            if (isAtLeastN) {
                 val contentUri: Uri = if (MimeUtils.isImageMimeType(mimeType)) {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 } else if (MimeUtils.isVideoMimeType(mimeType)) {
