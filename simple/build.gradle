@@ -89,7 +89,7 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
-    implementation 'com.github.peihua8858:kotlinCommonUtils:1.1.1-beta19'
+    implementation 'com.github.peihua8858:kotlinCommonUtils:1.1.4'
     implementation 'com.github.peihua8858.ImageLoader:imageloader:1.1.0'
     implementation 'com.github.peihua8858.ImageLoader:glidefetcher:1.1.0'
     implementation "com.github.bumptech.glide:glide:4.15.1"
@@ -97,6 +97,8 @@ dependencies {
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.3"
     implementation "io.coil-kt:coil-compose:2.4.0"
     implementation 'com.github.peihua8858:Compressor:3.0.3'
+
+//    implementation "androidx.photopicker:photopicker:1.0.0-alpha01"
 }
 
 //tasks.withType(KotlinCompile).configureEach {

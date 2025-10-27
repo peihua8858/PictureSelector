@@ -15,7 +15,9 @@ import com.peihua.selector.data.model.Item
  * ViewHolder of a photo item within a RecyclerView.
  */
 class PhotoGridHolder(
-    context: Context, screenWidth:Int, parent: ViewGroup, canSelectMultiple: Boolean
+    context: Context,
+    parent: ViewGroup,
+    canSelectMultiple: Boolean,
 ) : BaseViewHolder(context, parent, R.layout.picker_item_photo_grid) {
     private val mIconThumb: RatioImageView = itemView.findViewById(R.id.icon_thumbnail)
     private val mIconGif: ImageView = itemView.findViewById(R.id.icon_gif)
@@ -24,8 +26,6 @@ class PhotoGridHolder(
     private val mVideoDuration: TextView = mVideoBadgeContainer.findViewById(R.id.video_duration)
     private val mOverlayGradient: View = itemView.findViewById(R.id.overlay_gradient)
     private val mCanSelectMultiple: Boolean
-    private val margin = context.getDimensionPixelOffset(R.dimen.picker_photo_item_spacing)
-    private val mWidth = (screenWidth - margin * 2) / 3
 
     init {
 
@@ -40,11 +40,7 @@ class PhotoGridHolder(
 
     override fun bind() {
         val item = itemView.tag as Item
-        mIconThumb.layoutParams.apply {
-            width = mWidth
-            height = mWidth
-        }
-        mIconThumb.setImageUrl(item.contentUri,item.isGif, mWidth, mWidth)
+        mIconThumb.setImageUrl(item.contentUri, item.isGif)
         mIconGif.visibility = if (item.isGifOrAnimatedWebp) View.VISIBLE else View.GONE
         mIconMotionPhoto.visibility = if (item.isMotionPhoto) View.VISIBLE else View.GONE
         if (item.isVideo) {

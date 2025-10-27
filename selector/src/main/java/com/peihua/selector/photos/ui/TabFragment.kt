@@ -16,6 +16,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.fz.common.utils.getScreenWidth
+import com.fz.common.view.utils.dp
+import com.fz.common.view.utils.pxToDp
 import com.peihua.photopicker.R
 import com.peihua.selector.data.Selection
 import com.peihua.selector.photos.PhotoPickerActivity
@@ -37,7 +40,12 @@ abstract class TabFragment : Fragment() {
     private var mIsAccessibilityEnabled = false
     private var mAddButton: Button? = null
     private var mBottomBar: View? = null
-    private val mSlideUpAnimation: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.picker_slide_up) }
+    private val mSlideUpAnimation: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            context,
+            R.anim.picker_slide_up
+        )
+    }
     private val mSlideDownAnimation: Animation by lazy {
         AnimationUtils.loadAnimation(
             context,
@@ -48,12 +56,12 @@ abstract class TabFragment : Fragment() {
     private var mRecyclerViewBottomPadding = 0
     private val mIsBottomBarVisible = MutableLiveData(false)
     private val mIsProfileButtonVisible = MutableLiveData(false)
-   open val isEnabledLoadMore: Boolean
+    open val isEnabledLoadMore: Boolean
         get() = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.picker_fragment_picker_tab, container, false)
@@ -78,7 +86,8 @@ abstract class TabFragment : Fragment() {
         val canSelectMultiple = mSelection.canSelectMultiple()
         if (canSelectMultiple) {
             mAddButton?.setOnClickListener { (activity as? PhotoPickerActivity)?.setResultAndFinishSelf() }
-            val viewSelectedButton = requireActivity().findViewById<Button>(R.id.button_view_selected)
+            val viewSelectedButton =
+                requireActivity().findViewById<Button>(R.id.button_view_selected)
             // Transition to PreviewFragment on clicking "View Selected".
             viewSelectedButton.setOnClickListener {
                 mSelection.prepareSelectedItemsForPreviewAll()
@@ -92,7 +101,8 @@ abstract class TabFragment : Fragment() {
             }
         }
 
-        val accessibilityManager = context?.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val accessibilityManager =
+            context?.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         mIsAccessibilityEnabled = accessibilityManager.isEnabled
         accessibilityManager.addAccessibilityStateChangeListener { enabled: Boolean ->
             mIsAccessibilityEnabled = enabled
@@ -104,11 +114,12 @@ abstract class TabFragment : Fragment() {
     }
 
     private fun updateRecyclerViewBottomPadding() {
-        val recyclerViewBottomPadding: Int = if (mIsProfileButtonVisible.value!! || mIsBottomBarVisible.value!!) {
-            mRecyclerViewBottomPadding
-        } else {
-            0
-        }
+        val recyclerViewBottomPadding: Int =
+            if (mIsProfileButtonVisible.value!! || mIsBottomBarVisible.value!!) {
+                mRecyclerViewBottomPadding
+            } else {
+                0
+            }
         mRecyclerView?.setPadding(0, 0, 0, recyclerViewBottomPadding)
     }
 
@@ -160,4 +171,19 @@ abstract class TabFragment : Fragment() {
             return TextUtils.expandTemplate(template, sizeString).toString()
         }
     }
+
+    val spanCount: Int
+        get() {
+            val screenWidth = requireActivity().getScreenWidth().pxToDp()
+            when {
+                screenWidth > 840 -> {
+                    return 12
+                }
+
+                screenWidth > 600 -> {
+                    return 6
+                }
+            }
+            return PhotosTabAdapter.COLUMN_COUNT
+        }
 }

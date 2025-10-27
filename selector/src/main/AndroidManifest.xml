@@ -13,17 +13,18 @@
             android:name="com.peihua.selector.photos.PhotoPickerActivity"
             android:excludeFromRecents="true"
             android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:icon="@drawable/picker_app_icon"
             android:label="@string/picker_app_label"
             android:theme="@style/PickerMaterialTheme" />
         <activity
             android:name="com.peihua.selector.crop.UCropActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:excludeFromRecents="true"
             android:theme="@style/PickerCropMaterialTheme" />
         <activity
             android:name="com.peihua.selector.crop.UCropMultipleActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
             android:excludeFromRecents="true"
             android:theme="@style/PickerCropMaterialTheme" />
     </application>

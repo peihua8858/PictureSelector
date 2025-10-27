@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import com.fz.common.model.ViewModelState
 import com.fz.common.model.request
 import com.fz.common.text.isNonEmpty
+import com.fz.common.utils.getParcelableExtraCompat
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
 import com.peihua.selector.data.model.Category
@@ -40,10 +41,12 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     private val mItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
 
     // The list of Items with all photos and videos in category
-    private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
+    private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> =
+        MutableLiveData()
 
     // The list of categories.
-    private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> = MutableLiveData()
+    private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> =
+        MutableLiveData()
     private var mItemsProvider: ItemsProvider
     var configModel = ConfigModel.default()
         private set(value) {
@@ -89,7 +92,11 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             return mCategoryList
         }
 
-    fun requestMediasAsync(page: Int, category: Category = Category.DEFAULT, isLoadMore: Boolean = false) {
+    fun requestMediasAsync(
+        page: Int,
+        category: Category = Category.DEFAULT,
+        isLoadMore: Boolean = false,
+    ) {
         request(if (category == Category.DEFAULT) mItemList else mCategoryItemList) {
             val items: MutableList<Item> = ArrayList()
             mItemsProvider.queryMediaByPage(category, page, configModel.pageSize).use { cursor ->
@@ -138,7 +145,10 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             val categoryList: MutableList<Category> = ArrayList()
             mItemsProvider.queryAlbums().use { cursor ->
                 if (cursor == null || cursor.count == 0) {
-                    Log.d(TAG, "Didn't receive any categories, either cursor is null or cursor count is zero")
+                    Log.d(
+                        TAG,
+                        "Didn't receive any categories, either cursor is null or cursor count is zero"
+                    )
                     return@use
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -183,8 +193,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     @Throws(IllegalArgumentException::class)
     fun parseValuesFromIntent(intent: Intent) {
         val model: ConfigModel? =
-            if (isAtLeastT) intent.getParcelableExtra(Intent.EXTRA_INTENT, ConfigModel::class.java)
-            else intent.getParcelableExtra(Intent.EXTRA_INTENT)
+            intent.getParcelableExtraCompat(Intent.EXTRA_INTENT, ConfigModel::class.java)
         configModel = model ?: ConfigModel.default()
         selection.parseSelectionValuesFromIntent(intent)
     }

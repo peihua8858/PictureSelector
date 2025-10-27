@@ -77,7 +77,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
             "com.google.android.gms.provider.action.PICK_IMAGES"
         internal const val GMS_EXTRA_PICK_IMAGES_MAX =
             "com.google.android.gms.provider.extra.PICK_IMAGES_MAX"
-        const val EXTRA_PICK_IMAGES_MAX = "android.provider.extra.PICK_IMAGES_MAX"
+        const val EXTRA_PICK_IMAGES_MAX = MediaStore.EXTRA_PICK_IMAGES_MAX
 
         /**
          * 已选中图片列表

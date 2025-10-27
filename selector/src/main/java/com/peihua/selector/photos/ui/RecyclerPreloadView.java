@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @date：2020-04-14 18:43
  * @describe：RecyclerPreloadView
  */
-public class RecyclerPreloadView extends RecyclerView {
+public class RecyclerPreloadView extends AutoFitRecyclerView {
     private static final String TAG = RecyclerPreloadView.class.getSimpleName();
     private static final int BOTTOM_DEFAULT = 1;
     public static final int BOTTOM_PRELOAD = 2;

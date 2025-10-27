@@ -16,8 +16,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -59,67 +62,60 @@ import id.zelory.compressor.createFile
 import java.io.File
 
 class MainActivity : ComponentActivity() {
-    var imageUri: Uri? = null
+    val multiSelectPhotoRequest by lazy {
+        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
+            .setForceCustomUi(false)
+            .setMaxItemCount(10)
+            .setMediaType(PhotoVisualMedia.MultipleMimeType("image/jpeg", "image/png"))
+            .setShowGif(false)
+    }
+    val singleSelectPhotoRequest by lazy {
+        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
+            .setForceCustomUi(false)
+            .setShowGif(false)
+    }
+    val cropPhotoRequest by lazy {
+        val outputFile = "IMG_".createFile("jpg")
+        val outputUri = Uri.fromFile(outputFile)
+        PhotoCropVisualMediaRequestBuilder(selectUrisState.value.toArrayList(), outputUri)
+            .withAspectRatio(1f, 1f)
+            .build()
+    }
+
+
     val launchMultipleImage = registerForActivityResult(PhotoMultipleVisualMedia(3)) {
         Log.d("MainActivity", "Uri=$it")
         if (it.isNonEmpty()) {
-            val outputFile = "IMG_".createFile("jpg")
-            val outputUri = Uri.fromFile(outputFile)
-//            state.value = it
-            selectedUris = it.toArrayList()
-            imageUri = it[0]
-            stateUris.value = it
-            launchCrop.launch(
-                PhotoCropVisualMediaRequestBuilder(it.toArrayList(), outputUri)
-                    .withAspectRatio(1f, 1f)
-                    .build()
-            )
+            selectUrisState.value = it
+            launchCrop.launch(cropPhotoRequest)
         }
     }
     val launchImage = registerForActivityResult(PhotoVisualMedia()) {
         Log.d("MainActivity", "Uri=$it")
         if (it != null) {
-            val outputFile = "IMG_".createFile("jpg")
-            val outputUri = Uri.fromFile(outputFile)
-            imageUri = it
-//            state.value = it
+            selectUrisState.value = arrayListOf(it)
             viewModel.state.postValue(it)
-            launchCrop.launch(
-                PhotoCropVisualMediaRequestBuilder(it, outputUri)
-                    .withAspectRatio(1f, 1f)
-                    .build()
-            )
-//            toSystemCropActivity(it)
+            launchCrop.launch(cropPhotoRequest)
         }
     }
-    val state = mutableStateOf<Uri?>(null)
-    var stateUris = mutableStateOf<List<Uri>?>(null)
+    val selectUrisState = mutableStateOf<List<Uri>>(arrayListOf())
+    val cropUrisState = mutableStateOf<List<Uri>>(arrayListOf())
     val launchCrop = registerForActivityResult(PhotoCropVisualMedia()) {
-        val uris = it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
+        val uris =
+            it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
         if (uris.isNonEmpty()) {
             Log.d("MainActivity->Crop", "Uri=${uris}")
-            stateUris.value = uris
+            cropUrisState.value = uris
             return@registerForActivityResult
-        }
-        val uri = it.data?.data
-        Log.d("MainActivity->Crop", "Uri=${uri}")
-        if (uri != null) {
-//            state.value = (it.data?.data)
-            viewModel.state.postValue(it.data?.data)
         }
     }
     val launchSystemCrop = registerForActivityResult(SytemPhotoCropVisualMedia()) {
-        val uris = it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
+        val uris =
+            it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
         if (uris.isNonEmpty()) {
             Log.d("MainActivity->Crop", "Uri=${uris}")
-            stateUris.value = uris
+            cropUrisState.value = uris
             return@registerForActivityResult
-        }
-        val uri = it.data?.data
-        Log.d("MainActivity->Crop", "Uri=${uri}")
-        if (uri != null) {
-//            state.value = (it.data?.data)
-            viewModel.state.postValue(it.data?.data)
         }
     }
     val viewModel by viewModels<ViewModelUri>()
@@ -147,9 +143,10 @@ class MainActivity : ComponentActivity() {
             ) {
                 Column {
                     CustomImageViewWrapper()
-                    Greeting()
-                    MyComposeScreen()
-                    ListViewComposable(stateUris.value)
+//                    Greeting()
+//                    MyComposeScreen()
+                    ListViewComposable(selectUrisState.value)
+                    CropListView(cropUrisState.value)
                 }
             }
         }
@@ -206,20 +203,21 @@ class MainActivity : ComponentActivity() {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 ContentValues()
             )
-            launchSystemCrop.launch(SystemPhotoCropVisualMediaRequestBuilder(mImageUri, outputUri!!)
-                .setCircleCrop(true)
-                .setAspectY(1f)
-                .setAspectX(1f)
-                .setAutoCustomCorp(true)
-                .setOutputX(200f)
-                .setOutputY(200f)
-                .build())
+            launchSystemCrop.launch(
+                SystemPhotoCropVisualMediaRequestBuilder(mImageUri, outputUri!!)
+                    .setCircleCrop(true)
+                    .setAspectY(1f)
+                    .setAspectX(1f)
+                    .setAutoCustomCorp(true)
+                    .setOutputX(200f)
+                    .setOutputY(200f)
+                    .build()
+            )
         }
     }
 
     @Composable
     fun MyComposeScreen() {
-        val uri = state.value
         Column {
             AndroidView(
                 modifier = Modifier.size(100.dp),
@@ -243,78 +241,99 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     fun ListViewComposable(uris: List<Uri>?) {
         Column {
-            uris?.forEach {
-                Image(
-                    painter = rememberAsyncImagePainter(it),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .aspectRatio(1f)
-                )
+            Text(text = "选择图片列表", color = Color.White, fontSize = 20.sp)
+            FlowRow(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                uris?.forEach {
+                    Image(
+                        painter = rememberAsyncImagePainter(it),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .aspectRatio(1f)
+                    )
+                }
             }
         }
     }
 
-    var selectedUris: ArrayList<Uri> = arrayListOf()
+    @OptIn(ExperimentalLayoutApi::class)
+    @Composable
+    fun CropListView(uris: List<Uri>?) {
+        Column {
+            Text(text = "裁切图片列表", color = Color.White, fontSize = 20.sp)
+            FlowRow(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                uris?.forEach {
+                    Image(
+                        painter = rememberAsyncImagePainter(it),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .aspectRatio(1f)
+                    )
+                }
+            }
+        }
+    }
 
     @Composable
     fun CustomImageViewWrapper() {
-        Text(text = "单选相册", color = Color.White, fontSize = 20.sp, modifier = Modifier.clickable {
-            launchImage.launch(
-                PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
-                    .setForceCustomUi(false)
-                    .setShowGif(true)
-                    .build()
-            )
-        })
-        Text(text = "多选相册", color = Color.White, fontSize = 20.sp, modifier = Modifier.clickable {
-            launchMultipleImage.launch(
-                PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
-                    .setForceCustomUi(false)
-                    .setSelectedUris(selectedUris)
-                    .setShowGif(false)
-                    .build()
-            )
-        })
-        Text(text = "裁剪图片", color = Color.White, fontSize = 20.sp, modifier = Modifier.clickable {
-            val outputFile = "IMG_".createFile("jpg")
-            val outputUri = Uri.fromFile(outputFile)
-            //content://media/external/images/1000000126
-            val imageUri = imageUri
-            if (imageUri == null) {
-                showToast("请选择一致图片")
-                return@clickable
-            }
-            if (selectedUris.isNonEmpty()) {
-                launchCrop.launch(
-                    PhotoCropVisualMediaRequestBuilder(
-                        selectedUris,
-                        outputUri
-                    ).withAspectRatio(1f, 1f)
+        Text(
+            text = "单选相册",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier.clickable {
+                launchImage.launch(singleSelectPhotoRequest.build())
+            })
+        Text(
+            text = "多选相册",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier.clickable {
+                launchMultipleImage.launch(
+                    multiSelectPhotoRequest
+                        .setSelectedUris(selectUrisState.value.toArrayList())
                         .build()
                 )
-            }else{
-                launchCrop.launch(
-                    PhotoCropVisualMediaRequestBuilder(
-                        imageUri,
-                        outputUri
-                    ).withAspectRatio(1f, 1f)
-                        .build()
-                )
-            }
-        })
-        Text(text = "系统裁剪图片", color = Color.White, fontSize = 20.sp, modifier = Modifier.clickable {
-            //content://media/external/images/1000000126
-            val imageUri = imageUri
-            if (imageUri == null) {
-                showToast("请选择一致图片")
-                return@clickable
-            }
-            toSystemCropActivity(imageUri)
-        })
+            })
+        Text(
+            text = "裁剪图片",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier.clickable {
+                val outputFile = "IMG_".createFile("jpg")
+                val outputUri = Uri.fromFile(outputFile)
+                //content://media/external/images/1000000126
+                if (selectUrisState.value.isEmpty()) {
+                    showToast("请选择一致图片")
+                    return@clickable
+                }
+                if (selectUrisState.value.isNonEmpty()) {
+                    launchCrop.launch(cropPhotoRequest)
+                }
+            })
+        Text(
+            text = "系统裁剪图片",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier.clickable {
+                //content://media/external/images/1000000126
+                val imageUri = selectUrisState.value.firstOrNull()
+                if (imageUri == null) {
+                    showToast("请选择一致图片")
+                    return@clickable
+                }
+                toSystemCropActivity(imageUri)
+            })
     }
 
     @Composable

@@ -13,16 +13,16 @@ import com.peihua.selector.data.model.Item
  * Adapts from model to something RecyclerView understands.
  */
 class PhotosTabAdapter(
-    private val mSelection: Selection,private val screenWidth:Int,
+    private val mSelection: Selection,
     private val mOnClickListener: View.OnClickListener,
-    private val mOnLongClickListener: View.OnLongClickListener
+    private val mOnLongClickListener: View.OnLongClickListener,
 ) : RecyclerView.Adapter<BaseViewHolder>() {
     private var mItemList: MutableList<Item> = ArrayList()
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
         return if (viewType == ITEM_TYPE_DATE_HEADER) {
             DateHeaderHolder(viewGroup.context, viewGroup)
         } else PhotoGridHolder(
-            viewGroup.context,screenWidth, viewGroup,
+            viewGroup.context, viewGroup,
             mSelection.canSelectMultiple()
         )
     }
@@ -64,15 +64,18 @@ class PhotosTabAdapter(
     fun getItem(position: Int): Item {
         return mItemList[position]
     }
+
     fun updateItemList(itemList: MutableList<Item>) {
         mItemList = itemList
         notifyDataSetChanged()
     }
+
     fun addItems(itemList: List<Item>) {
         mItemList.addAll(itemList)
         notifyItemInserted(this.mItemList.size)
         compatibilityDataSizeChanged(1);
     }
+
     private fun compatibilityDataSizeChanged(size: Int) {
         if (mItemList.isEmpty()) {
             return
@@ -81,8 +84,9 @@ class PhotosTabAdapter(
             notifyDataSetChanged()
         }
     }
+
     fun createSpanSizeLookup(
-        layoutManager: GridLayoutManager
+        layoutManager: GridLayoutManager,
     ): GridLayoutManager.SpanSizeLookup {
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {

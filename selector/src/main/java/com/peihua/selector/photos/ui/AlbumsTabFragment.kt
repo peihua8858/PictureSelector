@@ -31,8 +31,7 @@ class AlbumsTabFragment : TabFragment() {
             view.accessibilityPaneTitle = getString(R.string.picker_albums)
         }
         setEmptyMessage(R.string.picker_albums_empty_message)
-        val adapter = AlbumsTabAdapter(
-            resources.displayMetrics.widthPixels, { v: View -> onItemClick(v) },
+        val adapter = AlbumsTabAdapter( { v: View -> onItemClick(v) },
             mPickerViewModel.hasMimeTypeFilter()
         )
         mPickerViewModel.categories.observe(this) {
@@ -55,12 +54,18 @@ class AlbumsTabFragment : TabFragment() {
                 updateVisibilityForEmptyView(true)
             }
         }
-        val layoutManager = GridLayoutManager(context, AlbumsTabAdapter.COLUMN_COUNT)
+        val layoutManager = GridLayoutManager(context,spanCount)
         val itemDecoration = AlbumsTabItemDecoration(view.context)
+        adapter.createSpanSizeLookup(layoutManager)
         mRecyclerView?.apply {
+           val spacing = resources.getDimensionPixelSize(R.dimen.picker_album_item_spacing)
+            val albumSize = resources.getDimensionPixelSize(R.dimen.picker_album_size)
+            setColumnWidth(albumSize + spacing)
+            setMinimumSpanCount(spanCount)
             this.layoutManager = layoutManager
             this.adapter = adapter
             addItemDecoration(itemDecoration)
+            setReachBottomRow(spanCount)
         }
     }
 

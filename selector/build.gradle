@@ -50,11 +50,13 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.9.0'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
+//    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-fragment:1.0.0'
+//    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-core:1.0.0'
     implementation 'com.github.peihua8858.ImageLoader:imageloader:1.1.0'
     implementation 'com.github.peihua8858:kotlinCommonUtils:1.1.4'
     implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1')
     implementation 'androidx.fragment:fragment-ktx:1.6.1'
-    implementation 'androidx.activity:activity-ktx:1.7.2'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
     implementation 'androidx.media3:media3-exoplayer:1.1.0'
     implementation 'androidx.media3:media3-ui:1.1.0'
     implementation "com.github.bumptech.glide:glide:4.15.1"
