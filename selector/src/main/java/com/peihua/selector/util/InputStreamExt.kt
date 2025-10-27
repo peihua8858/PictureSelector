@@ -65,7 +65,7 @@ fun InputStream.adjustBitmapOrientation(decodeBitmap: Bitmap): Bitmap? {
         BitmapLoadUtils.transformBitmap(decodeBitmap, matrix)
     } catch (e: Throwable) {
         e.printStackTrace()
-        null
+        decodeBitmap
     }
 }
 

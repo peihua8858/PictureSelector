@@ -119,7 +119,7 @@ class BitmapLoadTask(
         val exifInfo = ExifInfo(exifOrientation, exifDegrees, exifTranslation)
         try {
             context.contentResolver.openInputStream(inputUri)
-                .use {
+                ?.use {
                     val bitmap = it.adjustBitmapOrientation(decodeSampledBitmap)
                     if (bitmap != null) {
                         return BitmapWorkerResult(bitmap, exifInfo)
