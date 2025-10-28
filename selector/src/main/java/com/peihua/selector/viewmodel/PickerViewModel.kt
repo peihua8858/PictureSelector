@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,7 +40,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     // data set to reduce memories.
     // The list of Items with all photos and videos
-    private val mItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
+    private val mItemList: MutableState<ViewModelState<MutableList<Item>>> = mutableStateOf()
 
     // The list of Items with all photos and videos in category
     private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> =
