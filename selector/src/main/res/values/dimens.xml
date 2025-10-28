@@ -2,6 +2,8 @@
 <resources>
     <!-- PhotoPicker -->
     <dimen name="picker_top_corner_radius">28dp</dimen>
+    <dimen name="picker_photo_size">118dp</dimen>
+    <dimen name="picker_album_size">156dp</dimen>
 
     <dimen name="picker_bottom_bar_size">56dp</dimen>
     <dimen name="picker_bottom_bar_horizontal_gap">16dp</dimen>

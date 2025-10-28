@@ -15,11 +15,13 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.WindowInsetsController
 import android.view.accessibility.AccessibilityManager
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import com.fz.common.utils.dLog
 import com.fz.common.utils.getColorCompat
 import com.fz.common.utils.getDrawableCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -60,15 +62,18 @@ class PhotoPickerActivity : AppCompatActivity() {
     private var mToolbarHeight = 0
     private var mIsAccessibilityEnabled = false
     public override fun onCreate(savedInstanceState: Bundle?) {
+
+        dLog { "selectedUris>>>00000mSelection: $mSelection"}
         // We use the device default theme as the base theme. Apply the material them for the
         // material components. We use force "false" here, only values that are not already defined
         // in the base theme will be copied.
         theme.applyStyle(R.style.PickerMaterialTheme,  /* force */false)
+//        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.picker_activity_photo_picker)
         setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val attrs = intArrayOf(R.attr.actionBarSize, R.attr.pickerTextColor)
+        val attrs = intArrayOf(android.R.attr.actionBarSize, R.attr.pickerTextColor)
         val ta = obtainStyledAttributes(attrs)
         // Save toolbar height so that we can use it as padding for FragmentContainerView
         mToolbarHeight = ta.getDimensionPixelSize( /* index */0,  /* defValue */-1)
@@ -76,7 +81,9 @@ class PhotoPickerActivity : AppCompatActivity() {
         ta.recycle()
         mDefaultBackgroundColor = getColorCompat(R.color.picker_background_color)
         try {
+            dLog { "selectedUris>>>1212121mSelection: $mSelection"}
             mPickerViewModel.parseValuesFromIntent(intent)
+            dLog { "selectedUris>>>mSelection: $mSelection"}
         } catch (e: IllegalArgumentException) {
             Log.e(TAG, "Finished activity due to an exception while parsing extras", e)
             setCancelledResultAndFinishSelf()
@@ -309,7 +316,7 @@ class PhotoPickerActivity : AppCompatActivity() {
         supportActionBar?.apply {
             setBackgroundDrawable(toolbarColor)
             setHomeAsUpIndicator(icon)
-            setHomeActionContentDescription(if (shouldShowTabLayout) android.R.string.cancel else R.string.abc_action_bar_up_description)
+            setHomeActionContentDescription(if (shouldShowTabLayout) android.R.string.cancel else androidx.appcompat.R.string.abc_action_bar_up_description)
         }
     }
 

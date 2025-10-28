@@ -2,19 +2,22 @@ package com.peihua.selector.photos.ui
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.peihua.selector.data.model.Category
+import com.peihua.selector.photos.ui.PhotosTabAdapter.Companion.ITEM_TYPE_DATE_HEADER
 
 /**
  * Adapts from model to something RecyclerView understands.
  */
-class AlbumsTabAdapter(private val screenWidth:Int, private val mOnClickListener: View.OnClickListener,
-    private val mHasMimeTypeFilter: Boolean
+class AlbumsTabAdapter(private val mOnClickListener: View.OnClickListener,
+    private val mHasMimeTypeFilter: Boolean,
 ) : RecyclerView.Adapter<BaseViewHolder>() {
     private var mCategoryList: List<Category> = ArrayList()
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder {
         return AlbumGridHolder(
-            viewGroup.context,screenWidth, viewGroup,
+            viewGroup.context,
+            viewGroup,
             mHasMimeTypeFilter
         )
     }
@@ -41,6 +44,16 @@ class AlbumsTabAdapter(private val screenWidth:Int, private val mOnClickListener
     fun updateCategoryList(categoryList: List<Category>) {
         mCategoryList = categoryList
         notifyDataSetChanged()
+    }
+
+    fun createSpanSizeLookup(
+        layoutManager: GridLayoutManager,
+    ): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return 1
+            }
+        }
     }
 
     companion object {

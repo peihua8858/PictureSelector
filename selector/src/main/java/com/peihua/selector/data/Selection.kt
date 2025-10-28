@@ -6,6 +6,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.fz.common.utils.dLog
 import com.fz.common.utils.getParcelableArrayListCompat
 import com.peihua.selector.data.model.Item
 import com.peihua.selector.result.contract.PhotoVisualMedia
@@ -102,6 +103,7 @@ class Selection {
             if (selItem == null || selItem == Item.EMPTY) {
                 mSelectedItems[item.contentUri] = item
             }
+            dLog { "selectedUris>>isItemSelected: ${selItem == null || selItem == Item.EMPTY}" }
             return true
         }
         return false
@@ -154,12 +156,14 @@ class Selection {
      */
     fun parseSelectionValuesFromIntent(intent: Intent) {
         val bundle = intent.extras
+        dLog { "selectedUris: ${bundle}" }
         bundle?.apply {
             val selectedUris =
                 getParcelableArrayListCompat(PhotoVisualMedia.EXTRA_SELECTED_PICK_IMAGES, Uri::class.java)
             selectedUris.forEach {
                 mSelectedItems[it] = Item.EMPTY
             }
+            dLog { "selectedUris: ${selectedUris.joinToString(",")}" }
             updateSelectionAllowed()
             val isExtraPickImagesMaxSet = containsKey(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX)
             // Check EXTRA_PICK_IMAGES_MAX value only if the flag is set.

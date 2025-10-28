@@ -12,14 +12,14 @@ import com.peihua.selector.data.model.Category
  * ViewHolder of a album item within a RecyclerView.
  */
 class AlbumGridHolder(
-    context: Context, screenWidth: Int, parent: ViewGroup, hasMimeTypeFilter: Boolean
+    context: Context,
+    parent: ViewGroup,
+    hasMimeTypeFilter: Boolean,
 ) : BaseViewHolder(context, parent, R.layout.picker_item_album_grid) {
     private val mIconThumb: SquareImageView = itemView.findViewById(R.id.icon_thumbnail)
     private val mAlbumName: TextView = itemView.findViewById(R.id.album_name)
     private val mItemCount: TextView = itemView.findViewById(R.id.item_count)
     private val mHasMimeTypeFilter: Boolean
-    private val spacing = context.getDimensionPixelOffset(R.dimen.picker_album_item_spacing)
-    private val mWidth = (screenWidth - spacing) / 2
 
     init {
         mHasMimeTypeFilter = hasMimeTypeFilter
@@ -27,11 +27,7 @@ class AlbumGridHolder(
 
     override fun bind() {
         val category = itemView.tag as Category
-        mIconThumb.layoutParams.apply {
-            width = mWidth
-            height = mWidth
-        }
-        mIconThumb.setImageUrl(category.coverUri, category.isGif, mWidth, mWidth)
+        mIconThumb.setImageUrl(category.coverUri, category.isGif)
         mAlbumName.text = category.getDisplayName(itemView.context)
 
         // Check whether there is a mime type filter or not. If yes, hide the item count. Otherwise,
@@ -41,7 +37,10 @@ class AlbumGridHolder(
         } else {
             mItemCount.visibility = View.VISIBLE
             val itemCount = category.itemCount
-            val message= itemView.resources.getString(if(itemCount==1) R.string.picker_album_item_count_1 else R.string.picker_album_item_count,itemCount)
+            val message = itemView.resources.getString(
+                if (itemCount == 1) R.string.picker_album_item_count_1 else R.string.picker_album_item_count,
+                itemCount
+            )
             mItemCount.text = message
         }
     }

@@ -1,7 +1,6 @@
 @file:JvmName("Utils")
 @file:JvmMultifileClass
 package com.peihua.selector.util
-
 import android.Manifest
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +10,8 @@ import com.peihua.selector.data.model.ConfigModel
 import java.io.Closeable
 import java.io.File
 import java.io.IOException
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 fun File.getFolderName(): String {
     return parentFile.name

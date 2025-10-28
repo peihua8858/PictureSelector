@@ -7,9 +7,7 @@ import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,7 +15,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -27,14 +24,18 @@ import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.fz.common.text.isNonEmpty
 import com.fz.common.utils.getDrawableCompat
+import com.fz.common.utils.getParcelableArrayListExtraCompat
+import com.fz.common.utils.getParcelableExtraCompat
 import com.peihua.photopicker.R
+import com.peihua.photopicker.databinding.PickerCropActivityPhotoboxBinding
+import com.peihua.photopicker.databinding.PickerCropControlsBinding
 import com.peihua.selector.crop.callback.BitmapCropCallback
 import com.peihua.selector.crop.model.AspectRatio
 import com.peihua.selector.crop.util.FileUtils
@@ -42,7 +43,6 @@ import com.peihua.selector.crop.util.SelectedStateListDrawable
 import com.peihua.selector.crop.widget.AspectRatioTextView
 import com.peihua.selector.crop.widget.CropImageView
 import com.peihua.selector.crop.widget.GestureCropImageView
-import com.peihua.selector.crop.widget.HorizontalProgressWheelView
 import com.peihua.selector.crop.widget.HorizontalProgressWheelView.ScrollingListener
 import com.peihua.selector.crop.widget.OverlayView
 import com.peihua.selector.crop.widget.TransformImageView.TransformImageListener
@@ -68,31 +68,49 @@ class UCropActivity : AppCompatActivity() {
     private var mShowBottomControls = false
     private var mShowLoader = true
     private var isForbidCropGifWebp = false
-    private var mUCropView: UCropView? = null
-    private var mGestureCropImageView: GestureCropImageView? = null
-    private var mOverlayView: OverlayView? = null
-    private var mWrapperStateAspectRatio: ViewGroup? = null
-    private var mWrapperStateRotate: ViewGroup? = null
-    private var mWrapperStateScale: ViewGroup? = null
-    private var mLayoutAspectRatio: ViewGroup? = null
-    private var mLayoutRotate: ViewGroup? = null
-    private var mLayoutScale: ViewGroup? = null
-    private val mCropAspectRatioViews: MutableList<ViewGroup> = ArrayList()
-    private var mTextViewRotateAngle: TextView? = null
-    private var mTextViewScalePercent: TextView? = null
-    private var mBlockingView: View? = null
-    private var mControlsTransition: Transition? = null
+
+
+    private val mControlsTransition: Transition by lazy { AutoTransition() }
     private var mCompressFormat = DEFAULT_COMPRESS_FORMAT
     private var mCompressQuality = DEFAULT_COMPRESS_QUALITY
     private var mAllowedGestures = intArrayOf(SCALE, ROTATE, ALL)
+    private val mCropAspectRatioViews: MutableList<ViewGroup> = ArrayList()
+
     @ColorInt
     private var mToolBarIconColor = Color.WHITE
+
     @DrawableRes
     private var mToolbarCropDrawable = 0
+    private val binding by lazy { PickerCropActivityPhotoboxBinding.inflate(layoutInflater) }
+    private val mUCropView: UCropView by lazy { binding.ucrop }
+    private val mGestureCropImageView: GestureCropImageView by lazy { binding.ucrop.cropImageView }
+    private val mOverlayView: OverlayView by lazy { binding.ucrop.overlayView }
+    private val ucorpFrame by lazy { binding.ucropFrame }
+    private val ucropPhotoBox: RelativeLayout by lazy { binding.ucropPhotobox }
+    private val controlsWrapper by lazy { binding.controlsWrapper }
+
+    private val controlsBinding by lazy { PickerCropControlsBinding.inflate(layoutInflater) }
+    private val mWrapperStateAspectRatio by lazy { controlsBinding.stateAspectRatio }
+    private val mWrapperStateRotate by lazy { controlsBinding.stateRotate }
+    private val mWrapperStateScale by lazy { controlsBinding.stateScale }
+    private val mTextViewRotateAngle: TextView by lazy { controlsBinding.textViewRotate }
+    private val mTextViewScalePercent: TextView by lazy { controlsBinding.textViewScale }
+    private val mBlockingView by lazy {
+        val view = View(this)
+        val lp = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        lp.addRule(RelativeLayout.BELOW, R.id.toolbar)
+        view.layoutParams = lp
+        view.isClickable = true
+        view
+    }
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         theme.applyStyle(R.style.PickerCropMaterialTheme,  /* force */false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.picker_crop_activity_photobox)
+        setContentView(binding.root)
         val intent = intent
         setupViews(intent)
         setImageData(intent)
@@ -108,11 +126,18 @@ class UCropActivity : AppCompatActivity() {
         val menuItemLoaderIcon = menuItemLoader.icon
         if (menuItemLoaderIcon != null) {
             try {
-               val drawable= menuItemLoaderIcon.mutate()
+                val drawable = menuItemLoaderIcon.mutate()
                 drawable.setTint(mToolBarIconColor)
                 menuItemLoader.icon = drawable
             } catch (e: Exception) {
-                Log.i(TAG, String.format("%s - %s", e.message, getString(R.string.picker_crop_mutate_exception_hint)))
+                Log.i(
+                    TAG,
+                    String.format(
+                        "%s - %s",
+                        e.message,
+                        getString(R.string.picker_crop_mutate_exception_hint)
+                    )
+                )
             }
             (menuItemLoader.icon as Animatable?)?.start()
         }
@@ -142,22 +167,25 @@ class UCropActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (mGestureCropImageView != null) {
-            mGestureCropImageView!!.cancelAllAnimations()
-        }
+        mGestureCropImageView.cancelAllAnimations()
     }
 
     /**
      * This method extracts all data from the incoming intent and setups views properly.
      */
     private fun setImageData(intent: Intent) {
-        val inputUri = intent.getParcelableExtra<Uri>(UCrop.EXTRA_INPUT_URI)
-        var outputUri = intent.getParcelableExtra<Uri>(UCrop.EXTRA_OUTPUT_URI)
+        val inputUri = intent.getParcelableExtraCompat(UCrop.EXTRA_INPUT_URI, Uri::class.java)
+        var outputUri = intent.getParcelableExtraCompat(UCrop.EXTRA_OUTPUT_URI, Uri::class.java)
         processOptions(intent)
         if (inputUri != null && outputUri != null) {
             try {
-                outputUri = FileUtils.replaceOutputUri(this@UCropActivity, isForbidCropGifWebp, inputUri, outputUri)
-                mGestureCropImageView!!.setImageUri(inputUri, outputUri, isUseCustomBitmap)
+                outputUri = FileUtils.replaceOutputUri(
+                    this@UCropActivity,
+                    isForbidCropGifWebp,
+                    inputUri,
+                    outputUri
+                )
+                mGestureCropImageView.setImageUri(inputUri, outputUri, isUseCustomBitmap)
             } catch (e: Exception) {
                 setResultError(e)
                 finish()
@@ -175,31 +203,37 @@ class UCropActivity : AppCompatActivity() {
     @Suppress("deprecation")
     private fun processOptions(intent: Intent) {
         // Bitmap compression options
-        val compressionFormatName = intent.getStringExtra(UCrop.Options.EXTRA_COMPRESSION_FORMAT_NAME)
+        val compressionFormatName =
+            intent.getStringExtra(UCrop.Options.EXTRA_COMPRESSION_FORMAT_NAME)
         var compressFormat: CompressFormat? = null
-        if (!TextUtils.isEmpty(compressionFormatName)) {
-            compressFormat = CompressFormat.valueOf(compressionFormatName!!)
+        if (compressionFormatName.isNonEmpty()) {
+            compressFormat = CompressFormat.valueOf(compressionFormatName)
         }
         mCompressFormat = compressFormat ?: DEFAULT_COMPRESS_FORMAT
-        mCompressQuality = intent.getIntExtra(UCrop.Options.EXTRA_COMPRESSION_QUALITY, DEFAULT_COMPRESS_QUALITY)
+        mCompressQuality =
+            intent.getIntExtra(UCrop.Options.EXTRA_COMPRESSION_QUALITY, DEFAULT_COMPRESS_QUALITY)
 
         // Gestures options
         val allowedGestures = intent.getIntArrayExtra(UCrop.Options.EXTRA_ALLOWED_GESTURES)
         if (allowedGestures != null && allowedGestures.size == TABS_COUNT) {
             mAllowedGestures = allowedGestures
         }
-        isUseCustomBitmap = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_CUSTOM_LOADER_BITMAP, false)
+        isUseCustomBitmap =
+            intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_CUSTOM_LOADER_BITMAP, false)
 
         // Crop image view options
-        mGestureCropImageView!!.maxBitmapSize =
-            intent.getIntExtra(UCrop.Options.EXTRA_MAX_BITMAP_SIZE, CropImageView.DEFAULT_MAX_BITMAP_SIZE)
-        mGestureCropImageView!!.setMaxScaleMultiplier(
+        mGestureCropImageView.maxBitmapSize =
+            intent.getIntExtra(
+                UCrop.Options.EXTRA_MAX_BITMAP_SIZE,
+                CropImageView.DEFAULT_MAX_BITMAP_SIZE
+            )
+        mGestureCropImageView.setMaxScaleMultiplier(
             intent.getFloatExtra(
                 UCrop.Options.EXTRA_MAX_SCALE_MULTIPLIER,
                 CropImageView.DEFAULT_MAX_SCALE_MULTIPLIER
             )
         )
-        mGestureCropImageView!!.setImageToWrapCropBoundsAnimDuration(
+        mGestureCropImageView.setImageToWrapCropBoundsAnimDuration(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION,
                 CropImageView.DEFAULT_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION
@@ -207,78 +241,83 @@ class UCropActivity : AppCompatActivity() {
         )
 
         // Overlay view options
-        mOverlayView!!.isFreestyleCropEnabled = intent.getBooleanExtra(
+        mOverlayView.isFreestyleCropEnabled = intent.getBooleanExtra(
             UCrop.Options.EXTRA_FREE_STYLE_CROP,
             OverlayView.DEFAULT_FREESTYLE_CROP_MODE != OverlayView.FREESTYLE_CROP_MODE_DISABLE
         )
-        mOverlayView!!.setDragSmoothToCenter(intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_DRAG_CENTER, false))
-        mOverlayView!!.setDimmedColor(
+        mOverlayView.setDragSmoothToCenter(
+            intent.getBooleanExtra(
+                UCrop.Options.EXTRA_CROP_DRAG_CENTER,
+                false
+            )
+        )
+        mOverlayView.setDimmedColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_DIMMED_LAYER_COLOR,
                 resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
-        mOverlayView!!.setCircleStrokeColor(
+        mOverlayView.setCircleStrokeColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_COLOR,
                 resources.getColor(R.color.picker_color_default_dimmed)
             )
         )
-        mOverlayView!!.setCircleDimmedLayer(
+        mOverlayView.setCircleDimmedLayer(
             intent.getBooleanExtra(
                 UCrop.Options.EXTRA_CIRCLE_DIMMED_LAYER,
                 OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER
             )
         )
-        mOverlayView!!.setShowCropFrame(
+        mOverlayView.setShowCropFrame(
             intent.getBooleanExtra(
                 UCrop.Options.EXTRA_SHOW_CROP_FRAME,
                 OverlayView.DEFAULT_SHOW_CROP_FRAME
             )
         )
-        mOverlayView!!.setCropFrameColor(
+        mOverlayView.setCropFrameColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_FRAME_COLOR,
                 resources.getColor(R.color.picker_color_default_crop_frame)
             )
         )
-        mOverlayView!!.setCropFrameStrokeWidth(
+        mOverlayView.setCropFrameStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_FRAME_STROKE_WIDTH,
                 resources.getDimensionPixelSize(R.dimen.picker_default_crop_frame_stoke_width)
             )
         )
-        mOverlayView!!.setShowCropGrid(
+        mOverlayView.setShowCropGrid(
             intent.getBooleanExtra(
                 UCrop.Options.EXTRA_SHOW_CROP_GRID,
                 OverlayView.DEFAULT_SHOW_CROP_GRID
             )
         )
-        mOverlayView!!.setCropGridRowCount(
+        mOverlayView.setCropGridRowCount(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_ROW_COUNT,
                 OverlayView.DEFAULT_CROP_GRID_ROW_COUNT
             )
         )
-        mOverlayView!!.setCropGridColumnCount(
+        mOverlayView.setCropGridColumnCount(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_COLUMN_COUNT,
                 OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT
             )
         )
-        mOverlayView!!.setCropGridColor(
+        mOverlayView.setCropGridColor(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_COLOR,
                 resources.getColor(R.color.picker_color_default_crop_grid)
             )
         )
-        mOverlayView!!.setCropGridStrokeWidth(
+        mOverlayView.setCropGridStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH,
                 resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
             )
         )
-        mOverlayView!!.setDimmedStrokeWidth(
+        mOverlayView.setDimmedStrokeWidth(
             intent.getIntExtra(
                 UCrop.Options.EXTRA_CIRCLE_STROKE_WIDTH_LAYER,
                 resources.getDimensionPixelSize(R.dimen.picker_default_crop_grid_stoke_width)
@@ -287,35 +326,36 @@ class UCropActivity : AppCompatActivity() {
         // Aspect ratio options
         val aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, -1f)
         val aspectRatioY = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_Y, -1f)
-        val aspectRationSelectedByDefault = intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0)
-        val aspectRatioList = intent.getParcelableArrayListExtra<AspectRatio>(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS)
+        val aspectRationSelectedByDefault =
+            intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0)
+        val aspectRatioList =
+            intent.getParcelableArrayListExtra<AspectRatio>(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS)
         if (aspectRatioX >= 0 && aspectRatioY >= 0) {
-            if (mWrapperStateAspectRatio != null) {
-                mWrapperStateAspectRatio!!.visibility = View.GONE
-            }
+            mWrapperStateAspectRatio.visibility = View.GONE
             val targetAspectRatio = aspectRatioX / aspectRatioY
-            mGestureCropImageView!!.targetAspectRatio =
+            mGestureCropImageView.targetAspectRatio =
                 if (java.lang.Float.isNaN(targetAspectRatio)) CropImageView.SOURCE_IMAGE_ASPECT_RATIO else targetAspectRatio
         } else if (aspectRatioList != null && aspectRationSelectedByDefault < aspectRatioList.size) {
             val targetAspectRatio =
                 aspectRatioList[aspectRationSelectedByDefault].aspectRatioX / aspectRatioList[aspectRationSelectedByDefault].aspectRatioY
-            mGestureCropImageView!!.targetAspectRatio =
+            mGestureCropImageView.targetAspectRatio =
                 if (java.lang.Float.isNaN(targetAspectRatio)) CropImageView.SOURCE_IMAGE_ASPECT_RATIO else targetAspectRatio
         } else {
-            mGestureCropImageView!!.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
+            mGestureCropImageView.targetAspectRatio = CropImageView.SOURCE_IMAGE_ASPECT_RATIO
         }
 
         // Result bitmap max size options
         val maxSizeX = intent.getIntExtra(UCrop.EXTRA_MAX_SIZE_X, 0)
         val maxSizeY = intent.getIntExtra(UCrop.EXTRA_MAX_SIZE_Y, 0)
         if (maxSizeX > 0 && maxSizeY > 0) {
-            mGestureCropImageView!!.setMaxResultImageSizeX(maxSizeX)
-            mGestureCropImageView!!.setMaxResultImageSizeY(maxSizeY)
+            mGestureCropImageView.setMaxResultImageSizeX(maxSizeX)
+            mGestureCropImageView.setMaxResultImageSizeY(maxSizeY)
         }
     }
 
     private fun setupViews(intent: Intent) {
-        isForbidCropGifWebp = intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)
+        isForbidCropGifWebp =
+            intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)
         mActiveControlsWidgetColor = intent.getIntExtra(
             UCrop.Options.EXTRA_UCROP_COLOR_CONTROLS_WIDGET_ACTIVE,
             ContextCompat.getColor(this, R.color.picker_color_active_controls_color)
@@ -323,7 +363,8 @@ class UCropActivity : AppCompatActivity() {
         mToolbarTitle = intent.getStringExtra(UCrop.Options.EXTRA_UCROP_TITLE_TEXT_TOOLBAR)
         mToolbarTitle =
             if (mToolbarTitle.isNonEmpty()) mToolbarTitle else resources.getString(R.string.picker_crop_label_edit_photo)
-        mShowBottomControls = !intent.getBooleanExtra(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false)
+        mShowBottomControls =
+            !intent.getBooleanExtra(UCrop.Options.EXTRA_HIDE_BOTTOM_CONTROLS, false)
         mRootViewBackgroundColor = intent.getIntExtra(
             UCrop.Options.EXTRA_UCROP_ROOT_VIEW_BACKGROUND_COLOR,
             ContextCompat.getColor(this, R.color.picker_color_crop_background)
@@ -331,21 +372,12 @@ class UCropActivity : AppCompatActivity() {
         setupAppBar()
         initiateRootViews()
         if (mShowBottomControls) {
-            val viewGroup = findViewById<ViewGroup>(R.id.ucrop_photobox)
-            val wrapper = viewGroup.findViewById<ViewGroup>(R.id.controls_wrapper)
-            wrapper.visibility = View.VISIBLE
-            LayoutInflater.from(this).inflate(R.layout.picker_crop_controls, wrapper, true)
-            mControlsTransition = AutoTransition()
-            mControlsTransition!!.duration = CONTROLS_ANIMATION_DURATION
-            mWrapperStateAspectRatio = findViewById(R.id.state_aspect_ratio)
-            mWrapperStateAspectRatio?.setOnClickListener(mStateClickListener)
-            mWrapperStateRotate = findViewById(R.id.state_rotate)
-            mWrapperStateRotate?.setOnClickListener(mStateClickListener)
-            mWrapperStateScale = findViewById(R.id.state_scale)
-            mWrapperStateScale?.setOnClickListener(mStateClickListener)
-            mLayoutAspectRatio = findViewById(R.id.layout_aspect_ratio)
-            mLayoutRotate = findViewById(R.id.layout_rotate_wheel)
-            mLayoutScale = findViewById(R.id.layout_scale_wheel)
+            controlsWrapper.isVisible = true
+            controlsWrapper.addView(controlsBinding.root)
+            mControlsTransition.duration = CONTROLS_ANIMATION_DURATION
+            mWrapperStateAspectRatio.setOnClickListener(mStateClickListener)
+            mWrapperStateRotate.setOnClickListener(mStateClickListener)
+            mWrapperStateScale.setOnClickListener(mStateClickListener)
             setupAspectRatioWidget(intent)
             setupRotateWidget()
             setupScaleWidget()
@@ -357,32 +389,30 @@ class UCropActivity : AppCompatActivity() {
      * Configures and styles both status bar and toolbar.
      */
     private fun setupAppBar() {
-        val attrs = intArrayOf(R.attr.pickerToolbarCropMenuDrawable, android.R.attr.colorControlNormal)
+        val attrs =
+            intArrayOf(R.attr.pickerToolbarCropMenuDrawable, android.R.attr.colorControlNormal)
         val ta = obtainStyledAttributes(attrs)
-        mToolbarCropDrawable = ta.getResourceId( /* index */0,  /* defValue */R.drawable.picker_crop_ic_done)
+        mToolbarCropDrawable =
+            ta.getResourceId( /* index */0,  /* defValue */R.drawable.picker_crop_ic_done)
         // Save toolbar height so that we can use it as padding for FragmentContainerView
         mToolBarIconColor = ta.getColor( /* index */1,  /* defValue */Color.WHITE)
         ta.recycle()
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         // Set all of the Toolbar coloring
-        toolbar.title = mToolbarTitle
+        binding.toolbar.title = mToolbarTitle
         // Color buttons inside the Toolbar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 //        val actionBar = supportActionBar
         supportActionBar?.setDisplayShowTitleEnabled(false)
         setStatusBarColor(Color.BLACK)
     }
 
     private fun initiateRootViews() {
-        mUCropView = findViewById(R.id.ucrop)
-        mGestureCropImageView = mUCropView?.cropImageView
-        mOverlayView = mUCropView?.overlayView
-        mGestureCropImageView!!.setTransformImageListener(mImageListener)
-        findViewById<View>(R.id.ucrop_frame).setBackgroundColor(mRootViewBackgroundColor)
+        mGestureCropImageView.setTransformImageListener(mImageListener)
+        ucorpFrame.setBackgroundColor(mRootViewBackgroundColor)
         if (!mShowBottomControls) {
-            val params = findViewById<View>(R.id.ucrop_frame).layoutParams as RelativeLayout.LayoutParams
+            val params = ucorpFrame.layoutParams as RelativeLayout.LayoutParams
             params.bottomMargin = 0
-            findViewById<View>(R.id.ucrop_frame).requestLayout()
+            ucorpFrame.requestLayout()
         }
     }
 
@@ -396,13 +426,15 @@ class UCropActivity : AppCompatActivity() {
         }
 
         override fun onLoadComplete() {
-            mUCropView!!.animate().alpha(1f).setDuration(300).interpolator = AccelerateInterpolator()
-            mBlockingView!!.isClickable = false
+            mUCropView.animate().alpha(1f).setDuration(300).interpolator =
+                AccelerateInterpolator()
+            mBlockingView.isClickable = false
             if (intent.getBooleanExtra(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)) {
                 val inputUri = intent.getParcelableExtra<Uri>(UCrop.EXTRA_INPUT_URI)
-                val mimeType = FileUtils.getMimeTypeFromMediaContentUri(this@UCropActivity, inputUri)
+                val mimeType =
+                    FileUtils.getMimeTypeFromMediaContentUri(this@UCropActivity, inputUri)
                 if (FileUtils.isGif(mimeType) || FileUtils.isWebp(mimeType)) {
-                    mBlockingView!!.isClickable = true
+                    mBlockingView.isClickable = true
                 }
             }
             mShowLoader = false
@@ -419,27 +451,26 @@ class UCropActivity : AppCompatActivity() {
      * Use [.mActiveControlsWidgetColor] for color filter
      */
     private fun setupStatesWrapper() {
-        val stateScaleImageView = findViewById<ImageView>(R.id.image_view_state_scale)
-        val stateRotateImageView = findViewById<ImageView>(R.id.image_view_state_rotate)
-        val stateAspectRatioImageView = findViewById<ImageView>(R.id.image_view_state_aspect_ratio)
-        stateScaleImageView.setImageDrawable(
-            SelectedStateListDrawable(
-                stateScaleImageView.drawable,
-                mActiveControlsWidgetColor
+        controlsBinding.apply {
+            imageViewStateScale.setImageDrawable(
+                SelectedStateListDrawable(
+                    imageViewStateScale.drawable,
+                    mActiveControlsWidgetColor
+                )
             )
-        )
-        stateRotateImageView.setImageDrawable(
-            SelectedStateListDrawable(
-                stateRotateImageView.drawable,
-                mActiveControlsWidgetColor
+            imageViewStateRotate.setImageDrawable(
+                SelectedStateListDrawable(
+                    imageViewStateRotate.drawable,
+                    mActiveControlsWidgetColor
+                )
             )
-        )
-        stateAspectRatioImageView.setImageDrawable(
-            SelectedStateListDrawable(
-                stateAspectRatioImageView.drawable,
-                mActiveControlsWidgetColor
+            imageViewStateAspectRatio.setImageDrawable(
+                SelectedStateListDrawable(
+                    imageViewStateAspectRatio.drawable,
+                    mActiveControlsWidgetColor
+                )
             )
-        )
+        }
     }
 
     /**
@@ -464,9 +495,14 @@ class UCropActivity : AppCompatActivity() {
     }
 
     private fun setupAspectRatioWidget(intent: Intent) {
-        var aspectRationSelectedByDefault = intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0)
-        var aspectRatioList = intent.getParcelableArrayListExtra<AspectRatio?>(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS)
-        if (aspectRatioList == null || aspectRatioList.isEmpty()) {
+        var aspectRationSelectedByDefault =
+            intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0)
+        var aspectRatioList =
+            intent.getParcelableArrayListExtraCompat(
+                UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS,
+                AspectRatio::class.java
+            )
+        if (aspectRatioList.isEmpty()) {
             aspectRationSelectedByDefault = 2
             aspectRatioList = ArrayList()
             aspectRatioList.add(AspectRatio(null, 1f, 1f))
@@ -480,27 +516,27 @@ class UCropActivity : AppCompatActivity() {
             aspectRatioList.add(AspectRatio(null, 3f, 2f))
             aspectRatioList.add(AspectRatio(null, 16f, 9f))
         }
-        val wrapperAspectRatioList = findViewById<LinearLayout>(R.id.layout_aspect_ratio)
         var wrapperAspectRatio: FrameLayout
         var aspectRatioTextView: AspectRatioTextView
         val lp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT)
         lp.weight = 1f
         for (aspectRatio in aspectRatioList) {
-            wrapperAspectRatio = layoutInflater.inflate(R.layout.picker_crop_aspect_ratio, null) as FrameLayout
+            wrapperAspectRatio =
+                layoutInflater.inflate(R.layout.picker_crop_aspect_ratio, null) as FrameLayout
             wrapperAspectRatio.layoutParams = lp
             aspectRatioTextView = wrapperAspectRatio.getChildAt(0) as AspectRatioTextView
             aspectRatioTextView.setActiveColor(mActiveControlsWidgetColor)
-            aspectRatioTextView.setAspectRatio(aspectRatio!!)
-            wrapperAspectRatioList.addView(wrapperAspectRatio)
+            aspectRatioTextView.setAspectRatio(aspectRatio)
+            controlsBinding.layoutAspectRatio.addView(wrapperAspectRatio)
             mCropAspectRatioViews.add(wrapperAspectRatio)
         }
         mCropAspectRatioViews[aspectRationSelectedByDefault].isSelected = true
         for (cropAspectRatioView in mCropAspectRatioViews) {
             cropAspectRatioView.setOnClickListener { v ->
-                mGestureCropImageView!!.targetAspectRatio =
-                    ((v as ViewGroup).getChildAt(0) as AspectRatioTextView).getAspectRatio(v.isSelected())
-                mGestureCropImageView!!.setImageToWrapCropBounds()
-                if (!v.isSelected()) {
+                mGestureCropImageView.targetAspectRatio =
+                    ((v as ViewGroup).getChildAt(0) as AspectRatioTextView).getAspectRatio(v.isSelected)
+                mGestureCropImageView.setImageToWrapCropBounds()
+                if (!v.isSelected) {
                     for (cropAspectRatioView in mCropAspectRatioViews) {
                         cropAspectRatioView.isSelected = cropAspectRatioView === v
                     }
@@ -510,93 +546,84 @@ class UCropActivity : AppCompatActivity() {
     }
 
     private fun setupRotateWidget() {
-        mTextViewRotateAngle = findViewById(R.id.text_view_rotate)
-        (findViewById<View>(R.id.rotate_scroll_wheel) as HorizontalProgressWheelView)
-            .setScrollingListener(object : ScrollingListener {
+        controlsBinding.layoutRotateWheel.apply {
+            rotateScrollWheel.setScrollingListener(object : ScrollingListener {
                 override fun onScroll(delta: Float, totalDistance: Float) {
-                    mGestureCropImageView!!.postRotate(delta / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
+                    mGestureCropImageView.postRotate(delta / ROTATE_WIDGET_SENSITIVITY_COEFFICIENT)
                 }
 
                 override fun onScrollEnd() {
-                    mGestureCropImageView!!.setImageToWrapCropBounds()
+                    mGestureCropImageView.setImageToWrapCropBounds()
                 }
 
                 override fun onScrollStart() {
-                    mGestureCropImageView!!.cancelAllAnimations()
+                    mGestureCropImageView.cancelAllAnimations()
                 }
             })
-        (findViewById<View>(R.id.rotate_scroll_wheel) as HorizontalProgressWheelView).setMiddleLineColor(
-            mActiveControlsWidgetColor
-        )
-        findViewById<View>(R.id.wrapper_reset_rotate).setOnClickListener { resetRotation() }
-        findViewById<View>(R.id.wrapper_rotate_by_angle).setOnClickListener { rotateByAngle(90) }
-        setAngleTextColor(mActiveControlsWidgetColor)
+            rotateScrollWheel.setMiddleLineColor(mActiveControlsWidgetColor)
+            wrapperResetRotate.setOnClickListener { resetRotation() }
+            wrapperRotateByAngle.setOnClickListener { rotateByAngle(90) }
+            setAngleTextColor(mActiveControlsWidgetColor)
+        }
     }
 
     private fun setupScaleWidget() {
-        mTextViewScalePercent = findViewById(R.id.text_view_scale)
-        (findViewById<View>(R.id.scale_scroll_wheel) as HorizontalProgressWheelView)
-            .setScrollingListener(object : ScrollingListener {
+        controlsBinding.layoutScaleWheel.apply {
+            scaleScrollWheel.setScrollingListener(object : ScrollingListener {
                 override fun onScroll(delta: Float, totalDistance: Float) {
                     if (delta > 0) {
-                        mGestureCropImageView!!.zoomInImage(
-                            mGestureCropImageView!!.currentScale
-                                    + delta * ((mGestureCropImageView!!.maxScale - mGestureCropImageView!!.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT)
+                        mGestureCropImageView.zoomInImage(
+                            mGestureCropImageView.currentScale
+                                    + delta * ((mGestureCropImageView.maxScale - mGestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT)
                         )
                     } else {
-                        mGestureCropImageView!!.zoomOutImage(
-                            mGestureCropImageView!!.currentScale
-                                    + delta * ((mGestureCropImageView!!.maxScale - mGestureCropImageView!!.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT)
+                        mGestureCropImageView.zoomOutImage(
+                            mGestureCropImageView.currentScale
+                                    + delta * ((mGestureCropImageView.maxScale - mGestureCropImageView.minScale) / SCALE_WIDGET_SENSITIVITY_COEFFICIENT)
                         )
                     }
                 }
 
                 override fun onScrollEnd() {
-                    mGestureCropImageView!!.setImageToWrapCropBounds()
+                    mGestureCropImageView.setImageToWrapCropBounds()
                 }
 
                 override fun onScrollStart() {
-                    mGestureCropImageView!!.cancelAllAnimations()
+                    mGestureCropImageView.cancelAllAnimations()
                 }
             })
-        (findViewById<View>(R.id.scale_scroll_wheel) as HorizontalProgressWheelView).setMiddleLineColor(
-            mActiveControlsWidgetColor
-        )
+            scaleScrollWheel.setMiddleLineColor(
+                mActiveControlsWidgetColor
+            )
+        }
         setScaleTextColor(mActiveControlsWidgetColor)
     }
 
     private fun setAngleText(angle: Float) {
-        if (mTextViewRotateAngle != null) {
-            mTextViewRotateAngle!!.text = String.format(Locale.getDefault(), "%.1f°", angle)
-        }
+        mTextViewRotateAngle.text = String.format(Locale.getDefault(), "%.1f°", angle)
     }
 
     private fun setAngleTextColor(textColor: Int) {
-        if (mTextViewRotateAngle != null) {
-            mTextViewRotateAngle!!.setTextColor(textColor)
-        }
+        mTextViewRotateAngle.setTextColor(textColor)
     }
 
     private fun setScaleText(scale: Float) {
-        if (mTextViewScalePercent != null) {
-            mTextViewScalePercent!!.text = String.format(Locale.getDefault(), "%d%%", (scale * 100).toInt())
-        }
+        mTextViewScalePercent.text =
+            String.format(Locale.getDefault(), "%d%%", (scale * 100).toInt())
     }
 
     private fun setScaleTextColor(textColor: Int) {
-        if (mTextViewScalePercent != null) {
-            mTextViewScalePercent!!.setTextColor(textColor)
-        }
+        mTextViewScalePercent.setTextColor(textColor)
     }
 
     private fun resetRotation() {
-        mGestureCropImageView!!.postRotate(-mGestureCropImageView!!.currentAngle)
-        mGestureCropImageView!!.setImageToWrapCropBounds()
+        mGestureCropImageView.postRotate(-mGestureCropImageView.currentAngle)
+        mGestureCropImageView.setImageToWrapCropBounds()
     }
 
     private fun rotateByAngle(angle: Int) {
-        mGestureCropImageView!!.postRotate(angle.toFloat())
-        mGestureCropImageView!!.setImageToWrapCropBounds()
+        mGestureCropImageView.postRotate(angle.toFloat())
+        mGestureCropImageView.setImageToWrapCropBounds()
     }
 
     private val mStateClickListener = View.OnClickListener { v ->
@@ -607,7 +634,7 @@ class UCropActivity : AppCompatActivity() {
 
     private fun setInitialState() {
         if (mShowBottomControls) {
-            if (mWrapperStateAspectRatio!!.visibility == View.VISIBLE) {
+            if (mWrapperStateAspectRatio.isVisible) {
                 setWidgetState(R.id.state_aspect_ratio)
             } else {
                 setWidgetState(R.id.state_scale)
@@ -619,14 +646,14 @@ class UCropActivity : AppCompatActivity() {
 
     private fun setWidgetState(@IdRes stateViewId: Int) {
         if (!mShowBottomControls) return
-        mWrapperStateAspectRatio!!.isSelected = stateViewId == R.id.state_aspect_ratio
-        mWrapperStateRotate!!.isSelected = stateViewId == R.id.state_rotate
-        mWrapperStateScale!!.isSelected = stateViewId == R.id.state_scale
-        mLayoutAspectRatio!!.visibility =
-            if (stateViewId == R.id.state_aspect_ratio) View.VISIBLE else View.GONE
-        mLayoutRotate!!.visibility = if (stateViewId == R.id.state_rotate) View.VISIBLE else View.GONE
-        mLayoutScale!!.visibility =
-            if (stateViewId == R.id.state_scale) View.VISIBLE else View.GONE
+        controlsBinding.apply {
+            stateAspectRatio.isSelected = stateViewId == R.id.state_aspect_ratio
+            stateRotate.isSelected = stateViewId == R.id.state_rotate
+            stateScale.isSelected = stateViewId == R.id.state_scale
+            layoutAspectRatio.isVisible = stateViewId == R.id.state_aspect_ratio
+            layoutRotateWheel.root.isVisible = stateViewId == R.id.state_rotate
+            layoutScaleWheel.root.isVisible = stateViewId == R.id.state_scale
+        }
         changeSelectedTab(stateViewId)
         if (stateViewId == R.id.state_scale) {
             setAllowedGestures(0)
@@ -638,24 +665,23 @@ class UCropActivity : AppCompatActivity() {
     }
 
     private fun changeSelectedTab(stateViewId: Int) {
-        TransitionManager.beginDelayedTransition(
-            (findViewById<View>(R.id.ucrop_photobox) as ViewGroup),
-            mControlsTransition
-        )
-        mWrapperStateScale!!.findViewById<View>(R.id.text_view_scale).visibility =
-            if (stateViewId == R.id.state_scale) View.VISIBLE else View.GONE
-        mWrapperStateAspectRatio!!.findViewById<View>(R.id.text_view_crop).visibility =
-            if (stateViewId == R.id.state_aspect_ratio) View.VISIBLE else View.GONE
-        mWrapperStateRotate!!.findViewById<View>(R.id.text_view_rotate).visibility =
-            if (stateViewId == R.id.state_rotate) View.VISIBLE else View.GONE
+        binding.apply {
+            TransitionManager.beginDelayedTransition(ucropPhotobox, mControlsTransition)
+        }
+        controlsBinding.apply {
+            textViewRotate.isVisible = stateViewId == R.id.state_rotate
+            textViewCrop.isVisible = stateViewId == R.id.state_aspect_ratio
+            textViewScale.isVisible = stateViewId == R.id.state_scale
+        }
     }
 
     private fun setAllowedGestures(tab: Int) {
-        mGestureCropImageView!!.isScaleEnabled =
+        mGestureCropImageView.isScaleEnabled =
             mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == SCALE
-        mGestureCropImageView!!.isRotateEnabled =
+        mGestureCropImageView.isRotateEnabled =
             mAllowedGestures[tab] == ALL || mAllowedGestures[tab] == ROTATE
-        mGestureCropImageView!!.isGestureEnabled = intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_IMAGES, true)
+        mGestureCropImageView.isGestureEnabled =
+            intent.getBooleanExtra(UCrop.Options.EXTRA_DRAG_IMAGES, true)
     }
 
     /**
@@ -664,45 +690,40 @@ class UCropActivity : AppCompatActivity() {
      * Need to block user input while loading and cropping an image.
      */
     private fun addBlockingView() {
-        if (mBlockingView == null) {
-            mBlockingView = View(this)
-            val lp =
-                RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            lp.addRule(RelativeLayout.BELOW, R.id.toolbar)
-            mBlockingView!!.layoutParams = lp
-            mBlockingView!!.isClickable = true
-        }
-        (findViewById<View>(R.id.ucrop_photobox) as RelativeLayout).addView(mBlockingView)
+        ucropPhotoBox.addView(mBlockingView)
     }
 
     protected fun cropAndSaveImage() {
-        mBlockingView!!.isClickable = true
+        mBlockingView.isClickable = true
         mShowLoader = true
         supportInvalidateOptionsMenu()
-        mGestureCropImageView!!.cropAndSaveImage(mCompressFormat, mCompressQuality, object : BitmapCropCallback {
-            override fun onBitmapCropped(
-                resultUri: Uri,
-                offsetX: Int,
-                offsetY: Int,
-                imageWidth: Int,
-                imageHeight: Int
-            ) {
-                setResultUri(
-                    resultUri,
-                    mGestureCropImageView!!.targetAspectRatio,
-                    offsetX,
-                    offsetY,
-                    imageWidth,
-                    imageHeight
-                )
-                finish()
-            }
+        mGestureCropImageView.cropAndSaveImage(
+            mCompressFormat,
+            mCompressQuality,
+            object : BitmapCropCallback {
+                override fun onBitmapCropped(
+                    resultUri: Uri,
+                    offsetX: Int,
+                    offsetY: Int,
+                    imageWidth: Int,
+                    imageHeight: Int,
+                ) {
+                    setResultUri(
+                        resultUri,
+                        mGestureCropImageView.targetAspectRatio,
+                        offsetX,
+                        offsetY,
+                        imageWidth,
+                        imageHeight
+                    )
+                    finish()
+                }
 
-            override fun onCropFailure(t: Throwable) {
-                setResultError(t)
-                finish()
-            }
-        })
+                override fun onCropFailure(t: Throwable) {
+                    setResultError(t)
+                    finish()
+                }
+            })
     }
 
     protected fun setResultUri(
@@ -711,9 +732,9 @@ class UCropActivity : AppCompatActivity() {
         offsetX: Int,
         offsetY: Int,
         imageWidth: Int,
-        imageHeight: Int
+        imageHeight: Int,
     ) {
-        val inputUri = intent.getParcelableExtra<Uri>(UCrop.EXTRA_INPUT_URI)
+        val inputUri = intent.getParcelableExtraCompat(UCrop.EXTRA_INPUT_URI, Uri::class.java)
         setResult(
             RESULT_OK, Intent()
                 .setData(uri)
@@ -728,7 +749,8 @@ class UCropActivity : AppCompatActivity() {
     }
 
     protected fun setResultError(throwable: Throwable?) {
-        val inputUri = intent.getParcelableExtra<Uri>(UCrop.EXTRA_INPUT_URI)
+        val inputUri =
+            intent.getParcelableExtraCompat<Uri>(UCrop.EXTRA_INPUT_URI, Uri::class.java)
         setResult(
             UCrop.RESULT_ERROR, Intent().setData(inputUri)
                 .putExtra(UCrop.EXTRA_OUTPUT_URI, inputUri)

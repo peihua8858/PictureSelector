@@ -24,7 +24,11 @@ import com.peihua.selector.viewmodel.PickerViewModel
  */
 class PhotosTabFragment : TabFragment() {
     private var mCategory = Category.DEFAULT
-    private var mAdapter: PhotosTabAdapter? = null
+    private val mAdapter: PhotosTabAdapter by lazy {
+        PhotosTabAdapter(
+            mSelection,
+            { v: View -> onItemClick(v) }) { v: View -> onItemLongClick(v) }
+    }
     private var mPage = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +46,6 @@ class PhotosTabFragment : TabFragment() {
     private var isHasMore = false
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mAdapter = PhotosTabAdapter(
-            mSelection, resources.displayMetrics.widthPixels,
-            { v: View -> onItemClick(v) }) { v: View -> onItemLongClick(v) }
         setEmptyMessage(R.string.picker_photos_empty_message)
         if (mCategory.isDefault) {
             mPickerViewModel.items.observe(this, ::result)
@@ -55,7 +56,6 @@ class PhotosTabFragment : TabFragment() {
             // Set the pane title for A11y
             view.accessibilityPaneTitle = mCategory.getDisplayName(context)
         }
-
         this.requestPermissionsDsl(mPickerViewModel.configModel) {
             onGranted {
                 mLoadingData = true
@@ -66,15 +66,19 @@ class PhotosTabFragment : TabFragment() {
             }
         }
 
-        val layoutManager = GridLayoutManager(context, PhotosTabAdapter.COLUMN_COUNT)
-        val lookup = mAdapter!!.createSpanSizeLookup(layoutManager)
+        val layoutManager = GridLayoutManager(context, spanCount)
+        val lookup = mAdapter.createSpanSizeLookup(layoutManager)
         layoutManager.spanSizeLookup = lookup
         val itemDecoration = PhotosTabItemDecoration(view.context)
         mRecyclerView?.apply {
+            val spacing = resources.getDimensionPixelSize(R.dimen.picker_photo_item_spacing);
+            val  photoSize = resources.getDimensionPixelSize(R.dimen.picker_photo_size);
+            setColumnWidth(photoSize + spacing)
+            setMinimumSpanCount(spanCount)
             this.layoutManager = layoutManager
             this.adapter = mAdapter
             addItemDecoration(itemDecoration)
-            setReachBottomRow(PhotosTabAdapter.COLUMN_COUNT)
+            setReachBottomRow(spanCount)
         }
     }
 
@@ -98,13 +102,13 @@ class PhotosTabFragment : TabFragment() {
             val items = it.data
             if (items.isNonEmpty()) {
                 if (isLoadMoreData) {
-                    mAdapter?.addItems(items)
+                    mAdapter.addItems(items)
                 } else {
-                    mAdapter?.updateItemList(items)
+                    mAdapter.updateItemList(items)
                 }
                 // Handle emptyView's visibility
             }
-            if (!isLoadMoreData || mAdapter?.itemCount == 0) {
+            if (!isLoadMoreData || mAdapter.itemCount == 0) {
                 updateVisibilityForEmptyView(items.isNullOrEmpty())
             }
             isHasMore = (items?.size ?: 0) > 0
@@ -113,7 +117,7 @@ class PhotosTabFragment : TabFragment() {
         } else if (it.isError()) {
             mLoadingData = false
             isLoadMoreData = false
-            if (mAdapter?.itemCount == 0) {
+            if (mAdapter.itemCount == 0) {
                 updateVisibilityForEmptyView(true)
             }
         }
