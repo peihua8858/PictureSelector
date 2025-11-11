@@ -2,6 +2,7 @@ package com.peihua.selector.util
 
 import android.provider.MediaStore
 import android.text.TextUtils
+import com.fz.common.array.isNonEmpty
 import com.fz.common.collections.isNonEmpty
 import java.util.Locale
 
@@ -278,12 +279,19 @@ object MimeUtils {
     fun isAudioMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("audio/", true) == true
     }
+    @JvmStatic
+    fun isAudioMimeType(mimeType: Array<String>?): Boolean {
+        return mimeType?.contains("audio/") == true
+    }
 
     @JvmStatic
     fun isVideoMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("video/", true) == true
     }
-
+    @JvmStatic
+    fun isVideoMimeType(mimeType: Array<String>?): Boolean {
+        return mimeType?.contains("video/") == true
+    }
     fun isAllVideosMimeType(mimeType: String?): Boolean {
         return ALL_VIDEOS_MIME_TYPE.equals(mimeType, ignoreCase = true)
     }
@@ -291,6 +299,10 @@ object MimeUtils {
     @JvmStatic
     fun isImageMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("image/", true) == true
+    }
+    @JvmStatic
+    fun isImageMimeType(mimeType: Array<String>?): Boolean {
+        return mimeType?.contains("image/") == true
     }
 
     fun isAllImagesMimeType(mimeType: String?): Boolean {
@@ -300,10 +312,13 @@ object MimeUtils {
     @JvmStatic
     fun isImageAndVideoMediaType(mimeType: String?): Boolean {
         val result = mimeType?.split(",")
-        if (result.isNonEmpty()) {
+        return isImageAndVideoMediaType(result?.toTypedArray())
+    }
+    fun isImageAndVideoMediaType(mimeType: Array<String>?): Boolean {
+        if (mimeType.isNonEmpty()) {
             var findImage = false
             var findVideo = false
-            for ((index, item) in result.withIndex()) {
+            for ((index, item) in mimeType.withIndex()) {
                 if (isImageMimeType(item)) {
                     findImage = true
                 } else if (isVideoMimeType(item)) {

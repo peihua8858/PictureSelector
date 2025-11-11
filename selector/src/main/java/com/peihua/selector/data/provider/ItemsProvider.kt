@@ -28,7 +28,8 @@ import java.io.File
 /**
  * Provides image and video items from [MediaStore] collection to the Photo Picker.
  */
-class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(context, config,arrayOf("image/*", "image/*")) {
+class ItemsProvider(context: Context, config: ConfigModel) :
+    IBridgeMediaLoader(context, config, arrayOf("image/*", "image/*")) {
 
     @Throws(IllegalStateException::class)
     fun queryMediaByPage(
@@ -41,7 +42,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         if (category != Category.DEFAULT) {
             selectionArgs?.add(category.bucketId.toString())
         }
-        val offset=(page - 1) * pageSize
+        val offset = (page - 1) * pageSize
         return if (isAtLeastR) {
             val queryArgs = createQueryArgsBundle(
                 selection(category), selectionArgs?.toTypedArray(),
@@ -231,7 +232,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         val durationCondition: String = durationCondition
         val fileSizeCondition: String = fileSizeCondition
         val queryMimeCondition: String = queryMimeCondition
-        if (MimeUtils.isImageAndVideoMediaType(config.mimeType)) {
+        if (MimeUtils.isImageAndVideoMediaType(mimeTypes)) {
             return getSelectionArgsForAllMediaCondition(
                 durationCondition,
                 fileSizeCondition,
@@ -239,31 +240,29 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
                 category,
                 groupBy
             )
-        } else if (MimeUtils.isImageMimeType(config.mimeType)) {
+        } else if (MimeUtils.isImageMimeType(mimeTypes)) {
             return getSelectionArgsForImageMediaCondition(fileSizeCondition, queryMimeCondition, category, groupBy)
-        } else if (MimeUtils.isVideoMimeType(config.mimeType)) {
+        } else if (MimeUtils.isVideoMimeType(mimeTypes)) {
             return getSelectionArgsForVideoMediaCondition(durationCondition, queryMimeCondition, category, groupBy)
-        } else if (MimeUtils.isAudioMimeType(config.mimeType)) {
+        } else if (MimeUtils.isAudioMimeType(mimeTypes)) {
             return getSelectionArgsForAudioMediaCondition(durationCondition, queryMimeCondition, category, groupBy)
         }
         return null
     }
 
-    override val selectionArgs: MutableList<String>?
+    override val selectionArgs: MutableList<String>
         get() {
-            if (MimeUtils.isImageAndVideoMediaType(config.mimeType)) {
-                return arrayListOf(
-                    MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
-                    MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
-                )
-            } else if (MimeUtils.isImageMimeType(config.mimeType)) {
-                return arrayListOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
-            } else if (MimeUtils.isVideoMimeType(config.mimeType)) {
-                return arrayListOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
-            } else if (MimeUtils.isAudioMimeType(config.mimeType)) {
-                return arrayListOf(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO.toString())
+            val result = arrayListOf<String>()
+            mimeTypes.forEach {
+                if (MimeUtils.isImageMimeType(it)) {
+                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
+                } else if (MimeUtils.isVideoMimeType(it)) {
+                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
+                } else if (MimeUtils.isAudioMimeType(it)) {
+                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO.toString())
+                }
             }
-            return null
+            return result
         }
     override val sortOrder: String
         get() = config.sortOrder.ifEmpty { ORDER_BY }

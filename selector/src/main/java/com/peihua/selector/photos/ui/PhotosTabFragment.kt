@@ -56,7 +56,7 @@ class PhotosTabFragment : TabFragment() {
             // Set the pane title for A11y
             view.accessibilityPaneTitle = mCategory.getDisplayName(context)
         }
-        this.requestPermissionsDsl(mPickerViewModel.configModel) {
+        this.requestPermissionsDsl(mPickerViewModel.mMimeTypeFilters) {
             onGranted {
                 mLoadingData = true
                 mPickerViewModel.requestMediasAsync(mPage, mCategory)

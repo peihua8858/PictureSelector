@@ -179,9 +179,8 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
 
         internal fun createCustomIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
             return Intent(context, PhotoPickerActivity::class.java).apply {
-                Intent.EXTRA_CHOOSER_RESULT
                 putExtra(EXTRA_SELECTED_PICK_IMAGES, input.selectedUris)
-                type ="*/*"
+                type = "*/*"
                 val mimeTypes = input.mediaType.mimeTypes
                 if (mimeTypes.isEmpty()) {
                     putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))

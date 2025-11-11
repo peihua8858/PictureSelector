@@ -33,17 +33,16 @@ fun Closeable?.closeSilently() {
  * 读取视频权限[Manifest.permission.READ_MEDIA_VIDEO]、读取音频权限[Manifest.permission.READ_MEDIA_AUDIO]等，
  * 故需要根据每天类型选择请求不同的权限
  */
-internal fun Fragment.requestPermissionsDsl(config: ConfigModel, requestBlock: PermissionCallbacksDSL.() -> Unit) {
-    val mimeType = config.mimeType
+internal fun Fragment.requestPermissionsDsl(mimeTypes: Array<String>, requestBlock: PermissionCallbacksDSL.() -> Unit) {
     val permissions = mutableListOf<String>()
     if (isAtLeastT) {
-        if (MimeUtils.isImageMimeType(mimeType)) {
+        if (MimeUtils.isImageMimeType(mimeTypes)) {
             permissions.add(Manifest.permission.READ_MEDIA_IMAGES)
         }
-        if (MimeUtils.isVideoMimeType(mimeType)) {
+        if (MimeUtils.isVideoMimeType(mimeTypes)) {
             permissions.add(Manifest.permission.READ_MEDIA_VIDEO)
         }
-        if (MimeUtils.isAudioMimeType(mimeType)) {
+        if (MimeUtils.isAudioMimeType(mimeTypes)) {
             permissions.add(Manifest.permission.READ_MEDIA_AUDIO)
         }
     } else if (isAtLeastPie) {

@@ -46,7 +46,7 @@ class AlbumsTabFragment : TabFragment() {
                 updateVisibilityForEmptyView(true)
             }
         }
-        this.requestPermissionsDsl(mPickerViewModel.configModel) {
+        this.requestPermissionsDsl(mPickerViewModel.mMimeTypeFilters) {
             onGranted {
                 mPickerViewModel.requestCategories()
             }

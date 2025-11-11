@@ -52,7 +52,8 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> =
         MutableLiveData()
     private var mItemsProvider: ItemsProvider
-    private var mMimeTypeFilters: Array<String> = arrayOf()
+    var mMimeTypeFilters: Array<String> = arrayOf()
+        private set
     var configModel = ConfigModel.default()
         private set(value) {
             field = value

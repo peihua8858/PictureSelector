@@ -3,6 +3,7 @@ package com.peihua.selector.data
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
+import com.fz.common.array.isNonEmpty
 import com.fz.common.text.isNonEmpty
 import com.peihua.selector.data.model.Item
 
@@ -16,6 +17,16 @@ object PickerResult {
     fun getPickerResponseIntent(
         canSelectMultiple: Boolean,
         selectedItems: List<Item>, mimeTypes: String
+    ): Intent {
+        return getPickerResponseIntent(
+            canSelectMultiple, selectedItems,
+            mimeTypes.split(",").toTypedArray()
+        )
+    }
+
+    fun getPickerResponseIntent(
+        canSelectMultiple: Boolean,
+        selectedItems: List<Item>, mimeTypes: Array<String>
     ): Intent {
         // 1. Get Picker Uris corresponding to the selected items
         val selectedUris = getPickerUrisForItems(selectedItems)
@@ -33,7 +44,7 @@ object PickerResult {
         }
         // TODO (b/169737761): use correct mime types
         val tempMimeTypes = if (mimeTypes.isNonEmpty()) {
-            mimeTypes.split(",").toTypedArray()
+            mimeTypes
         } else {
             arrayOf("image/*", "video/*")
         }

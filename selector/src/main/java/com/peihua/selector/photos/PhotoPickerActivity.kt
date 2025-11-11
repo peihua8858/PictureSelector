@@ -36,6 +36,8 @@ import com.peihua.selector.util.LayoutModeUtils.MODE_PHOTOS_TAB
 import com.peihua.selector.util.isAtLeastT
 import com.peihua.selector.viewmodel.PickerViewModel
 import kotlin.math.roundToInt
+import androidx.core.content.withStyledAttributes
+import com.fz.common.array.splicing
 
 /**
  * Photo Picker allows users to choose one or more photos and/or videos to share with an app. The
@@ -63,7 +65,7 @@ class PhotoPickerActivity : AppCompatActivity() {
     private var mIsAccessibilityEnabled = false
     public override fun onCreate(savedInstanceState: Bundle?) {
 
-        dLog { "selectedUris>>>00000mSelection: $mSelection"}
+        dLog { "selectedUris>>>00000mSelection: $mSelection" }
         // We use the device default theme as the base theme. Apply the material them for the
         // material components. We use force "false" here, only values that are not already defined
         // in the base theme will be copied.
@@ -74,16 +76,16 @@ class PhotoPickerActivity : AppCompatActivity() {
         setSupportActionBar(mToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val attrs = intArrayOf(android.R.attr.actionBarSize, R.attr.pickerTextColor)
-        val ta = obtainStyledAttributes(attrs)
-        // Save toolbar height so that we can use it as padding for FragmentContainerView
-        mToolbarHeight = ta.getDimensionPixelSize( /* index */0,  /* defValue */-1)
-        mToolBarIconColor = ta.getColor( /* index */1,  /* defValue */-1)
-        ta.recycle()
+        withStyledAttributes(attrs = attrs) {
+            // Save toolbar height so that we can use it as padding for FragmentContainerView
+            mToolbarHeight = getDimensionPixelSize( /* index */0,  /* defValue */-1)
+            mToolBarIconColor = getColor( /* index */1,  /* defValue */-1)
+        }
         mDefaultBackgroundColor = getColorCompat(R.color.picker_background_color)
         try {
-            dLog { "selectedUris>>>1212121mSelection: $mSelection"}
+            dLog { "selectedUris>>>1212121mSelection: $mSelection" }
             mPickerViewModel.parseValuesFromIntent(intent)
-            dLog { "selectedUris>>>mSelection: $mSelection"}
+            dLog { "selectedUris>>>mSelection: $mSelection" }
         } catch (e: IllegalArgumentException) {
             Log.e(TAG, "Finished activity due to an exception while parsing extras", e)
             setCancelledResultAndFinishSelf()
@@ -242,7 +244,7 @@ class PhotoPickerActivity : AppCompatActivity() {
         setResult(
             RESULT_OK, PickerResult.getPickerResponseIntent(
                 mSelection.canSelectMultiple(),
-                mSelection.selectedItems, mPickerViewModel.configModel.mimeType
+                mSelection.selectedItems, mPickerViewModel.mMimeTypeFilters
             )
         )
         finish()

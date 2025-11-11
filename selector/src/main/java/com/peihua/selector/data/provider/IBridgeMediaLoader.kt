@@ -15,7 +15,11 @@ import java.util.Locale
  * @date：2021/11/11 12:53 下午
  * @describe：IBridgeMediaLoader
  */
-abstract class IBridgeMediaLoader(protected val context: Context, var config: ConfigModel,var mimeTypes:Array<String>) {
+abstract class IBridgeMediaLoader(
+    protected val context: Context,
+    var config: ConfigModel,
+    var mimeTypes: Array<String>
+) {
 
     /**
      * query album cover
@@ -100,37 +104,41 @@ abstract class IBridgeMediaLoader(protected val context: Context, var config: Co
      */
     protected val queryMimeCondition: String
         get() {
-            val filters = config.queryOnlyList
-            val filterSet = HashSet(filters)
+            val filters = mimeTypes
+            val filterSet = HashSet(filters.toList())
             val iterator: Iterator<String> = filterSet.iterator()
             val stringBuilder = StringBuilder()
             var index = -1
             while (iterator.hasNext()) {
                 val value = iterator.next()
-                if (value.isNonEmpty()) {
-                    continue
-                }
-                if (MimeUtils.isVideoMimeType(config.mimeType)) {
-                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE) || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO)) {
-                        continue
-                    }
-                } else if (MimeUtils.isImageMimeType(config.mimeType)) {
-                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO) || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO)) {
-                        continue
-                    }
-                } else if (MimeUtils.isAudioMimeType(config.mimeType)) {
-                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO) || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE)) {
-                        continue
-                    }
-                }
+//                if (value.isNonEmpty()) {
+//                    continue
+//                }
+//                if (MimeUtils.isVideoMimeType(config.mimeType)) {
+//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE)
+//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO)
+//                    ) {
+//                        continue
+//                    }
+//                } else if (MimeUtils.isImageMimeType(config.mimeType)) {
+//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO)
+//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO)
+//                    ) {
+//                        continue
+//                    }
+//                } else if (MimeUtils.isAudioMimeType(config.mimeType)) {
+//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO)
+//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE)
+//                    ) {
+//                        continue
+//                    }
+//                }
                 index++
                 stringBuilder.append(if (index == 0) " AND " else " OR ").append(MediaStore.MediaColumns.MIME_TYPE)
                     .append("='").append(value).append("'")
             }
-            if (MimeUtils.isImageMimeType(config.mimeType)) {
-                if (!config.isShowGif && !filterSet.contains(MimeUtils.ofGIF())) {
-                    stringBuilder.append(NOT_GIF)
-                }
+            if (!config.isShowGif && !filterSet.contains(MimeUtils.ofGIF())) {
+                stringBuilder.append(NOT_GIF)
             }
             return stringBuilder.toString()
         }
@@ -161,6 +169,7 @@ abstract class IBridgeMediaLoader(protected val context: Context, var config: Co
         const val COLUMN_BUCKET_ID = "bucket_id"
         const val COLUMN_DURATION = "duration"
         const val QUERY_ARG_MIME_TYPE: String = "android:query-arg-mime_type"
+
         /**
          * A list of which columns to return. Passing null will return all columns, which is inefficient.
          */
