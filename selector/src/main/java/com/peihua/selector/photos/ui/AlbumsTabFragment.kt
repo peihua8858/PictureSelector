@@ -32,7 +32,7 @@ class AlbumsTabFragment : TabFragment() {
         }
         setEmptyMessage(R.string.picker_albums_empty_message)
         val adapter = AlbumsTabAdapter( { v: View -> onItemClick(v) },
-            mPickerViewModel.hasMimeTypeFilter()
+            mPickerViewModel.hasMimeTypeFilters()
         )
         mPickerViewModel.categories.observe(this) {
             if (it.isSuccess()) {

@@ -151,42 +151,8 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
                 is VideoOnly -> "video/*"
                 is AudioOnly -> "audio/*"
                 is SingleMimeType -> input.mimeTypes[0]
-                is MultipleMimeType -> null
-                is ImageAndVideo -> null
-            }
-        }
-
-        internal fun getVisualMimeType(input: PhotoVisualMediaRequest): String? {
-            return when (val mediaType = input.mediaType) {
-                is ImageOnly -> {
-                    input.configModel.mimeType = "image/*"
-                    "image/*"
-                }
-
-                is VideoOnly -> {
-                    input.configModel.mimeType = "video/*"
-                    "video/*"
-                }
-
-                is AudioOnly -> {
-                    input.configModel.mimeType = "audio/*"
-                    "audio/*"
-                }
-
-                is SingleMimeType -> {
-                    input.configModel.mimeType = mediaType.mimeTypes[0]
-                    mediaType.mimeTypes[0]
-                }
-
-                is MultipleMimeType -> {
-                    input.configModel.mimeType = input.mediaType.mimeTypes.splicing(",")
-                    null
-                }
-
-                is ImageAndVideo -> {
-                    input.configModel.mimeType = "image/*,video/*"
-                    null
-                }
+                is MultipleMimeType -> "*/*"
+                is ImageAndVideo -> "*/*"
             }
         }
 
@@ -213,27 +179,14 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
 
         internal fun createCustomIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
             return Intent(context, PhotoPickerActivity::class.java).apply {
-                putExtra(EXTRA_SELECTED_PICK_IMAGES,input.selectedUris)
-                var mediaType = getVisualMimeType(input)
-                if (mediaType != null) {
-                    type = mediaType
-                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(mediaType))
+                Intent.EXTRA_CHOOSER_RESULT
+                putExtra(EXTRA_SELECTED_PICK_IMAGES, input.selectedUris)
+                type ="*/*"
+                val mimeTypes = input.mediaType.mimeTypes
+                if (mimeTypes.isEmpty()) {
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
                 } else {
-                    val mimeTypes = input.mediaType.mimeTypes
-                    if (mimeTypes.size == 1) {
-                        mediaType = mimeTypes[0]
-                        type = mediaType
-                        putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(mediaType))
-                    } else {
-                        // ACTION_OPEN_DOCUMENT requires to set this parameter when launching the
-                        // intent with multiple mime types
-                        type = "*/*"
-                        if (mimeTypes.isEmpty()) {
-                            putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
-                        } else {
-                            putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
-                        }
-                    }
+                    putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
                 }
                 putExtra(Intent.EXTRA_INTENT, input.configModel)
             }
@@ -275,7 +228,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
      * picker.
      */
     @Parcelize
-    class SingleMimeType constructor(val v: String) : VisualMediaType(v)
+    class SingleMimeType(val v: String) : VisualMediaType(v)
 
     /**
      * [VisualMediaType] class used to filter a single mime type only when using the photo
@@ -291,19 +244,22 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
             createCustomIntent(context, input)
         } else if (isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
-                type = getVisualMimeType(input.mediaType)
+                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else if (isSystemFallbackPickerAvailable(context)) {
             val fallbackPicker = checkNotNull(getSystemFallbackPicker(context)).activityInfo
             Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
-                type = getVisualMimeType(input.mediaType)
+                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else if (isGmsPickerAvailable(context)) {
             val gmsPicker = checkNotNull(getGmsPicker(context)).activityInfo
             Intent(GMS_ACTION_PICK_IMAGES).apply {
                 setClassName(gmsPicker.applicationInfo.packageName, gmsPicker.name)
-                type = getVisualMimeType(input.mediaType)
+                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else {
             createCustomIntent(context, input)
@@ -313,7 +269,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
     @Suppress("InvalidNullabilityOverride")
     final override fun getSynchronousResult(
         context: Context,
-        input: PhotoVisualMediaRequest
+        input: PhotoVisualMediaRequest,
     ): SynchronousResult<Uri?>? = null
 
     final override fun parseResult(resultCode: Int, intent: Intent?): Uri? {

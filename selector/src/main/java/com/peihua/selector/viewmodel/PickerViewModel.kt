@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.fz.common.array.isNonEmpty
 import com.fz.common.model.ViewModelState
 import com.fz.common.model.request
 import com.fz.common.text.isNonEmpty
@@ -21,6 +22,7 @@ import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.data.model.Item
 import com.peihua.selector.data.provider.ItemsProvider
 import com.peihua.selector.util.DateTimeUtils
+import com.peihua.selector.util.MimeFilterUtils
 import com.peihua.selector.util.MimeUtils
 import com.peihua.selector.util.isAtLeastT
 
@@ -40,7 +42,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     // data set to reduce memories.
     // The list of Items with all photos and videos
-    private val mItemList: MutableState<ViewModelState<MutableList<Item>>> = mutableStateOf()
+    private val mItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
 
     // The list of Items with all photos and videos in category
     private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> =
@@ -50,15 +52,12 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> =
         MutableLiveData()
     private var mItemsProvider: ItemsProvider
+    private var mMimeTypeFilters: Array<String> = arrayOf()
     var configModel = ConfigModel.default()
         private set(value) {
             field = value
             mItemsProvider.config = value
-            if (MimeUtils.isImageOrVideoMediaType(value.mimeType)) {
-                mMimeTypeFilter = value.mimeType
-            }
         }
-    private var mMimeTypeFilter: String? = null
 
     /**
      * @return BottomSheet state
@@ -185,8 +184,8 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     /**
      * Return whether the [.mMimeTypeFilter] is `null` or not
      */
-    fun hasMimeTypeFilter(): Boolean {
-        return !mMimeTypeFilter.isNonEmpty()
+    fun hasMimeTypeFilters(): Boolean {
+        return !mMimeTypeFilters.isNonEmpty()
     }
 
     /**
@@ -197,6 +196,8 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         val model: ConfigModel? =
             intent.getParcelableExtraCompat(Intent.EXTRA_INTENT, ConfigModel::class.java)
         configModel = model ?: ConfigModel.default()
+        mMimeTypeFilters = MimeFilterUtils.getMimeTypeFilters(intent);
+        mItemsProvider.mimeTypes = mMimeTypeFilters
         selection.parseSelectionValuesFromIntent(intent)
     }
 

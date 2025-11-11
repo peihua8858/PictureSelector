@@ -15,7 +15,7 @@ import java.util.Locale
  * @date：2021/11/11 12:53 下午
  * @describe：IBridgeMediaLoader
  */
-abstract class IBridgeMediaLoader(protected val context: Context, var config: ConfigModel) {
+abstract class IBridgeMediaLoader(protected val context: Context, var config: ConfigModel,var mimeTypes:Array<String>) {
 
     /**
      * query album cover
@@ -40,7 +40,7 @@ abstract class IBridgeMediaLoader(protected val context: Context, var config: Co
         category: Category,
         page: Int,
         pageSize: Int,
-        query: (MutableList<Item>, Boolean) -> Unit
+        query: (MutableList<Item>, Boolean) -> Unit,
     )
 
     /**
@@ -87,7 +87,7 @@ abstract class IBridgeMediaLoader(protected val context: Context, var config: Co
             return String.format(
                 Locale.ENGLISH,
                 "%d <%s " + MediaStore.MediaColumns.SIZE + " and " + MediaStore.MediaColumns.SIZE + " <= %d",
-                Math.max(0, config.filterMinFileSize),
+                0L.coerceAtLeast(config.filterMinFileSize),
                 "=",
                 maxS
             )
@@ -160,7 +160,7 @@ abstract class IBridgeMediaLoader(protected val context: Context, var config: Co
         const val COLUMN_COUNT = "count"
         const val COLUMN_BUCKET_ID = "bucket_id"
         const val COLUMN_DURATION = "duration"
-
+        const val QUERY_ARG_MIME_TYPE: String = "android:query-arg-mime_type"
         /**
          * A list of which columns to return. Passing null will return all columns, which is inefficient.
          */

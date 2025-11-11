@@ -3,16 +3,17 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace 'com.peihua.simple'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.peihua.simple"
         minSdk 21
-        targetSdk 33
+        targetSdk 36
         versionCode 1
         versionName "1.0"
 
@@ -69,6 +70,7 @@ android {
 }
 
 dependencies {
+    implementation libs.androidx.lifecycle.runtime.ktx
     implementation project(":selector")
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.fragment:fragment-ktx:1.6.1'

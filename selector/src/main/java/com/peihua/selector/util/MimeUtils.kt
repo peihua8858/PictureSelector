@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.fz.common.collections.isNonEmpty
 import java.util.Locale
 
+
 object MimeUtils {
     private const val MIME_TYPE_GIF = "image/gif"
     const val MIME_TYPE_PREFIX_IMAGE = "image"
@@ -21,6 +22,10 @@ object MimeUtils {
     private const val MIME_TYPE_MP4 = "video/mp4"
     private const val MIME_TYPE_MPEG = "video/mpeg"
     private const val MIME_TYPE_AVI = "video/avi"
+    private const val ALL_IMAGES_MIME_TYPE: String = "image/*"
+    private const val ALL_VIDEOS_MIME_TYPE: String = "video/*"
+    private const val DEFAULT_IMAGE_FILE_EXTENSION: String = ".jpg"
+    private const val DEFAULT_VIDEO_FILE_EXTENSION: String = ".mp4"
 
     /**
      * isGif
@@ -126,7 +131,8 @@ object MimeUtils {
     @JvmStatic
     fun isUrlHasAudio(url: String?): Boolean {
         if (url.isNullOrEmpty()) return false
-        return url.lowercase(Locale.getDefault()).endsWith(".amr") || url.lowercase(Locale.getDefault())
+        return url.lowercase(Locale.getDefault())
+            .endsWith(".amr") || url.lowercase(Locale.getDefault())
             .endsWith(".mp3")
     }
 
@@ -190,7 +196,7 @@ object MimeUtils {
     fun isHasHttp(path: String): Boolean {
         return if (TextUtils.isEmpty(path)) {
             false
-        } else path.startsWith("http",true) || path.startsWith("https",true)
+        } else path.startsWith("http", true) || path.startsWith("https", true)
     }
 
     /**
@@ -203,7 +209,7 @@ object MimeUtils {
     fun isContent(url: String): Boolean {
         return if (TextUtils.isEmpty(url)) {
             false
-        } else url.startsWith("content://",true)
+        } else url.startsWith("content://", true)
     }
 
     @JvmStatic
@@ -270,17 +276,25 @@ object MimeUtils {
 
     @JvmStatic
     fun isAudioMimeType(mimeType: String?): Boolean {
-        return mimeType?.startsWith( "audio/",true) ?: false
+        return mimeType?.startsWith("audio/", true) == true
     }
 
     @JvmStatic
     fun isVideoMimeType(mimeType: String?): Boolean {
-        return mimeType?.startsWith( "video/",true) ?: false
+        return mimeType?.startsWith("video/", true) == true
+    }
+
+    fun isAllVideosMimeType(mimeType: String?): Boolean {
+        return ALL_VIDEOS_MIME_TYPE.equals(mimeType, ignoreCase = true)
     }
 
     @JvmStatic
     fun isImageMimeType(mimeType: String?): Boolean {
-        return mimeType?.startsWith("image/",true) ?: false
+        return mimeType?.startsWith("image/", true) == true
+    }
+
+    fun isAllImagesMimeType(mimeType: String?): Boolean {
+        return ALL_IMAGES_MIME_TYPE.equals(mimeType, ignoreCase = true)
     }
 
     @JvmStatic

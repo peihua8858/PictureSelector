@@ -28,7 +28,7 @@ import java.io.File
 /**
  * Provides image and video items from [MediaStore] collection to the Photo Picker.
  */
-class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(context, config) {
+class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(context, config,arrayOf("image/*", "image/*")) {
 
     @Throws(IllegalStateException::class)
     fun queryMediaByPage(
@@ -61,13 +61,14 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         selection: String?,
         selectionArgs: Array<String>?,
         limitCount: Int,
-        offset: Int
+        offset: Int,
     ): Bundle {
         val queryArgs = Bundle()
         if (isAtLeastO) {
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
             queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, sortOrder)
+            queryArgs.putStringArray(QUERY_ARG_MIME_TYPE, mimeTypes)
             if (isAtLeastR) {
                 if (limitCount > 0 && offset >= 0) {
                     queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, "$limitCount offset $offset")
@@ -177,7 +178,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         category: Category,
         page: Int,
         pageSize: Int,
-        query: (MutableList<Item>, Boolean) -> Unit
+        query: (MutableList<Item>, Boolean) -> Unit,
     ) {
         val items: MutableList<Item> = ArrayList()
         queryMediaByPage(category, page, pageSize).use { cursor ->
@@ -272,7 +273,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         sizeCondition: String,
         queryMimeTypeOptions: String,
         category: Category,
-        groupBy: String
+        groupBy: String,
     ): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("(").append(MediaStore.Files.FileColumns.MEDIA_TYPE).append("=?")
@@ -305,7 +306,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         fileSizeCondition: String,
         queryMimeTypeOptions: String,
         category: Category,
-        groupBy: String
+        groupBy: String,
     ): String {
         val stringBuilder = java.lang.StringBuilder()
         return if (isWithAllQuery) {
@@ -340,7 +341,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         durationCondition: String,
         queryMimeCondition: String,
         category: Category,
-        groupBy: String
+        groupBy: String,
     ): String {
         val stringBuilder = java.lang.StringBuilder()
         return if (isWithAllQuery) {
@@ -375,7 +376,7 @@ class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(
         durationCondition: String,
         queryMimeCondition: String,
         category: Category,
-        groupBy: String
+        groupBy: String,
     ): String {
         val stringBuilder = java.lang.StringBuilder()
         return if (isWithAllQuery) {

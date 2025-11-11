@@ -16,7 +16,6 @@ data class ConfigModel(
     var filterVideoMaxSecond: Long = 0,
     var filterMinFileSize: Long = 0,
     var filterMaxFileSize: Long = 0,
-    var mimeType: String = "*/*",
     var queryOnlyList: MutableList<String> = mutableListOf()
 ) : Parcelable {
     companion object {

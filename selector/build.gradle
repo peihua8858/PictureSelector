@@ -11,11 +11,11 @@ plugins {
     id("maven-publish")
 }
 android {
-    compileSdk 34
+    compileSdk 36
     namespace 'com.peihua.photopicker'
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 36
         versionCode 11
         versionName "4.0.0"
 
