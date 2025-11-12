@@ -33,6 +33,7 @@ public class Category {
     private int mItemCount;
     private boolean mIsGif;
     private boolean mIsWebP;
+    private String authority;
 
     private Category() {
         this(-1, null, null, null, 0, false);
@@ -73,6 +74,10 @@ public class Category {
             return getLocalizedDisplayName(context, mDisplayName);
         }
         return mDisplayName;
+    }
+
+    public String getAuthority() {
+        return authority;
     }
 
     private String mMimeType;
@@ -118,7 +123,7 @@ public class Category {
      * Write the {@link Category} to the given {@code bundle}.
      */
     public void toBundle(@NonNull Bundle bundle) {
-        bundle.putLong(ItemsProvider.COLUMN_BUCKET_ID, mBucketId);
+        bundle.putLong(MediaStore.MediaColumns.BUCKET_ID, mBucketId);
         bundle.putString(AlbumColumns.ID, mId);
         bundle.putString(AlbumColumns.DISPLAY_NAME, mDisplayName);
         // Re-using the 'media_cover_id' to store the media_cover_uri for lack of
@@ -132,7 +137,7 @@ public class Category {
      * Create a {@link Category} from the {@code bundle}.
      */
     public static Category fromBundle(@NonNull Bundle bundle) {
-        return new Category(bundle.getLong(ItemsProvider.COLUMN_BUCKET_ID),
+        return new Category(bundle.getLong(MediaStore.MediaColumns.BUCKET_ID),
                 bundle.getString(AlbumColumns.ID),
                 bundle.getString(AlbumColumns.DISPLAY_NAME),
                 bundle.getParcelable(AlbumColumns.MEDIA_COVER_ID),

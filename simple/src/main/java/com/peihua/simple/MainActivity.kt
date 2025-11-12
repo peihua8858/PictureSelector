@@ -70,8 +70,9 @@ class MainActivity : ComponentActivity() {
             .setShowGif(false)
     }
     val singleSelectPhotoRequest by lazy {
-        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.SingleMimeType("image/gif"))
-            .setForceCustomUi(false)
+//        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.SingleMimeType("image/gif"))
+        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageOnly)
+            .setForceCustomUi(true)
             .setShowGif(true)
     }
     val cropPhotoRequest by lazy {

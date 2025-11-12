@@ -28,8 +28,8 @@ import java.io.File
 /**
  * Provides image and video items from [MediaStore] collection to the Photo Picker.
  */
-class ItemsProvider(context: Context, config: ConfigModel) :
-    IBridgeMediaLoader(context, config, arrayOf("image/*", "image/*")) {
+class ItemsProvider(context: Context, config: ConfigModel) : IBridgeMediaLoader(context, config, arrayOf("image/*", "image/*")) {
+
 
     @Throws(IllegalStateException::class)
     fun queryMediaByPage(
@@ -40,19 +40,19 @@ class ItemsProvider(context: Context, config: ConfigModel) :
         val client = context.contentResolver
         val selectionArgs = selectionArgs
         if (category != Category.DEFAULT) {
-            selectionArgs?.add(category.bucketId.toString())
+            selectionArgs.add(category.bucketId.toString())
         }
         val offset = (page - 1) * pageSize
         return if (isAtLeastR) {
             val queryArgs = createQueryArgsBundle(
-                selection(category), selectionArgs?.toTypedArray(),
+                selection(category), selectionArgs.toTypedArray(),
                 pageSize,
                 offset
             )
             client.query(QUERY_URI, PROJECTION, queryArgs, null)
         } else {
             client.query(
-                QUERY_URI, PROJECTION, selection(category), selectionArgs?.toTypedArray(),
+                QUERY_URI, PROJECTION, selection(category), selectionArgs.toTypedArray(),
                 "$sortOrder limit $pageSize offset $offset"
             )
         }
@@ -69,7 +69,6 @@ class ItemsProvider(context: Context, config: ConfigModel) :
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
             queryArgs.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
             queryArgs.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, sortOrder)
-            queryArgs.putStringArray(QUERY_ARG_MIME_TYPE, mimeTypes)
             if (isAtLeastR) {
                 if (limitCount > 0 && offset >= 0) {
                     queryArgs.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, "$limitCount offset $offset")
@@ -89,7 +88,7 @@ class ItemsProvider(context: Context, config: ConfigModel) :
             }
             return if (isAtLeastQ) {
                 val queryArgs = createQueryArgsBundle(
-                    selection(Category.DEFAULT), selectionArgs?.toTypedArray(),
+                    selection(Category.DEFAULT), selectionArgs.toTypedArray(),
                     -1, -1
                 )
                 client.query(QUERY_URI, PROJECTION, queryArgs, null)
@@ -98,7 +97,7 @@ class ItemsProvider(context: Context, config: ConfigModel) :
                     QUERY_URI,
                     ALL_PROJECTION,
                     selection(Category.DEFAULT, GROUP_BY_BUCKET_Id),
-                    selectionArgs?.toTypedArray(),
+                    selectionArgs.toTypedArray(),
                     sortOrder
                 )
             }
@@ -131,10 +130,6 @@ class ItemsProvider(context: Context, config: ConfigModel) :
             }
             return Uri.fromFile(File(realPath))
         }
-    }
-
-    override fun getAlbumFirstCover(bucketId: Long): String? {
-        return null
     }
 
     override fun loadAllAlbum(query: (MutableList<Category>) -> Unit) {
@@ -252,18 +247,23 @@ class ItemsProvider(context: Context, config: ConfigModel) :
 
     override val selectionArgs: MutableList<String>
         get() {
-            val result = arrayListOf<String>()
-            mimeTypes.forEach {
-                if (MimeUtils.isImageMimeType(it)) {
-                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
-                } else if (MimeUtils.isVideoMimeType(it)) {
-                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
-                } else if (MimeUtils.isAudioMimeType(it)) {
-                    result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO.toString())
-                }
-            }
-            return result
+            return selectionArgs(mimeTypes)
         }
+
+    fun selectionArgs(mimeTypes: Array<String>?): MutableList<String> {
+        val result = arrayListOf<String>()
+        mimeTypes?.forEach {
+            if (MimeUtils.isImageMimeType(it)) {
+                result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString())
+            } else if (MimeUtils.isVideoMimeType(it)) {
+                result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString())
+            } else if (MimeUtils.isAudioMimeType(it)) {
+                result.add(MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO.toString())
+            }
+        }
+        return result
+    }
+
     override val sortOrder: String
         get() = config.sortOrder.ifEmpty { ORDER_BY }
 

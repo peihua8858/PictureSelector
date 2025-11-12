@@ -3,28 +3,25 @@ package com.peihua.selector.viewmodel
 import android.app.Application
 import android.content.Intent
 import android.os.Build
+import android.os.CancellationSignal
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fz.common.array.isNonEmpty
 import com.fz.common.model.ViewModelState
 import com.fz.common.model.request
-import com.fz.common.text.isNonEmpty
 import com.fz.common.utils.getParcelableExtraCompat
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.data.model.Item
-import com.peihua.selector.data.provider.ItemsProvider
+import com.peihua.selector.data.provider.IMediaProvider
 import com.peihua.selector.util.DateTimeUtils
 import com.peihua.selector.util.MimeFilterUtils
-import com.peihua.selector.util.MimeUtils
-import com.peihua.selector.util.isAtLeastT
+import com.peihua.selector.util.isAtLeastQ
 
 /**
  * PickerViewModel to store and handle data for PhotoPickerActivity.
@@ -51,13 +48,13 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     // The list of categories.
     private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> =
         MutableLiveData()
-    private var mItemsProvider: ItemsProvider
+    private var mediaProvider: IMediaProvider
     var mMimeTypeFilters: Array<String> = arrayOf()
         private set
     var configModel = ConfigModel.default()
         private set(value) {
             field = value
-            mItemsProvider.config = value
+//            mediaProvider.config = value
         }
 
     /**
@@ -68,17 +65,17 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
      */
     var bottomSheetState = 0
     private var mCurrentCategory: Category? = null
-
+    private val mCancellationSignal =  CancellationSignal();
     init {
         val context = application.applicationContext
-        mItemsProvider = ItemsProvider(context, configModel)
+        mediaProvider = IMediaProvider.create(context)
         selection = Selection()
         muteStatus = MuteStatus()
     }
 
     @VisibleForTesting
-    fun setItemsProvider(itemsProvider: ItemsProvider) {
-        mItemsProvider = itemsProvider
+    fun setItemsProvider(itemsProvider: IMediaProvider) {
+        mediaProvider = itemsProvider
     }
 
     val categoryItems: LiveData<ViewModelState<MutableList<Item>>>
@@ -101,7 +98,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         request(if (category == Category.DEFAULT) mItemList else mCategoryItemList) {
             val items: MutableList<Item> = ArrayList()
-            mItemsProvider.queryMediaByPage(category, page, configModel.pageSize).use { cursor ->
+            mediaProvider.queryAllItems(category,page,configModel,mMimeTypeFilters,mCancellationSignal).use { cursor ->
                 if (cursor == null || cursor.count == 0) {
                     Log.d(
                         TAG,
@@ -145,7 +142,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     fun requestCategories() {
         request(mCategoryList) {
             val categoryList: MutableList<Category> = ArrayList()
-            mItemsProvider.queryAlbums().use { cursor ->
+            mediaProvider.queryAllCategories(configModel,mMimeTypeFilters,mCancellationSignal).use { cursor ->
                 if (cursor == null || cursor.count == 0) {
                     Log.d(
                         TAG,
@@ -153,7 +150,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
                     )
                     return@use
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (isAtLeastQ) {
                     val countMap = HashMap<Long, Category>()
                     while (cursor.moveToNext()) {
                         val category = Category.fromCursor(cursor)
@@ -198,7 +195,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             intent.getParcelableExtraCompat(Intent.EXTRA_INTENT, ConfigModel::class.java)
         configModel = model ?: ConfigModel.default()
         mMimeTypeFilters = MimeFilterUtils.getMimeTypeFilters(intent);
-        mItemsProvider.mimeTypes = mMimeTypeFilters
+//        mediaProvider.mimeTypes = mMimeTypeFilters
         selection.parseSelectionValuesFromIntent(intent)
     }
 

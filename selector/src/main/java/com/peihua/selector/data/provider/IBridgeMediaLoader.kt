@@ -2,7 +2,6 @@ package com.peihua.selector.data.provider
 
 import android.content.Context
 import android.provider.MediaStore
-import com.fz.common.text.isNonEmpty
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.data.model.Item
@@ -16,17 +15,10 @@ import java.util.Locale
  * @describe：IBridgeMediaLoader
  */
 abstract class IBridgeMediaLoader(
-    protected val context: Context,
+    val context: Context,
     var config: ConfigModel,
-    var mimeTypes: Array<String>
+    var mimeTypes: Array<String>,
 ) {
-
-    /**
-     * query album cover
-     *
-     * @param bucketId
-     */
-    abstract fun getAlbumFirstCover(bucketId: Long): String?
 
     /**
      * query album list
@@ -111,34 +103,24 @@ abstract class IBridgeMediaLoader(
             var index = -1
             while (iterator.hasNext()) {
                 val value = iterator.next()
-//                if (value.isNonEmpty()) {
-//                    continue
-//                }
-//                if (MimeUtils.isVideoMimeType(config.mimeType)) {
-//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE)
-//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO)
-//                    ) {
-//                        continue
-//                    }
-//                } else if (MimeUtils.isImageMimeType(config.mimeType)) {
-//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_AUDIO)
-//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO)
-//                    ) {
-//                        continue
-//                    }
-//                } else if (MimeUtils.isAudioMimeType(config.mimeType)) {
-//                    if (value.startsWith(MimeUtils.MIME_TYPE_PREFIX_VIDEO)
-//                        || value.startsWith(MimeUtils.MIME_TYPE_PREFIX_IMAGE)
-//                    ) {
-//                        continue
-//                    }
-//                }
                 index++
                 stringBuilder.append(if (index == 0) " AND " else " OR ").append(MediaStore.MediaColumns.MIME_TYPE)
                     .append("='").append(value).append("'")
             }
             if (!config.isShowGif && !filterSet.contains(MimeUtils.ofGIF())) {
                 stringBuilder.append(NOT_GIF)
+            }
+            if (!config.isShowWebp && !filterSet.contains(MimeUtils.ofWEBP())) {
+                stringBuilder.append(NOT_WEBP)
+            }
+            if (!config.isShowBmp && !filterSet.contains(MimeUtils.ofBMP())
+                && !filterSet.contains(MimeUtils.ofXmsBMP())
+                && !filterSet.contains(MimeUtils.ofWapBMP())
+            ) {
+                stringBuilder.append(NOT_BMP).append(NOT_XMS_BMP).append(NOT_VND_WAP_BMP)
+            }
+            if (!config.isShowHeic && !filterSet.contains(MimeUtils.ofHeic())) {
+                stringBuilder.append(NOT_HEIC)
             }
             return stringBuilder.toString()
         }
@@ -163,12 +145,16 @@ abstract class IBridgeMediaLoader(
 
         @JvmStatic
         val ORDER_BY = MediaStore.MediaColumns.DATE_MODIFIED + " DESC"
-        const val NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif')"
+        const val NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif') "
+        const val NOT_WEBP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/webp') "
+        const val NOT_BMP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/bmp') "
+        const val NOT_XMS_BMP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/x-ms-bmp') "
+        const val NOT_VND_WAP_BMP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/vnd.wap.wbmp') "
+        const val NOT_HEIC: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/heic') "
         const val GROUP_BY_BUCKET_Id = " GROUP BY (" + MediaStore.MediaColumns.BUCKET_ID
         const val COLUMN_COUNT = "count"
         const val COLUMN_BUCKET_ID = "bucket_id"
         const val COLUMN_DURATION = "duration"
-        const val QUERY_ARG_MIME_TYPE: String = "android:query-arg-mime_type"
 
         /**
          * A list of which columns to return. Passing null will return all columns, which is inefficient.

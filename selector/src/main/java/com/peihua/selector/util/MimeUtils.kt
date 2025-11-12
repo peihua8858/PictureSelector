@@ -3,7 +3,6 @@ package com.peihua.selector.util
 import android.provider.MediaStore
 import android.text.TextUtils
 import com.fz.common.array.isNonEmpty
-import com.fz.common.collections.isNonEmpty
 import java.util.Locale
 
 
@@ -19,6 +18,7 @@ object MimeUtils {
     private const val MIME_TYPE_XMS_BMP = "image/x-ms-bmp"
     private const val MIME_TYPE_WAP_BMP = "image/vnd.wap.wbmp"
     private const val MIME_TYPE_WEBP = "image/webp"
+    private const val MIME_TYPE_HEIC: String = "image/heic"
     private const val MIME_TYPE_3GP = "video/3gp"
     private const val MIME_TYPE_MP4 = "video/mp4"
     private const val MIME_TYPE_MPEG = "video/mpeg"
@@ -247,7 +247,9 @@ object MimeUtils {
     fun ofWEBP(): String {
         return MIME_TYPE_WEBP
     }
-
+    fun ofHeic(): String {
+        return MIME_TYPE_HEIC
+    }
     @JvmStatic
     fun of3GP(): String {
         return MIME_TYPE_3GP

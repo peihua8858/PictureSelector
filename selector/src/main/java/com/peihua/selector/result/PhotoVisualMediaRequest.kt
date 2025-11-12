@@ -121,11 +121,6 @@ class PhotoVisualMediaRequest internal constructor() {
             return this
         }
 
-        fun setQueryOnlyList(queryOnlyList: MutableList<String>): Builder {
-            this.configModel.queryOnlyList = queryOnlyList
-            return this
-        }
-
         fun setMaxItemCount(maxCount: Int): Builder {
             this.maxItems = maxCount
             return this
