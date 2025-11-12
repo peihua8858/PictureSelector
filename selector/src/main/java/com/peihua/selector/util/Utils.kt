@@ -1,17 +1,18 @@
 @file:JvmName("Utils")
 @file:JvmMultifileClass
+
 package com.peihua.selector.util
+
 import android.Manifest
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.fz.common.permissions.PermissionCallbacksDSL
-import com.fz.common.permissions.requestPermissionsDsl
-import com.peihua.selector.data.model.ConfigModel
+import com.fz.common.utils.dLog
+import com.fz.common.utils.isAtLeastP
+import com.peihua8858.permissions.core.MultiplePermissionCallbacks
+import com.peihua8858.permisstions.fragment.requestPermissions
 import java.io.Closeable
 import java.io.File
 import java.io.IOException
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 fun File.getFolderName(): String {
     return parentFile.name
@@ -33,22 +34,24 @@ fun Closeable?.closeSilently() {
  * 读取视频权限[Manifest.permission.READ_MEDIA_VIDEO]、读取音频权限[Manifest.permission.READ_MEDIA_AUDIO]等，
  * 故需要根据每天类型选择请求不同的权限
  */
-internal fun Fragment.requestPermissionsDsl(mimeTypes: Array<String>, requestBlock: PermissionCallbacksDSL.() -> Unit) {
-    val permissions = mutableListOf<String>()
-    if (isAtLeastT) {
-        if (MimeUtils.isImageMimeType(mimeTypes)) {
-            permissions.add(Manifest.permission.READ_MEDIA_IMAGES)
-        }
-        if (MimeUtils.isVideoMimeType(mimeTypes)) {
-            permissions.add(Manifest.permission.READ_MEDIA_VIDEO)
-        }
-        if (MimeUtils.isAudioMimeType(mimeTypes)) {
-            permissions.add(Manifest.permission.READ_MEDIA_AUDIO)
-        }
-    } else if (isAtLeastPie) {
-        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-    } else {
-        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+internal fun Fragment.requestPermissionsDsl(
+    mimeTypes: Array<String>,
+    requestBlock: MultiplePermissionCallbacks.() -> Unit
+) {
+    val permissions= when {
+        isAtLeastT && mimeTypes.isEmpty() -> arrayOf(
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.READ_MEDIA_AUDIO
+        )
+
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+        isAtLeastP ->arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        else ->arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     }
-    requestPermissionsDsl(*permissions.toTypedArray()) { requestBlock() }
+    dLog { "requestPermissionsDsl>>>>>>>>>>  ${permissions.joinToString(",")}" }
+    requestPermissions(*permissions) { requestBlock() }
 }

@@ -21,6 +21,7 @@ import com.peihua.selector.util.Utils;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Category {
     public static final Category DEFAULT = new Category();
@@ -54,8 +55,8 @@ public class Category {
     @Override
     public String toString() {
         return String.format(Locale.ROOT, "Category: {mId: %s, mDisplayName: %s, " +
-                        "mCoverUri: %s, mItemCount: %d, mIsLocal: %b",
-                mId, mDisplayName, mCoverUri, mItemCount, mIsLocal);
+                        "mCoverUri: %s, mItemCount: %d, mIsLocal: %b mBucketId:%s",
+                mId, mDisplayName, mCoverUri, mItemCount, mIsLocal, mBucketId);
     }
 
     public String getId() {
@@ -193,5 +194,37 @@ public class Category {
             default:
                 return albumId;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Category category = (Category) o;
+        return mBucketId == category.mBucketId && mIsLocal == category.mIsLocal
+                && mItemCount == category.mItemCount &&
+                mIsGif == category.mIsGif && mIsWebP == category.mIsWebP
+                && Objects.equals(mId, category.mId)
+                && Objects.equals(mDisplayName, category.mDisplayName)
+                && Objects.equals(mCoverUri, category.mCoverUri)
+                && Objects.equals(getAuthority(), category.getAuthority())
+                && Objects.equals(mMimeType, category.mMimeType)
+                && Objects.equals(realPath, category.realPath);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Long.hashCode(mBucketId);
+        result = 31 * result + Objects.hashCode(mId);
+        result = 31 * result + Objects.hashCode(mDisplayName);
+        result = 31 * result + Boolean.hashCode(mIsLocal);
+        result = 31 * result + Objects.hashCode(mCoverUri);
+        result = 31 * result + mItemCount;
+        result = 31 * result + Boolean.hashCode(mIsGif);
+        result = 31 * result + Boolean.hashCode(mIsWebP);
+        result = 31 * result + Objects.hashCode(getAuthority());
+        result = 31 * result + Objects.hashCode(mMimeType);
+        result = 31 * result + Objects.hashCode(realPath);
+        return result;
     }
 }

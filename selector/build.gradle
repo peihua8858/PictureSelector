@@ -14,7 +14,7 @@ android {
     compileSdk 36
     namespace 'com.peihua.photopicker'
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 36
         versionCode 11
         versionName "4.0.0"
@@ -82,8 +82,8 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.9.0'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
-//    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-fragment:1.0.0'
-//    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-core:1.0.0'
+    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-fragment:1.0.0'
+    implementation 'com.github.peihua8858.AndroidxPermissions:permissions-core:1.0.0'
     implementation 'com.github.peihua8858.ImageLoader:imageloader:1.1.0'
     implementation 'com.github.peihua8858:kotlinCommonUtils:1.1.4'
     implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1')

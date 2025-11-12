@@ -79,7 +79,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
         val extras = Bundle()
         var result: Cursor? = null
         try {
-            return context.contentResolver.acquireUnstableContentProviderClient(MediaStore.AUTHORITY).use { client ->
+            context.contentResolver.acquireUnstableContentProviderClient(MediaStore.AUTHORITY).use { client ->
                 if (client == null) {
                     eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
                     return null
@@ -87,7 +87,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
                 val selection = StringBuilder()
                 val selectionArgs = ArrayList<String>()
                 appendWhereSizeBytes(selection, selectionArgs, config)
-                appendWhereDuration(selection, selectionArgs,mimeTypes, config)
+                appendWhereDuration(selection, selectionArgs, mimeTypes, config)
                 appendWhereMimeTypes(selection, selectionArgs, mimeTypes, config)
                 appendWhereBucketId(selection, selectionArgs, category)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
@@ -98,7 +98,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
                 if (preselectedUris.isNonEmpty()) {
                     extras.putStringArrayList(
                         QUERY_ID_SELECTION, preselectedUris.stream()
-                            .map<String> { it.toString() }
+                            .map { it.toString() }
                             .collect(Collectors.toCollection(Supplier { ArrayList() }))
                     )
                 }

@@ -247,9 +247,11 @@ object MimeUtils {
     fun ofWEBP(): String {
         return MIME_TYPE_WEBP
     }
+
     fun ofHeic(): String {
         return MIME_TYPE_HEIC
     }
+
     @JvmStatic
     fun of3GP(): String {
         return MIME_TYPE_3GP
@@ -281,19 +283,38 @@ object MimeUtils {
     fun isAudioMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("audio/", true) == true
     }
+
     @JvmStatic
-    fun isAudioMimeType(mimeType: Array<String>?): Boolean {
-        return mimeType?.contains("audio/") == true
+    fun isAudioMimeType(mimeTypes: Array<String>?): Boolean {
+        if (mimeTypes == null) {
+            return false
+        }
+        for ((index, item) in mimeTypes.withIndex()) {
+            if (isAudioMimeType(item)) {
+                return true
+            }
+        }
+        return false
     }
 
     @JvmStatic
     fun isVideoMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("video/", true) == true
     }
+
     @JvmStatic
-    fun isVideoMimeType(mimeType: Array<String>?): Boolean {
-        return mimeType?.contains("video/") == true
+    fun isVideoMimeType(mimeTypes: Array<String>?): Boolean {
+        if (mimeTypes == null) {
+            return false
+        }
+        for ((index, item) in mimeTypes.withIndex()) {
+            if (isVideoMimeType(item)) {
+                return true
+            }
+        }
+        return false
     }
+
     fun isAllVideosMimeType(mimeType: String?): Boolean {
         return ALL_VIDEOS_MIME_TYPE.equals(mimeType, ignoreCase = true)
     }
@@ -302,9 +323,18 @@ object MimeUtils {
     fun isImageMimeType(mimeType: String?): Boolean {
         return mimeType?.startsWith("image/", true) == true
     }
+
     @JvmStatic
-    fun isImageMimeType(mimeType: Array<String>?): Boolean {
-        return mimeType?.contains("image/") == true
+    fun isImageMimeType(mimeTypes: Array<String>?): Boolean {
+        if (mimeTypes == null) {
+            return false
+        }
+        for ((index, item) in mimeTypes.withIndex()) {
+            if (isImageMimeType(item)) {
+                return true
+            }
+        }
+        return false
     }
 
     fun isAllImagesMimeType(mimeType: String?): Boolean {
@@ -316,6 +346,7 @@ object MimeUtils {
         val result = mimeType?.split(",")
         return isImageAndVideoMediaType(result?.toTypedArray())
     }
+
     fun isImageAndVideoMediaType(mimeType: Array<String>?): Boolean {
         if (mimeType.isNonEmpty()) {
             var findImage = false

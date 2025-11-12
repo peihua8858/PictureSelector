@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
         PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
             .setForceCustomUi(false)
             .setMaxItemCount(10)
-            .setMediaType(PhotoVisualMedia.MultipleMimeType("image/jpeg", "image/png"))
+//            .setMediaType(PhotoVisualMedia.MultipleMimeType("image/jpeg", "image/png"))
             .setShowGif(false)
     }
     val singleSelectPhotoRequest by lazy {

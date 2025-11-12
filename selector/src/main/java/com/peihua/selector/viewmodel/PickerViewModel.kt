@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import com.fz.common.array.isNonEmpty
 import com.fz.common.model.ViewModelState
 import com.fz.common.model.request
+import com.fz.common.utils.dLog
 import com.fz.common.utils.getParcelableExtraCompat
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
@@ -98,6 +99,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     ) {
         request(if (category == Category.DEFAULT) mItemList else mCategoryItemList) {
             val items: MutableList<Item> = ArrayList()
+            dLog { "requestPermissionsDsl>>>>>>>>>>requestMediasAsync category:$category,isDefault:${category== Category.DEFAULT}" }
             mediaProvider.queryAllItems(category,page,configModel,mMimeTypeFilters,mCancellationSignal).use { cursor ->
                 if (cursor == null || cursor.count == 0) {
                     Log.d(

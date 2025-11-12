@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.fz.common.collections.isNonEmpty
 import com.fz.common.model.ViewModelState
+import com.fz.common.utils.dLog
 import com.google.android.material.snackbar.Snackbar
 import com.peihua.photopicker.R
 import com.peihua.selector.data.model.Category
@@ -58,11 +59,14 @@ class PhotosTabFragment : TabFragment() {
         }
         this.requestPermissionsDsl(mPickerViewModel.mMimeTypeFilters) {
             onGranted {
+                dLog { "requestPermissionsDsl>>>>>>>>>>onGranted" }
                 mLoadingData = true
-                mPickerViewModel.requestMediasAsync(mPage, mCategory)
+                mPage = 1
+                requestMediasAsync(false)
             }
             onDenied {
-                updateVisibilityForEmptyView( /* shouldShowEmptyView */true)
+                dLog { "requestPermissionsDsl>>>>>>>>>>onDenied" }
+                updateVisibilityForEmptyView(true)
             }
         }
 
@@ -72,7 +76,7 @@ class PhotosTabFragment : TabFragment() {
         val itemDecoration = PhotosTabItemDecoration(view.context)
         mRecyclerView?.apply {
             val spacing = resources.getDimensionPixelSize(R.dimen.picker_photo_item_spacing);
-            val  photoSize = resources.getDimensionPixelSize(R.dimen.picker_photo_size);
+            val photoSize = resources.getDimensionPixelSize(R.dimen.picker_photo_size);
             setColumnWidth(photoSize + spacing)
             setMinimumSpanCount(spanCount)
             this.layoutManager = layoutManager
@@ -94,7 +98,12 @@ class PhotosTabFragment : TabFragment() {
         mPage++
         mLoadingData = true
         isLoadMoreData = true
-        mPickerViewModel.requestMediasAsync(mPage, mCategory, true)
+        requestMediasAsync(true)
+    }
+
+    private fun requestMediasAsync(isLoadMore: Boolean) {
+        dLog { ">>>>>>>$this  $isLoadMore,mCategory:$mCategory isDefault:${mCategory == Category.DEFAULT}" }
+        mPickerViewModel.requestMediasAsync(mPage, mCategory, isLoadMore)
     }
 
     private fun result(it: ViewModelState<MutableList<Item>>) {
@@ -136,7 +145,7 @@ class PhotosTabFragment : TabFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as PhotoPickerActivity?)?.apply {
+        (activity as? PhotoPickerActivity)?.apply {
             if (mCategory.isDefault) {
                 updateCommonLayouts(LayoutModeUtils.MODE_PHOTOS_TAB,  /* title */"")
             } else {
