@@ -182,7 +182,7 @@ public class Category {
     private static String getLocalizedDisplayName(Context context, String albumId) {
         switch (albumId) {
             case AlbumColumns.ALBUM_ID_VIDEOS:
-                return context.getString(R.string.picker_category_videos);
+                return context.getString(R.string.picker_videos);
             case AlbumColumns.ALBUM_ID_CAMERA:
                 return context.getString(R.string.picker_category_camera);
             case AlbumColumns.ALBUM_ID_SCREENSHOTS:

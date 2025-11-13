@@ -63,6 +63,7 @@ dependencies {
 
     implementation(libs.coil3.coil.compose)
     implementation(libs.coil3.coil.okhttp)
+    implementation(libs.coil3.coil.gif)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences.core)
     implementation(libs.androidx.datastore.core.okio)

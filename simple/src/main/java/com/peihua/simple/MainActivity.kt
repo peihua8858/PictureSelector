@@ -63,15 +63,15 @@ import java.io.File
 
 class MainActivity : ComponentActivity() {
     val multiSelectPhotoRequest by lazy {
-        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
-            .setForceCustomUi(false)
+        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.AllMedia)
+            .setForceCustomUi(true)
             .setMaxItemCount(10)
 //            .setMediaType(PhotoVisualMedia.MultipleMimeType("image/jpeg", "image/png"))
-            .setShowGif(false)
+            .setShowGif(true)
     }
     val singleSelectPhotoRequest by lazy {
-//        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.SingleMimeType("image/gif"))
-        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageOnly)
+        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.SingleMimeType("image/gif"))
+//        PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageOnly)
             .setForceCustomUi(true)
             .setShowGif(true)
     }

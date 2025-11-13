@@ -36,9 +36,9 @@ fun Closeable?.closeSilently() {
  */
 internal fun Fragment.requestPermissionsDsl(
     mimeTypes: Array<String>,
-    requestBlock: MultiplePermissionCallbacks.() -> Unit
+    requestBlock: MultiplePermissionCallbacks.() -> Unit,
 ) {
-    val permissions= when {
+    val permissions = when {
         isAtLeastT && mimeTypes.isEmpty() -> arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
@@ -48,10 +48,25 @@ internal fun Fragment.requestPermissionsDsl(
         isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
         isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
-        isAtLeastP ->arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-        else ->arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        isAtLeastP -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        else -> arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     }
     dLog { "requestPermissionsDsl>>>>>>>>>>  ${permissions.joinToString(",")}" }
     requestPermissions(*permissions) { requestBlock() }
+}
+
+/**
+ * 删除最后一个指定字符
+ * @author dingpeihua
+ * @date 2022/1/12 15:00
+ * @version 1.0
+ */
+fun StringBuilder.deleteEndChar(endChar: String): StringBuilder {
+    val index = lastIndexOf(endChar)
+    dLog { "deleteEndChar: index=$index, length=$length, endChar=$endChar,endChar.length=${endChar.length}" }
+    if (isNotEmpty() && index == length - endChar.length) {
+        delete(index, length)
+    }
+    return this
 }

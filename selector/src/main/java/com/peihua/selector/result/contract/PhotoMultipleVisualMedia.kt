@@ -40,7 +40,8 @@ class PhotoMultipleVisualMedia(
         } else if (PhotoVisualMedia.isSystemPickerAvailable()) {
             dLog { "selectedUris>>>00000mSelection<><><><><>" }
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
-                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
+//                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
                 require(maxItems <= MediaStore.getPickImagesMaxLimit()) {
                     "Max items must be less or equals MediaStore.getPickImagesMaxLimit()"
                 }
@@ -51,13 +52,15 @@ class PhotoMultipleVisualMedia(
             val fallbackPicker = checkNotNull(PhotoVisualMedia.getSystemFallbackPicker(context)).activityInfo
             Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
-                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
+//                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
                 if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else if (PhotoVisualMedia.isGmsPickerAvailable(context)) {
             dLog { "selectedUris>>>00000mSelection<><><><><>" }
             val gmsPicker = checkNotNull(PhotoVisualMedia.getGmsPicker(context)).activityInfo
             Intent(PhotoVisualMedia.GMS_ACTION_PICK_IMAGES).apply {
+                putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
                 setClassName(gmsPicker.applicationInfo.packageName, gmsPicker.name)
                 if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
             }

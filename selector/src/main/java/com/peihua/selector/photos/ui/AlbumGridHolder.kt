@@ -1,12 +1,15 @@
 package com.peihua.selector.photos.ui
 
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.fz.common.utils.getDimensionPixelOffset
 import com.peihua.photopicker.R
 import com.peihua.selector.data.model.Category
+import com.peihua.selector.util.StringUtils
+import java.text.NumberFormat
+import java.util.Locale
 
 /**
  * ViewHolder of a album item within a RecyclerView.
@@ -37,11 +40,9 @@ class AlbumGridHolder(
         } else {
             mItemCount.visibility = View.VISIBLE
             val itemCount = category.itemCount
-            val message = itemView.resources.getString(
-                if (itemCount == 1) R.string.picker_album_item_count_1 else R.string.picker_album_item_count,
-                itemCount
-            )
-            mItemCount.text = message
+            val message = StringUtils.getICUFormatString(itemView.resources, itemCount, R.string.picker_album_item_count)
+            val itemCountString = NumberFormat.getInstance(Locale.getDefault()).format(itemCount.toLong())
+            mItemCount.text = TextUtils.expandTemplate(message, itemCountString);
         }
     }
 }

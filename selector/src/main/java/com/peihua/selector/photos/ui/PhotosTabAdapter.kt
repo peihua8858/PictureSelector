@@ -31,7 +31,10 @@ class PhotosTabAdapter(
         val item = getItem(position)
         itemHolder.itemView.tag = item
         if (itemHolder.itemViewType == ITEM_TYPE_PHOTO) {
-            itemHolder.itemView.setOnClickListener(mOnClickListener)
+            itemHolder.itemView.setOnClickListener{
+                mOnClickListener.onClick(itemHolder.itemView)
+                notifyItemChanged(position)
+            }
             itemHolder.itemView.setOnLongClickListener(mOnLongClickListener)
             val context = itemHolder.itemView.context
             itemHolder.itemView.contentDescription = item.getContentDescription(context)

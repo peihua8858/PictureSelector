@@ -1,5 +1,6 @@
 package com.peihua.selector.util;
 
+import static com.peihua.selector.util.MimeUtils.isAudioMimeType;
 import static com.peihua.selector.util.MimeUtils.isImageMimeType;
 import static com.peihua.selector.util.MimeUtils.isVideoMimeType;
 
@@ -15,7 +16,7 @@ public class MimeFilterUtils {
     /**
      * Checks if mime type filters set via {@link Intent#setType(String)} and
      * {@link Intent#EXTRA_MIME_TYPES} on the intent requires more than media items.
-     *
+     * <p>
      * Note: TODO(b/224756380): Returns true if there are more than 1 mime type filters.
      *
      * @param intent the intent to check mimeType filters of
@@ -35,7 +36,7 @@ public class MimeFilterUtils {
      * Checks if the given string is an image or video mime type
      */
     public static boolean isMimeTypeMedia(@Nullable String mimeType) {
-        return isImageMimeType(mimeType) || isVideoMimeType(mimeType);
+        return isImageMimeType(mimeType) || isVideoMimeType(mimeType) || isAudioMimeType(mimeType);
     }
 
     /**
@@ -65,7 +66,7 @@ public class MimeFilterUtils {
 
         final String mimeType = intent.getType();
         if (MimeFilterUtils.isMimeTypeMedia(mimeType)) {
-            return new String[] { mimeType };
+            return new String[]{mimeType};
         }
 
         return null;

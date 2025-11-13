@@ -145,17 +145,6 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
             )
         }
 
-        internal fun getVisualMimeType(input: VisualMediaType): String? {
-            return when (input) {
-                is ImageOnly -> "image/*"
-                is VideoOnly -> "video/*"
-                is AudioOnly -> "audio/*"
-                is SingleMimeType -> input.mimeTypes[0]
-                is MultipleMimeType -> "*/*"
-                is ImageAndVideo -> "*/*"
-            }
-        }
-
         internal fun Intent.getClipDataUris(): List<Uri> {
             // Use a LinkedHashSet to maintain any ordering that may be
             // present in the ClipData
@@ -197,7 +186,8 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
      */
     @Parcelize
     sealed class VisualMediaType(vararg val mimeTypes: String) : Parcelable
-
+    @Parcelize
+    object AllMedia : VisualMediaType("image/*", "video/*", "audio/*")
     /**
      * [VisualMediaType] object used to filter images only when using the photo picker.
      */
@@ -243,21 +233,21 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
             createCustomIntent(context, input)
         } else if (isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
-                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+//                setTypeAndNormalize(getVisualMimeType(input.mediaType))
                 putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else if (isSystemFallbackPickerAvailable(context)) {
             val fallbackPicker = checkNotNull(getSystemFallbackPicker(context)).activityInfo
             Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
-                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+//                setTypeAndNormalize(getVisualMimeType(input.mediaType))
                 putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else if (isGmsPickerAvailable(context)) {
             val gmsPicker = checkNotNull(getGmsPicker(context)).activityInfo
             Intent(GMS_ACTION_PICK_IMAGES).apply {
                 setClassName(gmsPicker.applicationInfo.packageName, gmsPicker.name)
-                setTypeAndNormalize(getVisualMimeType(input.mediaType))
+//                setTypeAndNormalize(getVisualMimeType(input.mediaType))
                 putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)
             }
         } else {

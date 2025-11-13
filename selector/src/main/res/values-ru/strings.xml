@@ -2,24 +2,22 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="picker_app_label" msgid="5487796494405738578">"Выбор фотографий"</string>
-    <string name="picker_category_videos" msgid="8792703517064649453">"Видео"</string>
+    <string name="picker_videos" msgid="8792703517064649453">"Видео"</string>
     <string name="picker_add" msgid="2894574044585549298">"Добавить"</string>
     <string name="picker_deselect" msgid="4297825044827769490">"Отменить выбор"</string>
     <string name="picker_deselected" msgid="8488133193326208475">"Выбор отменен"</string>
     <string name="picker_select" msgid="2704765470563027689">"Выбрать"</string>
     <string name="picker_selected" msgid="9151797369975828124">"Выбрано"</string>
-    <string name="picker_select_up_to_single">"Выберите не более <xliff:g id="COUNT_0">%1$d</xliff:g> объекта."</string>
-    <string name="picker_select_up_to">"Выберите не более <xliff:g id="COUNT_1">%1$d</xliff:g> объекта."</string>
+    <string name="picker_select_up_to" msgid="6994294169508439957">"{count,plural, =1{Выберите не более <xliff:g id="COUNT_0">^1</xliff:g> объекта.}one{Выберите не более <xliff:g id="COUNT_1">^1</xliff:g> объекта.}few{Выберите не более <xliff:g id="COUNT_1">^1</xliff:g> объектов.}many{Выберите не более <xliff:g id="COUNT_1">^1</xliff:g> объектов.}other{Выберите не более <xliff:g id="COUNT_1">^1</xliff:g> объекта.}}"</string>
     <string name="picker_recent" msgid="6694613584743207874">"Недавние"</string>
     <string name="picker_photos_empty_message" msgid="5980619500554575558">"Фото или видео нет."</string>
     <string name="picker_albums_empty_message" msgid="8341079772950966815">"Альбомов нет."</string>
     <string name="picker_view_selected" msgid="2266031384396143883">"Посмотреть выбранное"</string>
-    <string name="picker_photos" msgid="7415035516411087392">"Фотографии"</string>
+    <string name="picker_photos" msgid="7415035516411087392">"Фото"</string>
     <string name="picker_albums" msgid="4822511902115299142">"Альбомы"</string>
-    <string name="picker_preview" msgid="6257414886055861039">"Предварительный просмотр"</string>
+    <string name="picker_preview" msgid="6257414886055861039">"Предпросмотр"</string>
     <string name="picker_privacy_message" msgid="9132700451027116817">"Этому приложению доступны только выбранные вами фото."</string>
-    <string name="picker_album_item_count_1" msgid="4420723302534177596">"<xliff:g id="COUNT_0">%1$d</xliff:g> объект"</string>
-    <string name="picker_album_item_count" msgid="4420723302534177596">"<xliff:g id="COUNT_1">%1$d</xliff:g> объекта"</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"{count,plural, =1{<xliff:g id="COUNT_0">^1</xliff:g> объект}one{<xliff:g id="COUNT_1">^1</xliff:g> объект}few{<xliff:g id="COUNT_1">^1</xliff:g> объекта}many{<xliff:g id="COUNT_1">^1</xliff:g> объектов}other{<xliff:g id="COUNT_1">^1</xliff:g> объекта}}"</string>
     <string name="picker_add_button_multi_select" msgid="4005164092275518399">"Добавить (<xliff:g id="COUNT">^1</xliff:g>)"</string>
     <string name="picker_category_camera" msgid="4857367052026843664">"Камера"</string>
     <string name="picker_category_downloads" msgid="793866660287361900">"Скачанные"</string>

@@ -45,7 +45,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
         category: Category,
         page: Int,
         config: ConfigModel,
-        mimeTypes: Array<String>?,
+        mimeTypes: Array<String>,
         cancellationSignal: CancellationSignal?,
     ): Cursor? {
         try {
@@ -58,7 +58,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
 
     private fun queryMedia(
         uri: Uri, page: Int, config: ConfigModel,
-        mimeTypes: Array<String>?, category: Category,
+        mimeTypes: Array<String>, category: Category,
         cancellationSignal: CancellationSignal?,
     ): Cursor? {
         return queryMedia(uri, page, config, mimeTypes, category, null, DEFAULT_UID, false, cancellationSignal)
@@ -67,7 +67,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
     @Throws(IllegalStateException::class)
     private fun queryMedia(
         uri: Uri, page: Int, config: ConfigModel,
-        mimeTypes: Array<String>?, category: Category,
+        mimeTypes: Array<String>, category: Category,
         preselectedUris: MutableList<Uri?>?, callingPackageUid: Int,
         shouldScreenSelectionUris: Boolean, cancellationSignal: CancellationSignal?,
     ): Cursor? {
@@ -79,19 +79,15 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
         val extras = Bundle()
         var result: Cursor? = null
         try {
-            context.contentResolver.acquireUnstableContentProviderClient(MediaStore.AUTHORITY).use { client ->
+            val contentResolver = context.contentResolver
+            contentResolver.acquireUnstableContentProviderClient(uri).use { client ->
                 if (client == null) {
                     eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
                     return null
                 }
-                val selection = StringBuilder()
-                val selectionArgs = ArrayList<String>()
-                appendWhereSizeBytes(selection, selectionArgs, config)
-                appendWhereDuration(selection, selectionArgs, mimeTypes, config)
-                appendWhereMimeTypes(selection, selectionArgs, mimeTypes, config)
-                appendWhereBucketId(selection, selectionArgs, category)
+                val (selection, selectionArgs) = createPageSelectionAndArgs(category, mimeTypes, config)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
-                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs.toTypedArray())
+                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, config.sortOrder.ifNullOrEmpty { ORDER_BY })
                 extras.putString(ContentResolver.QUERY_ARG_SQL_LIMIT, queryPageLimit(config.pageSize, page))
                 extras.putStringArray(ContentResolver.QUERY_ARG_GROUP_COLUMNS, arrayOf(MediaStore.MediaColumns._ID))

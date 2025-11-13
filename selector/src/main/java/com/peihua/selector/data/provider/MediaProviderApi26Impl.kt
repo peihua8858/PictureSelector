@@ -11,7 +11,6 @@ import android.os.CancellationSignal
 import android.os.RemoteException
 import android.os.Trace
 import android.provider.MediaStore
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.fz.common.text.ifNullOrEmpty
 import com.fz.common.utils.dLog
@@ -25,7 +24,7 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
 
     override fun queryAllCategories(
         config: ConfigModel,
-        mimeTypes: Array<String>?,
+        mimeTypes: Array<String>,
         cancellationSignal: CancellationSignal?,
     ): Cursor? {
         try {
@@ -40,7 +39,7 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
         category: Category,
         page: Int,
         config: ConfigModel,
-        mimeTypes: Array<String>?,
+        mimeTypes: Array<String>,
         cancellationSignal: CancellationSignal?,
     ): Cursor? {
         try {
@@ -54,7 +53,7 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
     @Throws(IllegalStateException::class)
     private fun queryMedia(
         uri: Uri, page: Int, config: ConfigModel,
-        mimeTypes: Array<String>?, category: Category,
+        mimeTypes: Array<String>, category: Category,
         cancellationSignal: CancellationSignal?,
     ): Cursor? {
         if (DEBUG) {
@@ -70,14 +69,9 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
                     eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
                     return null
                 }
-                val selection = StringBuilder()
-                val selectionArgs = ArrayList<String>()
-                appendWhereBucketId(selection, selectionArgs, category)
-                appendWhereSizeBytes(selection, selectionArgs, config)
-                appendWhereDuration(selection, selectionArgs, mimeTypes,config)
-                appendWhereMimeTypes(selection, selectionArgs, mimeTypes, config)
+                val (selection, selectionArgs) = createPageSelectionAndArgs(category, mimeTypes, config)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
-                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs.toTypedArray())
+                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, config.sortOrder.ifNullOrEmpty { ORDER_BY })
                 extras.putInt(ContentResolver.QUERY_ARG_OFFSET, page)
                 extras.putInt(ContentResolver.QUERY_ARG_LIMIT, config.pageSize)
@@ -105,7 +99,7 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
             }
         }
     }
-    private fun queryAlbums(uri: Uri, config: ConfigModel, mimeTypes: Array<String>?, cancellationSignal: CancellationSignal?): Cursor? {
+    private fun queryAlbums(uri: Uri, config: ConfigModel, mimeTypes: Array<String>, cancellationSignal: CancellationSignal?): Cursor? {
         if (DEBUG) {
             dLog { "queryAlbums() uri=" + uri + " mimeTypes=" + mimeTypes.contentToString() }
         }
@@ -119,12 +113,9 @@ internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(co
                     eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
                     return null
                 }
-                val selection = StringBuilder()
-                val selectionArgs = ArrayList<String>()
-                appendWhereSizeBytes(selection, selectionArgs, config)
-                appendWhereMimeTypes(selection, selectionArgs, mimeTypes, config)
+                val (selection, selectionArgs) = createPageSelectionAndArgs(Category.DEFAULT, mimeTypes, config)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
-                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs.toTypedArray())
+                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, config.sortOrder.ifNullOrEmpty { ORDER_BY })
                 result = client.query(uri, ALL_PROJECTION, extras, cancellationSignal)
                 return result

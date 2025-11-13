@@ -363,6 +363,25 @@ object MimeUtils {
         return false
     }
 
+    fun isAllMediaType(mimeType: Array<String>?): Boolean {
+        if (mimeType.isNonEmpty()) {
+            var findImage = false
+            var findVideo = false
+            var findAudio = false
+            for ((index, item) in mimeType.withIndex()) {
+                if (isImageMimeType(item)) {
+                    findImage = true
+                } else if (isVideoMimeType(item)) {
+                    findVideo = true
+                } else if (isAudioMimeType(item)) {
+                    findAudio = true
+                }
+            }
+            return findImage && findVideo && findAudio
+        }
+        return false
+    }
+
     @JvmStatic
     fun isImageOrVideoMediaType(mimeType: String?): Boolean {
         return isImageMimeType(mimeType) || isVideoMimeType(mimeType)

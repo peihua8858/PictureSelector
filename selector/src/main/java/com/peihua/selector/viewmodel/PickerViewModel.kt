@@ -2,18 +2,20 @@ package com.peihua.selector.viewmodel
 
 import android.app.Application
 import android.content.Intent
-import android.os.Build
 import android.os.CancellationSignal
 import android.util.Log
+import android.util.Size
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.application
 import com.fz.common.array.isNonEmpty
 import com.fz.common.model.ViewModelState
 import com.fz.common.model.request
 import com.fz.common.utils.dLog
 import com.fz.common.utils.getParcelableExtraCompat
+import com.fz.common.utils.getVideoThumbnailFromMediaMetadataRetriever
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
 import com.peihua.selector.data.model.Category
@@ -121,6 +123,9 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
                 while (cursor.moveToNext()) {
                     // here again.
                     val item = Item.fromCursor(cursor)
+                    if (item.isVideo) {
+                        item.videoThumbnail = application.getVideoThumbnailFromMediaMetadataRetriever(item.contentUri, Size(200,200))
+                    }
                     val dateTaken = item.dateTaken
                     // the minimum count of items in recent is not reached
                     if (showRecent && recentSize < RECENT_MINIMUM_COUNT) {

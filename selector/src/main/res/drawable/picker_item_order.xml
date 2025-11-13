@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <layer-list>
+            <item android:gravity="center"
+                android:width="18dp"
+                android:height="18dp"
+                android:id="@+id/ordered_selection_selected_icon">
+                <shape android:shape="oval">
+                    <solid android:color="?attr/pickerSelectedColor"/>
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item android:drawable="@drawable/ic_radio_button_unchecked"/>
+</selector>

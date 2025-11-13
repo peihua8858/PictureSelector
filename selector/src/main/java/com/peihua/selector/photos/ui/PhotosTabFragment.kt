@@ -1,6 +1,7 @@
 package com.peihua.selector.photos.ui
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,10 +16,13 @@ import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.Item
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.util.LayoutModeUtils
+import com.peihua.selector.util.StringUtils
 import com.peihua.selector.util.isAtLeastPie
 import com.peihua.selector.util.isAtLeastR
 import com.peihua.selector.util.requestPermissionsDsl
 import com.peihua.selector.viewmodel.PickerViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 /**
  * Photos tab fragment for showing the photos
@@ -162,10 +166,9 @@ class PhotosTabFragment : TabFragment() {
             } else {
                 if (!mSelection.isSelectionAllowed) {
                     val maxCount = mSelection.maxSelectionLimit
-                    val message = getString(
-                        if (maxCount > 1) R.string.picker_select_up_to else R.string.picker_select_up_to_single,
-                        maxCount
-                    )
+                    val quantityText  = StringUtils.getICUFormatString(resources, maxCount, R.string.picker_select_up_to)
+                    val itemCountString = NumberFormat.getInstance(Locale.getDefault()).format(maxCount.toLong())
+                    val message = TextUtils.expandTemplate(quantityText, itemCountString)
                     Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
                     return
                 } else {

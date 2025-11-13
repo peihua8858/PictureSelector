@@ -26,7 +26,7 @@ import java.util.stream.Collectors
 @RequiresApi(29)
 internal open class MediaProviderApi29Impl(context: Context) : MediaProviderApi26Impl(context) {
 
-    override fun queryAllCategories(config: ConfigModel, mimeTypes: Array<String>?, cancellationSignal: CancellationSignal?): Cursor? {
+    override fun queryAllCategories(config: ConfigModel, mimeTypes: Array<String>, cancellationSignal: CancellationSignal?): Cursor? {
         try {
             return queryAlbums(QUERY_URI, config, mimeTypes, cancellationSignal)
         } catch (e: Throwable) {
@@ -35,7 +35,7 @@ internal open class MediaProviderApi29Impl(context: Context) : MediaProviderApi2
         }
     }
 
-    private fun queryAlbums(uri: Uri, config: ConfigModel, mimeTypes: Array<String>?, cancellationSignal: CancellationSignal?): Cursor? {
+    private fun queryAlbums(uri: Uri, config: ConfigModel, mimeTypes: Array<String>, cancellationSignal: CancellationSignal?): Cursor? {
         if (DEBUG) {
             dLog { "queryAlbums() uri=" + uri + " mimeTypes=" + mimeTypes.contentToString() }
         }
@@ -49,12 +49,9 @@ internal open class MediaProviderApi29Impl(context: Context) : MediaProviderApi2
                     eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
                     return null
                 }
-                val selection = StringBuilder()
-                val selectionArgs = ArrayList<String>()
-                appendWhereSizeBytes(selection, selectionArgs, config)
-                appendWhereMimeTypes(selection, selectionArgs, mimeTypes, config)
+                val (selection, selectionArgs) = createPageSelectionAndArgs(Category.DEFAULT, mimeTypes, config)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
-                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs.toTypedArray())
+                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
                 extras.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, config.sortOrder.ifNullOrEmpty { ORDER_BY })
                 result = client.query(uri, PROJECTION, extras, cancellationSignal)
                 return result

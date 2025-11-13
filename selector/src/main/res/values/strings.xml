@@ -4,7 +4,7 @@
     <string name="picker_app_label">Photo picker</string>
 
     <!-- Title for documents backend that offers videos. [CHAR LIMIT=24] -->
-    <string name="picker_category_videos">Videos</string>
+    <string name="picker_videos">Videos</string>
 
     <!-- Add button for PhotoPicker. [CHAR LIMIT=30] -->
     <string name="picker_add">Add</string>
@@ -22,8 +22,10 @@
     <string name="picker_selected">Selected</string>
 
     <!-- Select up to max label message for PhotoPicker. [CHAR LIMIT=30] -->
-    <string name="picker_select_up_to_single">Select up to <xliff:g example="1" id="count">%1$d</xliff:g> item</string>
-    <string name="picker_select_up_to">Select up to <xliff:g example="42" id="count">%1$d</xliff:g> items</string>
+    <string name="picker_select_up_to"> {count, plural,
+        =1    {Select up to <xliff:g id="count" example="1">^1</xliff:g> item}
+        other {Select up to <xliff:g id="count" example="42">^1</xliff:g> items}
+    }</string>
 
     <!-- Recent header for PhotoPicker. [CHAR LIMIT=50] -->
     <string name="picker_recent">Recent</string>
@@ -33,10 +35,10 @@
     <!-- The message for empty message on Albums tab in PhotoPicker when the item count is zero. [CHAR LIMIT=NONE] -->
     <string name="picker_albums_empty_message">No albums</string>
 
-    <!-- PhotoPicker view selected action text. [CHAR LIMIT=80] -->
+    <!-- PhotoPicker view selected action text. [CHAR LIMIT=17] -->
     <string name="picker_view_selected">View selected</string>
 
-    <!-- The text of the photos tab for PhotoPicker. [CHAR LIMIT=30] -->
+    <!-- The text of the photos tab in PhotoPicker for 'Image/' mime type. [CHAR LIMIT=30] -->
     <string name="picker_photos">Photos</string>
 
     <!-- The text of the albums tab for PhotoPicker. [CHAR LIMIT=30] -->
@@ -49,11 +51,13 @@
     <string name="picker_privacy_message">This app can only access the photos you select</string>
 
     <!-- Text shown on the album item in PhotoPicker. [CHAR LIMIT=30]  -->
-    <string name="picker_album_item_count_1"><xliff:g example="1" id="count">%1$d</xliff:g> item</string>
-    <string name="picker_album_item_count"><xliff:g example="42" id="count">%1$d</xliff:g> items</string>
+    <string name="picker_album_item_count"> {count, plural,
+        =1    {<xliff:g id="count" example="1">^1</xliff:g> item}
+        other {<xliff:g id="count" example="42">^1</xliff:g> items}
+    }</string>
 
     <!-- Text shown on the add button for multi-select in PhotoPicker. [CHAR LIMIT=30]  -->
-    <string name="picker_add_button_multi_select">Add (<xliff:g example="42" id="count">^1</xliff:g>)</string>
+    <string name="picker_add_button_multi_select">Add (<xliff:g id="count" example="42">^1</xliff:g>)</string>
 
     <!-- Title for the category in the picker that offers items in Camera folder. [CHAR LIMIT=24] -->
     <string name="picker_category_camera">Camera</string>
@@ -68,10 +72,10 @@
     <string name="picker_motion_photo_text">Motion Photo</string>
 
     <!-- Content description of when a photo was taken on [CHAR LIMIT=NONE] -->
-    <string name="picker_item_content_desc"><xliff:g example="Photo" id="item_name">%1$s</xliff:g> taken on <xliff:g example="Jul 7, 2020, 12:00:00 AM" id="time">%2$s</xliff:g></string>
+    <string name="picker_item_content_desc"><xliff:g id="item_name" example="Photo">%1$s</xliff:g> taken on <xliff:g id="time" example="Jul 7, 2020, 12:00:00 AM">%2$s</xliff:g></string>
 
     <!-- Content description of an video item [CHAR LIMIT=NONE] -->
-    <string name="picker_video_item_content_desc">Video taken on <xliff:g example="Jul 7, 2020, 12:00:00 AM" id="time">%1$s</xliff:g> with duration <xliff:g example="00:03" id="duration">%2$s</xliff:g></string>
+    <string name="picker_video_item_content_desc">Video taken on <xliff:g id="time" example="Jul 7, 2020, 12:00:00 AM">%1$s</xliff:g> with duration <xliff:g id="duration" example="00:03">%2$s</xliff:g></string>
 
     <!-- Title of the picker photo item [CHAR LIMIT=40] -->
     <string name="picker_photo">Photo</string>

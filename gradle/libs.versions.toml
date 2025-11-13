@@ -110,6 +110,7 @@ sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sql
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
 coil3-coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilComposeVersion" }
+coil3-coil-gif = { module = "io.coil-kt.coil3:coil-gif", version.ref = "coilComposeVersion" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 androidx-animation-graphics = { module = "androidx.compose.animation:animation-graphics", version.ref = "animation" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }

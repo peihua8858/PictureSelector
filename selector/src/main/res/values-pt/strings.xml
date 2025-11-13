@@ -17,14 +17,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="picker_app_label" msgid="5487796494405738578">"Seletor de fotos"</string>
-    <string name="picker_category_videos" msgid="8792703517064649453">"Vídeos"</string>
+    <string name="picker_videos" msgid="8792703517064649453">"Vídeos"</string>
     <string name="picker_add" msgid="2894574044585549298">"Adicionar"</string>
     <string name="picker_deselect" msgid="4297825044827769490">"Desmarcar"</string>
     <string name="picker_deselected" msgid="8488133193326208475">"Desmarcada"</string>
     <string name="picker_select" msgid="2704765470563027689">"Selecionar"</string>
     <string name="picker_selected" msgid="9151797369975828124">"Selecionada"</string>
-    <string name="picker_select_up_to_single">"Selecione até <xliff:g id="COUNT_0">%1$d</xliff:g> item"</string>
-    <string name="picker_select_up_to">"Selecione até <xliff:g id="COUNT_1">%1$d</xliff:g> itens"</string>
+    <string name="picker_select_up_to" msgid="6994294169508439957">"{count,plural, =1{Selecione até <xliff:g id="COUNT_0">^1</xliff:g> item}one{Selecione até <xliff:g id="COUNT_1">^1</xliff:g> item}many{Selecione até <xliff:g id="COUNT_1">^1</xliff:g> itens}other{Selecione até <xliff:g id="COUNT_1">^1</xliff:g> itens}}"</string>
     <string name="picker_recent" msgid="6694613584743207874">"Recentes"</string>
     <string name="picker_photos_empty_message" msgid="5980619500554575558">"Sem fotos ou vídeos"</string>
     <string name="picker_albums_empty_message" msgid="8341079772950966815">"Sem álbuns"</string>
@@ -33,8 +32,7 @@
     <string name="picker_albums" msgid="4822511902115299142">"Álbuns"</string>
     <string name="picker_preview" msgid="6257414886055861039">"Visualização"</string>
     <string name="picker_privacy_message" msgid="9132700451027116817">"Este app só pode acessar as fotos que você selecionar"</string>
-    <string name="picker_album_item_count_1"><xliff:g id="COUNT_0">%1$d</xliff:g> item</string>
-    <string name="picker_album_item_count">"<xliff:g id="COUNT_1">%1$d</xliff:g> itens"</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"{count,plural, =1{<xliff:g id="COUNT_0">^1</xliff:g> item}one{<xliff:g id="COUNT_1">^1</xliff:g> item}many{<xliff:g id="COUNT_1">^1</xliff:g> itens}other{<xliff:g id="COUNT_1">^1</xliff:g> itens}}"</string>
     <string name="picker_add_button_multi_select" msgid="4005164092275518399">"Adicionar (<xliff:g id="COUNT">^1</xliff:g>)"</string>
     <string name="picker_category_camera" msgid="4857367052026843664">"Câmera"</string>
     <string name="picker_category_downloads" msgid="793866660287361900">"Downloads"</string>

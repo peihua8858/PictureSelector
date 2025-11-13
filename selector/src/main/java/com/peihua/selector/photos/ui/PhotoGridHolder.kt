@@ -1,15 +1,10 @@
 package com.peihua.selector.photos.ui
 
 import android.content.Context
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.view.isVisible
-import com.fz.common.utils.getDimensionPixelOffset
-import com.fz.imageloader.widget.RatioImageView
-import com.peihua.photopicker.R
+import androidx.compose.ui.platform.ComposeView
 import com.peihua.selector.data.model.Item
+import com.peihua.selector.photos.ui.compose.ItemGrid
 
 /**
  * ViewHolder of a photo item within a RecyclerView.
@@ -17,43 +12,47 @@ import com.peihua.selector.data.model.Item
 class PhotoGridHolder(
     context: Context,
     parent: ViewGroup,
-    canSelectMultiple: Boolean,
-) : BaseViewHolder(context, parent, R.layout.picker_item_photo_grid) {
-    private val mIconThumb: RatioImageView = itemView.findViewById(R.id.icon_thumbnail)
-    private val mIconGif: ImageView = itemView.findViewById(R.id.icon_gif)
-    private val mIconMotionPhoto: ImageView = itemView.findViewById(R.id.icon_motion_photo)
-    private val mVideoBadgeContainer: View = itemView.findViewById(R.id.video_container)
-    private val mVideoDuration: TextView = mVideoBadgeContainer.findViewById(R.id.video_duration)
-    private val mOverlayGradient: View = itemView.findViewById(R.id.overlay_gradient)
-    private val mCanSelectMultiple: Boolean
+    private val canSelectMultiple: Boolean,
+) : BaseViewHolder(context, ComposeView(context)) {
+//    private val mIconThumb: RatioImageView = itemView.findViewById(R.id.icon_thumbnail)
+//    private val mIconGif: ImageView = itemView.findViewById(R.id.icon_gif)
+//    private val mIconMotionPhoto: ImageView = itemView.findViewById(R.id.icon_motion_photo)
+//    private val mVideoBadgeContainer: View = itemView.findViewById(R.id.video_container)
+//    private val mVideoDuration: TextView = mVideoBadgeContainer.findViewById(R.id.video_duration)
+//    private val mOverlayGradient: View = itemView.findViewById(R.id.overlay_gradient)
+//    private val mCanSelectMultiple: Boolean
 
-    init {
-
-        val iconCheck = itemView.findViewById<ImageView>(R.id.icon_check)
-        mCanSelectMultiple = canSelectMultiple
-        if (mCanSelectMultiple) {
-            iconCheck.visibility = View.VISIBLE
-        } else {
-            iconCheck.visibility = View.GONE
-        }
-    }
+//    init {
+//
+//        val iconCheck = itemView.findViewById<ImageView>(R.id.icon_check)
+//        mCanSelectMultiple = canSelectMultiple
+//        iconCheck.isVisible = mCanSelectMultiple
+//    }
 
     override fun bind() {
+        val itemView = itemView as ComposeView
         val item = itemView.tag as Item
-        mIconThumb.setImageUrl(item.contentUri, item.isGif)
-        mIconGif.visibility = if (item.isGifOrAnimatedWebp) View.VISIBLE else View.GONE
-        mIconMotionPhoto.visibility = if (item.isMotionPhoto) View.VISIBLE else View.GONE
-        if (item.isVideo) {
-            mVideoBadgeContainer.visibility = View.VISIBLE
-            mVideoDuration.text = item.durationText
-        } else {
-            mVideoBadgeContainer.visibility = View.GONE
+        itemView.setContent {
+            ItemGrid(item, itemView.isSelected, canSelectMultiple) {
+            }
         }
-        mOverlayGradient.isVisible = showShowOverlayGradient(item)
+//
+//        if (item.isVideo) {
+//            mIconThumb.setImageDrawable(item.videoThumbnail.toDrawable(mIconThumb.resources))
+//        } else {
+//            mIconThumb.setImageUrl(item.contentUri, item.isGif)
+//        }
+//        mIconGif.isVisible = item.isGifOrAnimatedWebp
+//        mIconMotionPhoto.isVisible = item.isMotionPhoto
+//        mVideoBadgeContainer.isVisible = item.isVideo
+//        if (item.isVideo) {
+//            mVideoDuration.text = item.durationText
+//        }
+//        mOverlayGradient.isVisible = showShowOverlayGradient(item)
     }
 
-    private fun showShowOverlayGradient(item: Item): Boolean {
-        return mCanSelectMultiple || item.isGifOrAnimatedWebp || item.isVideo ||
-                item.isMotionPhoto
-    }
+//    private fun showShowOverlayGradient(item: Item): Boolean {
+//        return mCanSelectMultiple || item.isGifOrAnimatedWebp || item.isVideo ||
+//                item.isMotionPhoto
+//    }
 }

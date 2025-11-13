@@ -6,6 +6,7 @@ import static com.peihua.selector.util.CursorUtils.getCursorString;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
@@ -34,10 +35,11 @@ public class Item {
     private boolean mIsWebP;
     private boolean mIsMotion;
     private boolean mIsVideo;
+    private boolean mIsAudio;
     private int mSpecialFormat;
     private String realPath;
     private boolean mIsDate;
-
+    private Bitmap videoThumbnail;
     private Item() {
     }
 
@@ -68,6 +70,9 @@ public class Item {
 
     public boolean isVideo() {
         return mIsVideo;
+    }
+    public boolean isAudio() {
+        return mIsAudio;
     }
 
     public boolean isGifOrAnimatedWebp() {
@@ -110,6 +115,14 @@ public class Item {
         return mGenerationModified;
     }
 
+    public Bitmap getVideoThumbnail() {
+        return videoThumbnail;
+    }
+
+    public void setVideoThumbnail(Bitmap videoThumbnail) {
+        this.videoThumbnail = videoThumbnail;
+    }
+
     @VisibleForTesting
     public int getSpecialFormat() {
         return mSpecialFormat;
@@ -141,18 +154,6 @@ public class Item {
      * @param cursor the cursor to update the data
      */
     public void updateFromCursor(@NonNull Cursor cursor) {
-        //  MediaStore.MediaColumns._ID,
-        //            MediaStore.MediaColumns.DATA,
-        //            MediaStore.MediaColumns.MIME_TYPE,
-        //            MediaStore.MediaColumns.WIDTH,
-        //            MediaStore.MediaColumns.HEIGHT,
-        //            MediaStore.MediaColumns.DURATION,
-        //            MediaStore.MediaColumns.SIZE,
-        //            MediaStore.MediaColumns.DISPLAY_NAME,
-        //            MediaStore.MediaColumns.BUCKET_ID,
-        //            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-        //            MediaStore.MediaColumns.DATE_ADDED,
-        //            MediaStore.MediaColumns.ORIENTATION,
         mId = getCursorString(cursor, MediaStore.MediaColumns._ID);
         mMimeType = getCursorString(cursor, MediaStore.Files.FileColumns.MIME_TYPE);
         mDateTaken = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
@@ -200,6 +201,8 @@ public class Item {
             mIsImage = true;
         } else if (MimeUtils.isVideoMimeType(mMimeType)||MimeUtils.isUrlHasVideo(realPath)) {
             mIsVideo = true;
+        }else if (MimeUtils.isAudioMimeType(mMimeType)) {
+            mIsAudio = true;
         }
     }
 

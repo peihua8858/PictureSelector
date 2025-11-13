@@ -2,14 +2,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="picker_app_label" msgid="5487796494405738578">"相片挑選器"</string>
-    <string name="picker_category_videos" msgid="8792703517064649453">"影片"</string>
+    <string name="picker_videos" msgid="8792703517064649453">"影片"</string>
     <string name="picker_add" msgid="2894574044585549298">"新增"</string>
     <string name="picker_deselect" msgid="4297825044827769490">"取消選取"</string>
     <string name="picker_deselected" msgid="8488133193326208475">"已取消選取"</string>
     <string name="picker_select" msgid="2704765470563027689">"選取"</string>
     <string name="picker_selected" msgid="9151797369975828124">"已選取"</string>
-    <string name="picker_select_up_to_single">"最多可選取 <xliff:g id="COUNT_0">%1$d</xliff:g> 個項目"</string>
-    <string name="picker_select_up_to">"最多可選取 <xliff:g id="COUNT_1">%1$d</xliff:g> 個項目"</string>
+    <string name="picker_select_up_to" msgid="6994294169508439957">"{count,plural, =1{最多可選取 <xliff:g id="COUNT_0">^1</xliff:g> 個項目}other{最多可選取 <xliff:g id="COUNT_1">^1</xliff:g> 個項目}}"</string>
     <string name="picker_recent" msgid="6694613584743207874">"最近"</string>
     <string name="picker_photos_empty_message" msgid="5980619500554575558">"沒有相片或影片"</string>
     <string name="picker_albums_empty_message" msgid="8341079772950966815">"沒有相簿"</string>
@@ -18,8 +17,7 @@
     <string name="picker_albums" msgid="4822511902115299142">"相簿"</string>
     <string name="picker_preview" msgid="6257414886055861039">"預覽"</string>
     <string name="picker_privacy_message" msgid="9132700451027116817">"這個應用程式只能存取你選取的相片"</string>
-    <string name="picker_album_item_count_1" msgid="4420723302534177596">"<xliff:g id="COUNT_0">%1$d</xliff:g> 個項目"</string>
-    <string name="picker_album_item_count" msgid="4420723302534177596">"<xliff:g id="COUNT_1">%1$d</xliff:g> 個項目"</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"{count,plural, =1{<xliff:g id="COUNT_0">^1</xliff:g> 個項目}other{<xliff:g id="COUNT_1">^1</xliff:g> 個項目}}"</string>
     <string name="picker_add_button_multi_select" msgid="4005164092275518399">"新增 (<xliff:g id="COUNT">^1</xliff:g>)"</string>
     <string name="picker_category_camera" msgid="4857367052026843664">"相機"</string>
     <string name="picker_category_downloads" msgid="793866660287361900">"下載的內容"</string>
@@ -41,4 +39,7 @@
     <string name="picker_crop_label_edit_photo">裁切</string>
     <string name="picker_crop_menu_crop">裁切</string>
     <string name="picker_crop_not_crop">不支持的裁剪類型</string>
+    <string name="picker_crop_rotate">Rotate</string>
+    <string name="picker_crop_scale">Scale</string>
+    <string name="picker_crop_crop">Crop</string>
 </resources>
