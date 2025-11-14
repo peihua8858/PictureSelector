@@ -126,6 +126,19 @@ public class DateTimeUtils {
      * @return True, the date is the same. Otherwise, return false.
      */
     public static boolean isSameDate(long oneMillis, long twoMillis) {
+        if (SdkLevel.isAtLeastO()) {
+            final ZoneId zoneId = ZoneId.systemDefault();
+
+            final Instant oneInstant = Instant.ofEpochMilli(oneMillis);
+            final LocalDateTime oneLocalDateTime = LocalDateTime.ofInstant(oneInstant, zoneId);
+
+            final Instant twoInstant = Instant.ofEpochMilli(twoMillis);
+            final LocalDateTime twoLocalDateTime = LocalDateTime.ofInstant(twoInstant, zoneId);
+
+            return (oneLocalDateTime.getYear() == twoLocalDateTime.getYear())
+                    && (oneLocalDateTime.getMonthValue() == twoLocalDateTime.getMonthValue())
+                    && (oneLocalDateTime.getDayOfMonth() == twoLocalDateTime.getDayOfMonth());
+        }
 
         // Get the system time zone
         return format.format(new Date(oneMillis)).equals(format.format(new Date(twoMillis)));

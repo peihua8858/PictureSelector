@@ -14,6 +14,7 @@ import android.text.format.DateUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import com.fz.common.utils.LogUtil;
 import com.peihua.photopicker.R;
 import com.peihua.selector.data.provider.ItemsProvider;
 import com.peihua.selector.util.DateTimeUtils;
@@ -157,7 +158,10 @@ public class Item {
         mId = getCursorString(cursor, MediaStore.MediaColumns._ID);
         mMimeType = getCursorString(cursor, MediaStore.Files.FileColumns.MIME_TYPE);
         mDateTaken = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
-        mGenerationModified = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
+        if (mDateTaken == 0|| mDateTaken == -1) {
+            mDateTaken = getCursorLong(cursor, MediaStore.MediaColumns.DATE_ADDED);
+        }
+        mGenerationModified = getCursorLong(cursor, MediaStore.MediaColumns.GENERATION_MODIFIED);
         mDuration = getCursorLong(cursor, MediaStore.MediaColumns.DURATION);
         mSpecialFormat = getCursorInt(cursor, MediaStore.MediaColumns.MIME_TYPE);
         realPath = getCursorString(cursor, MediaStore.MediaColumns.DATA);

@@ -16,6 +16,9 @@ import com.peihua.selector.util.MimeUtils
 import com.peihua.selector.util.deleteEndChar
 
 abstract class IMediaProvider(protected val context: Context) {
+    /**
+     * query album list
+     */
     abstract fun queryAllCategories(
         config: ConfigModel,
         mimeTypes: Array<String>,
@@ -37,7 +40,7 @@ abstract class IMediaProvider(protected val context: Context) {
         const val DEBUG: Boolean = true
         const val DEBUG_DUMP_CURSORS: Boolean = false
         val QUERY_URI: Uri = MediaStore.Files.getContentUri("external")
-        const val ORDER_BY = MediaStore.MediaColumns.DATE_MODIFIED + " DESC"
+        const val ORDER_BY = MediaStore.MediaColumns.DATE_ADDED + " DESC";
         const val NOT_GIF = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/gif') "
         const val NOT_WEBP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/webp') "
         const val NOT_BMP: String = " AND (" + MediaStore.MediaColumns.MIME_TYPE + "!='image/bmp') "
@@ -70,6 +73,7 @@ abstract class IMediaProvider(protected val context: Context) {
             MediaStore.MediaColumns.BUCKET_ID,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATE_ADDED,
+            MediaStore.MediaColumns.DATE_TAKEN,
             MediaStore.MediaColumns.DATE_MODIFIED,
             MediaStore.MediaColumns.ORIENTATION,
         )
@@ -90,6 +94,7 @@ abstract class IMediaProvider(protected val context: Context) {
             MediaStore.MediaColumns.BUCKET_ID,
             MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
             MediaStore.MediaColumns.DATE_ADDED,
+            MediaStore.MediaColumns.DATE_TAKEN,
             MediaStore.MediaColumns.ORIENTATION,
             "COUNT(*) AS $COLUMN_COUNT"
         )

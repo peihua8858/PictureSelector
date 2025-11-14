@@ -39,21 +39,28 @@ internal fun Fragment.requestPermissionsDsl(
     requestBlock: MultiplePermissionCallbacks.() -> Unit,
 ) {
     val permissions = when {
-        isAtLeastT && mimeTypes.isEmpty() -> arrayOf(
+        isAtLeastT && (mimeTypes.isEmpty() or MimeUtils.isAllMediaType(mimeTypes)) -> isUpsideDownCake(arrayOf(
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.READ_MEDIA_AUDIO
-        )
+        ))
 
-        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
-        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> arrayOf(Manifest.permission.READ_MEDIA_AUDIO)
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> isUpsideDownCake(arrayOf(Manifest.permission.READ_MEDIA_IMAGES))
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> isUpsideDownCake(arrayOf(Manifest.permission.READ_MEDIA_VIDEO))
+        isAtLeastT && MimeUtils.isImageMimeType(mimeTypes) -> isUpsideDownCake(arrayOf(Manifest.permission.READ_MEDIA_AUDIO))
         isAtLeastP -> arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         else -> arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     }
     dLog { "requestPermissionsDsl>>>>>>>>>>  ${permissions.joinToString(",")}" }
     requestPermissions(*permissions) { requestBlock() }
+}
+
+private fun isUpsideDownCake(array: Array<String>): Array<String> {
+    return when {
+        isUpsideDownCake -> arrayOf(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED, *array)
+        else -> array
+    }
 }
 
 /**

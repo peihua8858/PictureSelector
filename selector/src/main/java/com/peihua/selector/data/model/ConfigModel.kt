@@ -12,7 +12,7 @@ data class ConfigModel(
     var isShowHeic: Boolean = true,
     var isPageSyncAsCount: Boolean = false,
     var sortOrder: String = "",
-    var pageSize: Int = 600,
+    var pageSize: Int = 60,
     var filterVideoMinSecond: Long = 0,
     var filterVideoMaxSecond: Long = 0,
     var filterMinFileSize: Long = 0,

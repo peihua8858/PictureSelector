@@ -23,3 +23,5 @@ dependencyResolutionManagement {
 rootProject.name = "PictureSelector"
 include ':simple'
 include ':selector'
+include ':compose'
+include ':core'

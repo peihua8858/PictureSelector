@@ -40,7 +40,6 @@ public class Category {
         this(-1, null, null, null, 0, false);
     }
 
-    @VisibleForTesting
     public Category(long bucketId, String id, String displayName, Uri coverUri, int itemCount,
                     boolean isLocal) {
         mBucketId = bucketId;

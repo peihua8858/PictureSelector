@@ -100,7 +100,7 @@ internal class MediaProviderApi30Impl(context: Context) : MediaProviderApi29Impl
                 }
                 extras.putInt(EXTRA_CALLING_PACKAGE_UID, callingPackageUid)
                 extras.putBoolean(QUERY_SHOULD_SCREEN_SELECTION_URIS, shouldScreenSelectionUris)
-                result = client.query(uri, PROJECTION, extras, cancellationSignal)
+                result = client.query(uri, null, extras, cancellationSignal)
                 return result
             }
         } catch (ignored: RemoteException) {
