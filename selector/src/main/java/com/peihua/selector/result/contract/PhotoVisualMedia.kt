@@ -13,9 +13,7 @@ import android.os.ext.SdkExtensions
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.*
 import androidx.annotation.CallSuper
-import com.fz.common.array.splicing
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.result.PhotoVisualMediaRequest
 import kotlinx.parcelize.Parcelize
@@ -229,7 +227,7 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
     @CallSuper
     override fun createIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
         // Check if Photo Picker is available on the device
-        return if (input.isForceCustomUi || input.mediaType is MultipleMimeType) {
+        return if (input.isForceCustomUi) {
             createCustomIntent(context, input)
         } else if (isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {

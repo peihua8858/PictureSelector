@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    val launchMultipleImage = registerForActivityResult(PhotoMultipleVisualMedia(3)) {
+    val launchMultipleImage = registerForActivityResult(PhotoMultipleVisualMedia()) {
         Log.d("MainActivity", "Uri=$it")
         if (it.isNonEmpty()) {
             selectUrisState.value = it

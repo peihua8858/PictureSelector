@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.fz.common.utils.dLog
 import com.fz.common.utils.getParcelableArrayListCompat
+import com.fz.common.utils.isAtLeastT
 import com.peihua.selector.data.model.Item
 import com.peihua.selector.result.contract.PhotoVisualMedia
 import java.util.Collections
@@ -171,7 +172,7 @@ class Selection {
                 val extraMax = getInt(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX,  /* defaultValue */ -1)
                 // Multi selection max limit should always be greater than 1 and less than or equal
                 // to PICK_IMAGES_MAX_LIMIT.
-                val pickImageMaxLimit: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val pickImageMaxLimit: Int = if (isAtLeastT) {
                     MediaStore.getPickImagesMaxLimit()
                 } else {
                     PICK_IMAGES_MAX_LIMIT
