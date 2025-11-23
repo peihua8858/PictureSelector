@@ -12,12 +12,12 @@ import android.os.RemoteException
 import android.os.Trace
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.fz.common.text.ifNullOrEmpty
-import com.fz.common.utils.dLog
-import com.fz.common.utils.eLog
-import com.fz.common.utils.vLog
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.eLog
+import com.peihua8858.tools.utils.ifNullOrEmpty
+import com.peihua8858.tools.utils.vLog
 
 @RequiresApi(26)
 internal open class MediaProviderApi26Impl(context: Context) : IMediaProvider(context) {

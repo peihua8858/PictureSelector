@@ -8,7 +8,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.CallSuper
-import com.fz.common.utils.dLog
 import com.peihua.selector.data.Selection
 import com.peihua.selector.result.PhotoVisualMediaRequest
 import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.ACTION_SYSTEM_FALLBACK_PICK_IMAGES
@@ -43,8 +42,7 @@ class PhotoMultipleVisualMedia(
                 }
                 if (maxItems > 1) putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
             }
-        } else if (PhotoVisualMedia.isSystemFallbackPickerAvailable(context)) {
-            val fallbackPicker = checkNotNull(PhotoVisualMedia.getSystemFallbackPicker(context)).activityInfo
+        } else if (PhotoVisualMedia.isSystemFallbackPickerAvailable(context)) { val fallbackPicker = checkNotNull(PhotoVisualMedia.getSystemFallbackPicker(context)).activityInfo
             Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
                 putExtra(Intent.EXTRA_MIME_TYPES, input.mediaType.mimeTypes)

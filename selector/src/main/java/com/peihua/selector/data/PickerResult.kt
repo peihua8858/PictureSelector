@@ -3,9 +3,8 @@ package com.peihua.selector.data
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
-import com.fz.common.array.isNonEmpty
-import com.fz.common.text.isNonEmpty
 import com.peihua.selector.data.model.Item
+import com.peihua8858.tools.array.isNonEmpty
 
 /**
  * This class is responsible for returning result to the caller of the PhotoPicker.

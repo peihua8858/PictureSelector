@@ -2,9 +2,9 @@ package com.peihua.selector.result
 
 import android.net.Uri
 import androidx.activity.result.PickVisualMediaRequest
-import com.fz.common.utils.dLog
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.result.contract.PhotoVisualMedia
+import com.peihua8858.tools.utils.dLog
 
 fun PhotoVisualMediaRequestBuilder(
     mediaType: PhotoVisualMedia.VisualMediaType = PhotoVisualMedia.ImageOnly

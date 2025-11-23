@@ -1,14 +1,17 @@
 package com.peihua.selector.photos.ui
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import com.fz.imageloader.LoaderListener
 import com.fz.imageloader.widget.RatioImageView
 import com.peihua.photopicker.R
 import com.peihua.selector.data.model.Item
+import com.peihua8858.tools.utils.dLog
 
 /**
  * ViewHolder of a photo item within a RecyclerView.
@@ -36,6 +39,23 @@ class PhotoGridHolder(
 
     override fun bind() {
         val item = itemView.tag as Item
+        dLog { ">>>>>uri:${item.contentUri}" }
+        mIconThumb.setListener(object : LoaderListener<Drawable>{
+            override fun onError(e: Exception?): Boolean {
+                dLog { ">>>>>>>>>${e?.stackTraceToString()}" }
+                return false
+            }
+
+            override fun onSuccess(
+                bitmap: Drawable?,
+                width: Int,
+                height: Int
+            ): Boolean {
+                dLog { ">>>>$bitmap,width:$width,height:$height" }
+                return false
+            }
+
+        })
         if (item.isAudio) {
             mIconThumb.setImageResource(R.drawable.picker_ic_audio_placeholder)
         }else{

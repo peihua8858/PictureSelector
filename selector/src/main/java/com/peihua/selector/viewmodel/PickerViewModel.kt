@@ -8,11 +8,6 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.fz.common.array.isNonEmpty
-import com.fz.common.model.ViewModelState
-import com.fz.common.model.request
-import com.fz.common.utils.dLog
-import com.fz.common.utils.getParcelableExtraCompat
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
 import com.peihua.selector.data.model.Category
@@ -22,6 +17,11 @@ import com.peihua.selector.data.provider.IMediaProvider
 import com.peihua.selector.util.DateTimeUtils
 import com.peihua.selector.util.MimeFilterUtils
 import com.peihua.selector.util.isAtLeastQ
+import com.peihua8858.tools.array.isNonEmpty
+import com.peihua8858.tools.model.ResultData
+import com.peihua8858.tools.model.request
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.getParcelableExtraCompat
 
 /**
  * PickerViewModel to store and handle data for PhotoPickerActivity.
@@ -39,14 +39,14 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     // data set to reduce memories.
     // The list of Items with all photos and videos
-    private val mItemList: MutableLiveData<ViewModelState<MutableList<Item>>> = MutableLiveData()
+    private val mItemList: MutableLiveData<ResultData<MutableList<Item>>> = MutableLiveData()
 
     // The list of Items with all photos and videos in category
-    private val mCategoryItemList: MutableLiveData<ViewModelState<MutableList<Item>>> =
+    private val mCategoryItemList: MutableLiveData<ResultData<MutableList<Item>>> =
         MutableLiveData()
 
     // The list of categories.
-    private val mCategoryList: MutableLiveData<ViewModelState<MutableList<Category>>> =
+    private val mCategoryList: MutableLiveData<ResultData<MutableList<Category>>> =
         MutableLiveData()
     private var mediaProvider: IMediaProvider
     var mMimeTypeFilters: Array<String> = arrayOf()
@@ -78,15 +78,15 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         mediaProvider = itemsProvider
     }
 
-    val categoryItems: LiveData<ViewModelState<MutableList<Item>>>
+    val categoryItems: LiveData<ResultData<MutableList<Item>>>
         get() {
             return mCategoryItemList
         }
-    val items: LiveData<ViewModelState<MutableList<Item>>>
+    val items: LiveData<ResultData<MutableList<Item>>>
         get() {
             return mItemList
         }
-    val categories: LiveData<ViewModelState<MutableList<Category>>>
+    val categories: LiveData<ResultData<MutableList<Category>>>
         get() {
             return mCategoryList
         }

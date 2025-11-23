@@ -6,10 +6,10 @@ package com.peihua.selector.util
 import android.Manifest
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.fz.common.utils.dLog
-import com.fz.common.utils.isAtLeastP
 import com.peihua8858.permissions.core.MultiplePermissionCallbacks
 import com.peihua8858.permisstions.fragment.requestPermissions
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.isAtLeastP
 import java.io.Closeable
 import java.io.File
 import java.io.IOException

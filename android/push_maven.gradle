@@ -1,0 +1,86 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'maven-publish'
+def isRelease = true
+def mavenUrl = "http://1:8989/repository/globalegrow/"
+def mavenUrlSnapshot = "http://:8989/repository/globalegrow-snapshot/"
+def mavenUserName = "longxl"
+def mavenPwd = "longxl123"
+group = 'com.github.peihua8858'
+version = "1.0.0"
+def localFile = "${rootDir}/plugin_libs"
+def sdkVersionName = isRelease ? version : version + "-SNAPSHOT"
+publishing {
+    publications {
+        service(MavenPublication) {
+            afterEvaluate {
+                from components.findByName('release')
+                groupId = group
+                artifactId = 'PictureSelector'
+                version = sdkVersionName
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "Snapshot"
+            url = mavenUrlSnapshot
+            credentials {
+                username = mavenUserName
+                password = mavenPwd
+            }
+        }
+        maven {
+            name = "Release"
+            url = mavenUrl
+            credentials {
+                username = mavenUserName
+                password = mavenPwd
+            }
+        }
+        maven {
+            name = "mavenLocalFile"
+            url = uri(localFile)
+        }
+    }
+}
+task deleteBuild(type: Delete) {
+    println "deleteBuild()"
+    def buildDir = project.buildDir.absolutePath
+    delete buildDir
+}
+task deleteLocalFile(type: Delete) {
+    println "deleteLocalFile()"
+    def buildDir = localFile
+    delete buildDir
+}
+
+assemble.mustRunAfter 'deleteBuild'
+publishServicePublicationToSnapshotRepository.mustRunAfter 'assemble'
+task publishSnapshotToMaven(dependsOn: [
+        'deleteBuild',// 0
+        'deleteLocalFile',// 1
+        'assemble',// 1
+        'publishServicePublicationToSnapshotRepository' //2
+], group: 'publish-group') {
+    println "publishSnapshotToMaven()"
+}
+publishServicePublicationToReleaseRepository.mustRunAfter 'assemble'
+task publishReleaseToMaven(dependsOn: [
+        'deleteBuild',// 0
+        'deleteLocalFile',// 1
+        'assemble',// 1
+        'publishServicePublicationToReleaseRepository' //2
+], group: 'publish-group') {
+    println "publishReleaseToMaven()"
+}
+
+publishServicePublicationToMavenLocalFileRepository.mustRunAfter 'assembleRelease'
+task publishToMavenLocalFile(dependsOn: [
+        'deleteBuild',// 0
+        'deleteLocalFile',// 1
+        'assembleRelease',// 2
+        'publishServicePublicationToMavenLocalFileRepository' //3
+], group: 'publish-group') {
+    println "publishToMavenLocalFile()"
+}

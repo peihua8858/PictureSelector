@@ -15,14 +15,12 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.RecyclerView
-import com.fz.common.utils.getScreenWidth
-import com.fz.common.view.utils.dp
-import com.fz.common.view.utils.pxToDp
 import com.peihua.photopicker.R
 import com.peihua.selector.data.Selection
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.utils.pxToDp
+import com.peihua8858.tools.utils.screenWidth
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -174,7 +172,7 @@ abstract class TabFragment : Fragment() {
 
     val spanCount: Int
         get() {
-            val screenWidth = requireActivity().getScreenWidth().pxToDp()
+            val screenWidth = requireActivity().screenWidth.pxToDp()
             when {
                 screenWidth > 840 -> {
                     return 12

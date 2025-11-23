@@ -1,10 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.parcelize)
+
 }
 
 android {
-    namespace 'com.peihua.picker.core'
+    namespace 'com.peihua8858.selector'
     compileSdk 36
 
     defaultConfig {
@@ -27,9 +30,15 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.exifinterface:exifinterface:1.4.1'
+    implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1')
+    implementation 'com.github.peihua8858.KotlinTools:tools-android:1.0.0'
+    implementation "com.squareup.okhttp3:okhttp:4.11.0"
 }

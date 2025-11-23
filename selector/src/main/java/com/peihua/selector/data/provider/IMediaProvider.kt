@@ -5,15 +5,15 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.CancellationSignal
 import android.provider.MediaStore
-import com.fz.common.utils.dLog
-import com.fz.common.utils.isAtLeastO
-import com.fz.common.utils.isAtLeastQ
-import com.fz.common.utils.isAtLeastR
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.data.model.PictureMimeType
 import com.peihua.selector.util.MimeUtils
 import com.peihua.selector.util.deleteEndChar
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.isAtLeastO
+import com.peihua8858.tools.utils.isAtLeastQ
+import com.peihua8858.tools.utils.isAtLeastR
 
 abstract class IMediaProvider(protected val context: Context) {
     /**

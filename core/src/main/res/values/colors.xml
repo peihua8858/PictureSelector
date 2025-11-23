@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="picker_thumb_gray_color">#1F000000</color>
+    <color name="picker_clear_cache_icon_color">#5F6368</color>
+    <!-- PhotoPicker -->
+    <color name="picker_background_color">@android:color/white</color>
+
+    <!-- PhotoPicker check button -->
+    <color name="picker_unselected_check_color">#E1E3E5</color>
+
+    <color name="picker_default_white">@android:color/white</color>
+
+    <!-- PhotoPicker gradient colors -->
+    <color name="picker_item_gradient_color">#61202124</color> <!-- 38% opacity -->
+    <color name="preview_gradient_color_light">@android:color/transparent</color>
+    <color name="preview_gradient_color_dark">#80202124</color>
+    <color name="preview_scrim_solid_color">#E6000000</color> <!-- 90% opacity black -->
+
+    <!-- PhotoPicker Preview -->
+    <color name="preview_highlight_color">#8AB4F8</color>
+    <color name="preview_default_grey">#202124</color>
+    <color name="preview_background_color">@android:color/black</color>
+
+    <!--Palette-->
+    <color name="picker_color_black">#000000</color>
+    <color name="picker_color_blaze_orange">#FF6300</color>
+    <color name="picker_color_ebony_clay">#20242F</color>
+    <color name="picker_color_heather">#B3BECE</color>
+    <color name="picker_color_white">#FFFFFF</color>
+
+    <!--uCrop Activity-->
+    <color name="picker_color_toolbar">@color/picker_color_white</color>
+    <color name="picker_color_statusbar">#f5f5f5</color>
+    <color name="picker_color_toolbar_widget">@color/picker_color_black</color>
+    <color name="picker_color_widget">@color/picker_color_black</color>
+    <color name="picker_color_widget_active">@color/picker_color_white</color>
+    <color name="picker_color_active_controls_color">@color/picker_color_blaze_orange</color>
+    <color name="picker_color_inactive_controls_color">@color/picker_color_heather</color>
+    <color name="picker_color_widget_rotate_mid_line">@color/picker_color_blaze_orange</color>
+    <color name="picker_color_widget_rotate_angle">@color/picker_color_ebony_clay</color>
+    <color name="picker_color_active_aspect_ratio">@color/picker_color_blaze_orange</color>
+    <color name="picker_color_inactive_aspect_ratio">@color/picker_color_ebony_clay</color>
+    <color name="picker_color_widget_background">@color/picker_color_ebony_clay</color>
+    <color name="picker_color_widget_text">@color/picker_color_blaze_orange</color>
+    <color name="picker_color_progress_wheel_line">@color/picker_color_ebony_clay</color>
+    <color name="picker_color_crop_background">@color/picker_color_black</color>
+    <color name="picker_color_divider_line">#666666</color>
+    <color name="picker_color_80">#80000000</color>
+    <color name="picker_color_20">#20000000</color>
+    <!--Crop View-->
+    <color name="picker_color_default_crop_grid">#80ffffff</color>
+    <color name="picker_color_default_crop_frame">#ffffff</color>
+    <color name="picker_color_default_dimmed">#8c000000</color>
+    <color name="picker_color_default_logo">#4f212121</color>
+</resources>

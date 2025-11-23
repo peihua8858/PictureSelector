@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name="com.peihua8858.selector.picker.PhotoPickerActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:icon="@drawable/picker_app_icon"
+            android:label="@string/picker_app_label"
+            android:theme="@style/PickerMaterialTheme" >
+            <intent-filter>
+                <action android:name="android.provider.selector.action.PICK_IMAGES"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.peihua8858.selector.crop.UCropActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/PickerCropMaterialTheme" >
+            <intent-filter>
+                <action android:name="android.provider.selector.action.CROP_IMAGES"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.peihua8858.selector.crop.UCropMultipleActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@style/PickerCropMaterialTheme" >
+            <intent-filter>
+                <action android:name="android.provider.selector.action.MULTIPLE_CROP_IMAGES"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

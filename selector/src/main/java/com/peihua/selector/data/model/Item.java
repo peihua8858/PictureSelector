@@ -14,7 +14,6 @@ import android.text.format.DateUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
-import com.fz.common.utils.LogUtil;
 import com.peihua.photopicker.R;
 import com.peihua.selector.data.provider.ItemsProvider;
 import com.peihua.selector.util.DateTimeUtils;

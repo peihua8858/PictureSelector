@@ -1,0 +1,247 @@
+package com.peihua8858.selector.picker.fragment
+
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.peihua8858.permisstions.fragment.requestPermissions
+import com.peihua8858.selector.android.R
+import com.peihua8858.selector.picker.PhotoPickerActivity
+import com.peihua8858.selector.picker.model.Category
+import com.peihua8858.selector.picker.model.Item
+import com.peihua8858.selector.picker.viewmodel.PickerViewModel
+import com.peihua8858.selector.utils.LayoutModeUtils
+import com.peihua8858.selector.utils.StringUtils
+import com.peihua8858.selector.utils.getPermissions
+import com.peihua8858.tools.collections.isNonEmpty
+import com.peihua8858.tools.model.ResultData
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.isAtLeastP
+import com.peihua8858.tools.utils.isAtLeastR
+import java.text.NumberFormat
+import java.util.Locale
+
+/**
+ * Photos tab fragment for showing the photos
+ */
+class PhotosTabFragment : TabFragment() {
+    private var mCategory = Category.DEFAULT
+    private val mAdapter: PhotosTabAdapter by lazy {
+        PhotosTabAdapter(
+            mSelection,
+            { v: View -> onItemClick(v) }) { v: View -> onItemLongClick(v) }
+    }
+    private var mPage = 1
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // After the configuration is changed, if the fragment is now shown, onViewCreated will not
+        // be triggered. We need to restore the savedInstanceState in onCreate.
+        // E.g. Click the albums -> preview one item -> rotate the device
+        if (savedInstanceState != null) {
+            mCategory = Category.fromBundle(savedInstanceState)
+        }
+    }
+
+    override val mPickerViewModel: PickerViewModel
+        get() = ViewModelProvider(requireActivity())[PickerViewModel::class.java]
+
+    private var isHasMore = false
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setEmptyMessage(com.peihua8858.selector.R.string.picker_photos_empty_message)
+        if (mCategory.isDefault) {
+            mPickerViewModel.items.observe(this, ::result)
+        } else {
+            mPickerViewModel.categoryItems.observe(this, ::result)
+        }
+        if (isAtLeastP) {
+            // Set the pane title for A11y
+            view.accessibilityPaneTitle = mCategory.getDisplayName(context)
+        }
+        requestPermissions(*getPermissions(mPickerViewModel.mMimeTypeFilters)){
+            onGranted {
+                dLog { "requestPermissionsDsl>>>>>>>>>>onGranted" }
+                mLoadingData = true
+                mPage = 1
+                requestMediasAsync(false)
+            }
+            onDenied {
+                dLog { "requestPermissionsDsl>>>>>>>>>>onDenied" }
+                updateVisibilityForEmptyView(true)
+            }
+        }
+
+        val layoutManager = GridLayoutManager(context, spanCount)
+        val lookup = mAdapter.createSpanSizeLookup(layoutManager)
+        layoutManager.spanSizeLookup = lookup
+        val itemDecoration = PhotosTabItemDecoration(view.context)
+        mRecyclerView?.apply {
+            val spacing = resources.getDimensionPixelSize(com.peihua8858.selector.R.dimen.picker_photo_item_spacing);
+            val photoSize = resources.getDimensionPixelSize(com.peihua8858.selector.R.dimen.picker_photo_size);
+            setColumnWidth(photoSize + spacing)
+            setMinimumSpanCount(spanCount)
+            this.layoutManager = layoutManager
+            this.adapter = mAdapter
+            addItemDecoration(itemDecoration)
+            setReachBottomRow(spanCount)
+        }
+    }
+
+    var mLoadingData = false
+    var isLoadMoreData = false
+    override val isEnabledLoadMore: Boolean
+        get() = true
+
+    override fun onLoadMore() {
+        if (mLoadingData || !isHasMore) {
+            return
+        }
+        mPage++
+        mLoadingData = true
+        isLoadMoreData = true
+        requestMediasAsync(true)
+    }
+
+    private fun requestMediasAsync(isLoadMore: Boolean) {
+        dLog { ">>>>>>>$this  $isLoadMore,mCategory:$mCategory isDefault:${mCategory == Category.DEFAULT}" }
+        mPickerViewModel.requestMediasAsync(mPage, mCategory, isLoadMore)
+    }
+
+    private fun result(it: ResultData<MutableList<Item>>) {
+        if (it.isSuccess) {
+            val items = it.result
+            if (items.isNonEmpty()) {
+                if (isLoadMoreData) {
+                    mAdapter.addItems(items)
+                } else {
+                    mAdapter.updateItemList(items)
+                }
+                // Handle emptyView's visibility
+            }
+            if (!isLoadMoreData || mAdapter.itemCount == 0) {
+                updateVisibilityForEmptyView(items.isNullOrEmpty())
+            }
+            isHasMore = (items?.size ?: 0) > 0
+            mLoadingData = false
+            isLoadMoreData = false
+        } else if (it.isError) {
+            mLoadingData = false
+            isLoadMoreData = false
+            if (mAdapter.itemCount == 0) {
+                updateVisibilityForEmptyView(true)
+            }
+        }
+
+    }
+
+    /**
+     * Called when owning activity is saving state to be used to restore state during creation.
+     *
+     * @param state Bundle to save state
+     */
+    override fun onSaveInstanceState(state: Bundle) {
+        super.onSaveInstanceState(state)
+        mCategory.toBundle(state)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? PhotoPickerActivity)?.apply {
+            if (mCategory.isDefault) {
+                updateCommonLayouts(LayoutModeUtils.MODE_PHOTOS_TAB,  /* title */"")
+            } else {
+                updateCommonLayouts(LayoutModeUtils.MODE_ALBUM_PHOTOS_TAB, mCategory.getDisplayName(context))
+            }
+        }
+    }
+
+    private fun onItemClick(view: View) {
+        if (mSelection.canSelectMultiple()) {
+            val isSelectedBefore = view.isSelected
+            if (isSelectedBefore) {
+                mSelection.removeSelectedItem(view.tag as Item)
+            } else {
+                if (!mSelection.isSelectionAllowed) {
+                    val maxCount = mSelection.maxSelectionLimit
+                    val quantityText = StringUtils.getICUFormatString(
+                        resources,
+                        maxCount,
+                        com.peihua8858.selector.R.string.picker_select_up_to
+                    )
+                    val itemCountString = NumberFormat.getInstance(Locale.getDefault()).format(maxCount.toLong())
+                    val message = TextUtils.expandTemplate(quantityText, itemCountString)
+                    Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+                    return
+                } else {
+                    mSelection.addSelectedItem(view.tag as Item)
+                }
+            }
+            view.isSelected = !isSelectedBefore
+            // There is an issue b/223695510 about not selected in Accessibility mode. It only says
+            // selected state, but it doesn't say not selected state. Add the not selected only to
+            // avoid that it says selected twice.
+            if (isAtLeastR) {
+                view.stateDescription =
+                    if (isSelectedBefore) getString(com.peihua8858.selector.R.string.picker_not_selected) else null
+            }
+        } else {
+            val item = view.tag as Item
+            mSelection.setSelectedItem(item)
+            (activity as PhotoPickerActivity?)?.setResultAndFinishSelf()
+        }
+    }
+
+    private fun onItemLongClick(view: View): Boolean {
+        val item = view.tag as Item
+        if (!mSelection.canSelectMultiple()) {
+            // In single select mode, if the item is previewed, we set it as selected item. This is
+            // will assist in "Add" button click to return all selected items.
+            // For multi select, long click only previews the item, and until user selects the item,
+            // it doesn't get added to selected items. Also, there is no "Add" button in the preview
+            // layout that can return selected items.
+            mSelection.setSelectedItem(item)
+        }
+        mSelection.prepareItemForPreviewOnLongPress(item)
+        // Transition to PreviewFragment.
+        PreviewFragment.show(
+            requireActivity().supportFragmentManager,
+            PreviewFragment.argsForPreviewOnLongPress
+        )
+        return true
+    }
+
+    companion object {
+        private const val FRAGMENT_TAG = "PhotosTabFragment"
+
+        /**
+         * Create the fragment with the category and add it into the FragmentManager
+         *
+         * @param fm the fragment manager
+         * @param category the category
+         */
+        @JvmStatic
+        fun show(fm: FragmentManager, category: Category) {
+            val ft = fm.beginTransaction()
+            val fragment = PhotosTabFragment()
+            fragment.mCategory = category
+            ft.replace(R.id.fragment_container, fragment, FRAGMENT_TAG)
+            if (!fragment.mCategory.isDefault) {
+                ft.addToBackStack(FRAGMENT_TAG)
+            }
+            ft.commitAllowingStateLoss()
+        }
+
+        /**
+         * Get the fragment in the FragmentManager
+         *
+         * @param fm The fragment manager
+         */
+        operator fun get(fm: FragmentManager): Fragment? {
+            return fm.findFragmentByTag(FRAGMENT_TAG)
+        }
+    }
+}

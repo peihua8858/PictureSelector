@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.fz.common.collections.isNonEmpty
 import com.peihua.photopicker.R
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.data.model.Category
@@ -14,6 +13,7 @@ import com.peihua.selector.photos.ui.PhotosTabFragment.Companion.show
 import com.peihua.selector.util.LayoutModeUtils
 import com.peihua.selector.util.requestPermissionsDsl
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.collections.isNonEmpty
 
 /**
  * Albums tab fragment for showing the albums
@@ -35,14 +35,14 @@ class AlbumsTabFragment : TabFragment() {
             mPickerViewModel.hasMimeTypeFilters()
         )
         mPickerViewModel.categories.observe(this) {
-            if (it.isSuccess()) {
-                val categoryList = it.data
+            if (it.isSuccess) {
+                val categoryList = it.result
                 if (categoryList.isNonEmpty()) {
                     adapter.updateCategoryList(categoryList)
                 }
                 // Handle emptyView's visibility
                 updateVisibilityForEmptyView(categoryList.isNullOrEmpty())
-            } else if (it.isError()) {
+            } else if (it.isError) {
                 updateVisibilityForEmptyView(true)
             }
         }

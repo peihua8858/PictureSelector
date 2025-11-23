@@ -1,0 +1,76 @@
+package com.peihua8858.selector.picker.provider
+
+import android.content.ContentResolver
+import android.content.Context
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.database.DatabaseUtils
+import android.net.Uri
+import android.os.Bundle
+import android.os.CancellationSignal
+import android.os.RemoteException
+import android.os.Trace
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
+import com.peihua8858.selector.picker.model.Category
+import com.peihua8858.selector.picker.model.ConfigModel
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.eLog
+import com.peihua8858.tools.utils.ifNullOrEmpty
+import com.peihua8858.tools.utils.vLog
+
+@RequiresApi(29)
+internal open class MediaProviderApi29Impl(context: Context) : MediaProviderApi26Impl(context) {
+
+    override fun queryAllCategories(config: ConfigModel, mimeTypes: Array<String>, cancellationSignal: CancellationSignal?): Cursor? {
+        try {
+            return queryAlbums(QUERY_URI, config, mimeTypes, cancellationSignal)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    private fun queryAlbums(uri: Uri, config: ConfigModel, mimeTypes: Array<String>, cancellationSignal: CancellationSignal?): Cursor? {
+        if (DEBUG) {
+            dLog { "queryAlbums() uri=" + uri + " mimeTypes=" + mimeTypes.contentToString() }
+        }
+        Trace.beginSection("queryAlbums")
+
+        val extras = Bundle()
+        var result: Cursor? = null
+        try {
+            return context.contentResolver.acquireUnstableContentProviderClient(MediaStore.AUTHORITY).use { client ->
+                if (client == null) {
+                    eLog { "Unable to acquire unstable content provider for " + MediaStore.AUTHORITY }
+                    return null
+                }
+                val (selection, selectionArgs) = createPageSelectionAndArgs(Category.DEFAULT, mimeTypes, config)
+                extras.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection.toString())
+                extras.putStringArray(ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS, selectionArgs)
+                extras.putString(ContentResolver.QUERY_ARG_SQL_SORT_ORDER, config.sortOrder.ifNullOrEmpty { ORDER_BY })
+                result = client.query(uri, PROJECTION, extras, cancellationSignal)
+                return result
+            }
+        } catch (ignored: RemoteException) {
+            // Do nothing, return null.
+            eLog { "Failed to query merged albums with extras: $extras \n ${ignored.stackTraceToString()}" }
+            return null
+        } catch (ignored: PackageManager.NameNotFoundException) {
+            eLog { "Failed to query merged albums with extras: $extras \n ${ignored.stackTraceToString()}" }
+            return null
+        } finally {
+            Trace.endSection()
+            if (DEBUG) {
+                if (result == null) {
+                    dLog { "queryAlbums()'s result is null with extras: $extras" }
+                } else {
+                    dLog { "queryAlbums() loaded " + result.count + " items with extras: $extras" }
+                    if (DEBUG_DUMP_CURSORS) {
+                        vLog { DatabaseUtils.dumpCursorToString(result) }
+                    }
+                }
+            }
+        }
+    }
+}

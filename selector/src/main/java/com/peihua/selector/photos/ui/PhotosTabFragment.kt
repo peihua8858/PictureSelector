@@ -7,9 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.fz.common.collections.isNonEmpty
-import com.fz.common.model.ViewModelState
-import com.fz.common.utils.dLog
 import com.google.android.material.snackbar.Snackbar
 import com.peihua.photopicker.R
 import com.peihua.selector.data.model.Category
@@ -21,6 +18,9 @@ import com.peihua.selector.util.isAtLeastPie
 import com.peihua.selector.util.isAtLeastR
 import com.peihua.selector.util.requestPermissionsDsl
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.collections.isNonEmpty
+import com.peihua8858.tools.model.ResultData
+import com.peihua8858.tools.utils.dLog
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -110,9 +110,9 @@ class PhotosTabFragment : TabFragment() {
         mPickerViewModel.requestMediasAsync(mPage, mCategory, isLoadMore)
     }
 
-    private fun result(it: ViewModelState<MutableList<Item>>) {
-        if (it.isSuccess()) {
-            val items = it.data
+    private fun result(it: ResultData<MutableList<Item>>) {
+        if (it.isSuccess) {
+            val items = it.result
             if (items.isNonEmpty()) {
                 if (isLoadMoreData) {
                     mAdapter.addItems(items)
@@ -127,7 +127,7 @@ class PhotosTabFragment : TabFragment() {
             isHasMore = (items?.size ?: 0) > 0
             mLoadingData = false
             isLoadMoreData = false
-        } else if (it.isError()) {
+        } else if (it.isError) {
             mLoadingData = false
             isLoadMoreData = false
             if (mAdapter.itemCount == 0) {

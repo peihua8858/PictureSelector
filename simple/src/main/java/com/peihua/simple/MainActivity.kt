@@ -49,22 +49,22 @@ import com.fz.common.utils.toString
 import com.fz.imageloader.ImageLoader
 import com.fz.imageloader.glide.ImageGlideFetcher
 import com.fz.imageloader.widget.RatioImageView
-import com.peihua.selector.result.PhotoCropVisualMediaRequestBuilder
-import com.peihua.selector.result.PhotoVisualMediaRequestBuilder
-import com.peihua.selector.result.SystemPhotoCropVisualMediaRequestBuilder
-import com.peihua.selector.result.contract.PhotoCropVisualMedia
-import com.peihua.selector.result.contract.PhotoMultipleVisualMedia
-import com.peihua.selector.result.contract.PhotoVisualMedia
-import com.peihua.selector.result.contract.SytemPhotoCropVisualMedia
 import com.peihua.simple.ui.theme.PictureSelectorTheme
 import com.peihua.simple.ui.theme.Purple40
+import com.peihua8858.selector.picker.result.PhotoCropVisualMediaRequestBuilder
+import com.peihua8858.selector.picker.result.PhotoVisualMediaRequestBuilder
+import com.peihua8858.selector.picker.result.SystemPhotoCropVisualMediaRequestBuilder
+import com.peihua8858.selector.picker.result.contract.PhotoCropVisualMedia
+import com.peihua8858.selector.picker.result.contract.PhotoMultipleVisualMedia
+import com.peihua8858.selector.picker.result.contract.PhotoVisualMedia
+import com.peihua8858.selector.picker.result.contract.SytemPhotoCropVisualMedia
 import id.zelory.compressor.createFile
 import java.io.File
 
 class MainActivity : ComponentActivity() {
     val multiSelectPhotoRequest by lazy {
         PhotoVisualMediaRequestBuilder(PhotoVisualMedia.AllMedia)
-            .setForceCustomUi(false)
+            .setForceCustomUi(true)
             .setMaxItemCount(10)
 //            .setMediaType(PhotoVisualMedia.MultipleMimeType("image/jpeg", "image/png"))
             .setShowGif(true)

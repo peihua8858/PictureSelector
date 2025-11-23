@@ -2,7 +2,7 @@ package com.peihua.selector.util
 
 import android.provider.MediaStore
 import android.text.TextUtils
-import com.fz.common.array.isNonEmpty
+import com.peihua8858.tools.array.isNonEmpty
 import java.util.Locale
 
 

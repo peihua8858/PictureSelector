@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment
 import androidx.transition.AutoTransition
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
-import com.fz.common.utils.getColorCompat
 import com.peihua.photopicker.R
 import com.peihua.selector.crop.callback.BitmapCropCallback
 import com.peihua.selector.crop.model.AspectRatio
@@ -38,6 +37,8 @@ import com.peihua.selector.crop.widget.HorizontalProgressWheelView.ScrollingList
 import com.peihua.selector.crop.widget.OverlayView
 import com.peihua.selector.crop.widget.TransformImageView.TransformImageListener
 import com.peihua.selector.crop.widget.UCropView
+import com.peihua8858.tools.utils.getColorCompat
+import com.peihua8858.tools.utils.getParcelableCompat
 import java.util.Locale
 
 class UCropFragment : Fragment() {
@@ -102,7 +103,7 @@ class UCropFragment : Fragment() {
         callback!!.loadingProgress(false)
         var isClickable = false
         if (bundle.getBoolean(UCrop.Options.EXTRA_CROP_FORBID_GIF_WEBP, false)) {
-            val inputUri = bundle.getParcelable<Uri>(UCrop.EXTRA_INPUT_URI)
+            val inputUri = bundle.getParcelableCompat(UCrop.EXTRA_INPUT_URI,Uri::class.java)
             val mimeType = FileUtils.getMimeTypeFromMediaContentUri(context, inputUri)
             isClickable = FileUtils.isGif(mimeType) || FileUtils.isWebp(mimeType)
         }
@@ -147,8 +148,8 @@ class UCropFragment : Fragment() {
     }
 
     private fun setImageData(bundle: Bundle) {
-        val inputUri = bundle.getParcelable<Uri>(UCrop.EXTRA_INPUT_URI)
-        var outputUri = bundle.getParcelable<Uri>(UCrop.EXTRA_OUTPUT_URI)
+        val inputUri = bundle.getParcelableCompat(UCrop.EXTRA_INPUT_URI, Uri::class.java)
+        var outputUri = bundle.getParcelableCompat(UCrop.EXTRA_OUTPUT_URI, Uri::class.java)
         processOptions(bundle)
         if (inputUri != null && outputUri != null) {
             try {

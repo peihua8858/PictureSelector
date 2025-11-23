@@ -9,6 +9,8 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven { url 'https://jitpack.io' }
+
     }
 }
 dependencyResolutionManagement {
@@ -25,3 +27,4 @@ include ':simple'
 include ':selector'
 //include ':compose'
 //include ':core'
+//include ':android'

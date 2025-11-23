@@ -1,0 +1,205 @@
+package com.peihua8858.selector.picker.viewmodel
+
+import android.app.Application
+import android.content.Intent
+import android.os.CancellationSignal
+import android.util.Log
+import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.peihua8858.selector.picker.MuteStatus
+import com.peihua8858.selector.picker.Selection
+import com.peihua8858.selector.picker.model.Category
+import com.peihua8858.selector.picker.model.ConfigModel
+import com.peihua8858.selector.picker.model.Item
+import com.peihua8858.selector.picker.provider.IMediaProvider
+import com.peihua8858.selector.utils.DateTimeUtils
+import com.peihua8858.selector.utils.MimeFilterUtils
+import com.peihua8858.tools.array.isNonEmpty
+import com.peihua8858.tools.model.ResultData
+import com.peihua8858.tools.model.request
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.getParcelableExtraCompat
+import com.peihua8858.tools.utils.isAtLeastQ
+
+/**
+ * PickerViewModel to store and handle data for PhotoPickerActivity.
+ */
+class PickerViewModel(application: Application) : AndroidViewModel(application) {
+    /**
+     * @return `mSelection` that manages the selection
+     */
+    val selection: Selection
+
+    /**
+     * @return `mMuteStatus` that tracks the volume mute status of the video preview
+     */
+    val muteStatus: MuteStatus
+
+    // data set to reduce memories.
+    // The list of Items with all photos and videos
+    private val mItemList: MutableLiveData<ResultData<MutableList<Item>>> = MutableLiveData()
+
+    // The list of Items with all photos and videos in category
+    private val mCategoryItemList: MutableLiveData<ResultData<MutableList<Item>>> =
+        MutableLiveData()
+
+    // The list of categories.
+    private val mCategoryList: MutableLiveData<ResultData<MutableList<Category>>> =
+        MutableLiveData()
+    private var mediaProvider: IMediaProvider
+    var mMimeTypeFilters: Array<String> = arrayOf()
+        private set
+    var configModel = ConfigModel.default()
+        private set(value) {
+            field = value
+//            mediaProvider.config = value
+        }
+
+    /**
+     * @return BottomSheet state
+     */
+    /**
+     * Set BottomSheet state
+     */
+    var bottomSheetState = 0
+    private var mCurrentCategory: Category? = null
+    private val mCancellationSignal =  CancellationSignal();
+    init {
+        val context = application.applicationContext
+        mediaProvider = IMediaProvider.Companion.create(context)
+        selection = Selection()
+        muteStatus = MuteStatus()
+    }
+
+    @VisibleForTesting
+    fun setItemsProvider(itemsProvider: IMediaProvider) {
+        mediaProvider = itemsProvider
+    }
+
+    val categoryItems: LiveData<ResultData<MutableList<Item>>>
+        get() {
+            return mCategoryItemList
+        }
+    val items: LiveData<ResultData<MutableList<Item>>>
+        get() {
+            return mItemList
+        }
+    val categories: LiveData<ResultData<MutableList<Category>>>
+        get() {
+            return mCategoryList
+        }
+
+    fun requestMediasAsync(
+        page: Int,
+        category: Category = Category.DEFAULT,
+        isLoadMore: Boolean = false,
+    ) {
+        request(if (category == Category.DEFAULT) mItemList else mCategoryItemList) {
+            val items: MutableList<Item> = ArrayList()
+            dLog { "requestPermissionsDsl>>>>>>>>>>requestMediasAsync category:$category,isDefault:${category== Category.DEFAULT}" }
+            mediaProvider.queryAllItems(category,page,configModel,mMimeTypeFilters,mCancellationSignal).use { cursor ->
+                if (cursor == null || cursor.count == 0) {
+                    Log.d(TAG, "Didn't receive any items for $category, either cursor is null or cursor count is zero")
+                    return@use
+                }
+                // We only add the RECENT header on the PhotosTabFragment with CATEGORY_DEFAULT. In this
+                // case, we call this method {loadItems} with null category. When the category is not
+                // empty, we don't show the RECENT header.
+                val showRecent = category.isDefault && !isLoadMore
+                var recentSize = 0
+                var currentDateTaken: Long = 0
+                if (showRecent) {
+                    // add Recent date header
+                    items.add(Item.createDateItem(0))
+                }
+                while (cursor.moveToNext()) {
+                    // here again.
+                    val item = Item.fromCursor(cursor)
+                    val dateTaken = item.dateTaken
+                    // the minimum count of items in recent is not reached
+                    if (showRecent && recentSize < RECENT_MINIMUM_COUNT) {
+                        recentSize++
+                        currentDateTaken = dateTaken
+                    }
+
+                    // The date taken of these two images are not on the
+                    // same day, add the new date header.
+                    if (!DateTimeUtils.isSameDate(currentDateTaken, dateTaken)) {
+                        items.add(Item.createDateItem(dateTaken))
+                        currentDateTaken = dateTaken
+                    }
+                    items.add(item)
+                }
+            }
+            items
+        }
+    }
+
+    fun requestCategories() {
+        request(mCategoryList) {
+            val categoryList: MutableList<Category> = ArrayList()
+            mediaProvider.queryAllCategories(configModel,mMimeTypeFilters,mCancellationSignal).use { cursor ->
+                if (cursor == null || cursor.count == 0) {
+                    Log.d(
+                        TAG,
+                        "Didn't receive any categories, either cursor is null or cursor count is zero"
+                    )
+                    return@use
+                }
+                if (isAtLeastQ) {
+                    val countMap = HashMap<Long, Category>()
+                    while (cursor.moveToNext()) {
+                        val category = Category.fromCursor(cursor)
+                        category.apply {
+                            val bucketId = category.bucketId
+                            var item = countMap[bucketId]
+                            if (item == null) {
+                                item = Category(bucketId, id, displayName, coverUri, 1, isIsLocal)
+                                countMap[bucketId] = item
+                            } else {
+                                item.itemCount += 1
+                            }
+                        }
+                    }
+                    categoryList.addAll(countMap.values)
+                } else {
+                    while (cursor.moveToNext()) {
+                        val category = Category.fromCursor(cursor)
+                        categoryList.add(category)
+                    }
+                }
+                Log.d(TAG, "Loaded " + categoryList.size + " categories")
+            }
+            categoryList
+        }
+    }
+
+
+    /**
+     * Return whether the [.mMimeTypeFilter] is `null` or not
+     */
+    fun hasMimeTypeFilters(): Boolean {
+        return !mMimeTypeFilters.isNonEmpty()
+    }
+
+    /**
+     * Parse values from `intent` and set corresponding fields
+     */
+    @Throws(IllegalArgumentException::class)
+    fun parseValuesFromIntent(intent: Intent) {
+        val model: ConfigModel? =
+            intent.getParcelableExtraCompat(Intent.EXTRA_INTENT, ConfigModel::class.java)
+        configModel = model ?: ConfigModel.default()
+        mMimeTypeFilters = MimeFilterUtils.getMimeTypeFilters(intent);
+//        mediaProvider.mimeTypes = mMimeTypeFilters
+        selection.parseSelectionValuesFromIntent(intent)
+    }
+
+    companion object {
+        const val TAG = "PhotoPicker"
+        const val RECENT_MINIMUM_COUNT = 12
+        private const val INSTANCE_ID_MAX = 1 shl 15
+    }
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="picker_app_label" msgid="1195424381053599122">"媒体选择工具"</string>
+    <string name="picker_videos">视频</string>
+    <string name="picker_add">添加</string>
+    <string name="picker_deselect">取消选择</string>
+    <string name="picker_deselected">已取消选中</string>
+    <string name="picker_select">选择</string>
+    <string name="picker_selected">已选中</string>
+    <string name="picker_select_up_to" msgid="6994294169508439957">"{count,plural, =1{最多可选择 <xliff:g id="COUNT_0">^1</xliff:g> 项}other{最多可选择 <xliff:g id="COUNT_1">^1</xliff:g> 项}}"</string>
+    <string name="picker_recent">最近</string>
+    <string name="picker_photos_empty_message">无照片或视频</string>
+    <string name="picker_albums_empty_message">无相册</string>
+    <string name="picker_photos" msgid="7415035516411087392">"照片"</string>
+    <string name="picker_view_selected">查看所选内容</string>
+    <string name="picker_albums">相册</string>
+    <string name="picker_preview">预览</string>
+    <string name="picker_privacy_message">此应用只能访问您选择的照片</string>
+    <string name="picker_album_item_count" msgid="4420723302534177596">"{count,plural, =1{<xliff:g id="COUNT_0">^1</xliff:g> 个}other{<xliff:g id="COUNT_1">^1</xliff:g> 个}}"</string>
+    <string name="picker_add_button_multi_select" msgid="4005164092275518399">"添加（<xliff:g id="COUNT">^1</xliff:g> 项）"</string>
+    <string name="picker_category_camera" msgid="4857367052026843664">"相机"</string>
+    <string name="picker_category_downloads" msgid="793866660287361900">"下载内容"</string>
+    <string name="picker_category_favorites" msgid="7008495397818966088">"收藏"</string>
+    <string name="picker_category_screenshots" msgid="7216102327587644284">"屏幕截图"</string>
+    <string name="picker_motion_photo_text" msgid="5016603812468180816">"动态照片"</string>
+    <string name="picker_item_content_desc" msgid="7680591530155286423">"拍摄于 <xliff:g id="TIME">%2$s</xliff:g>的<xliff:g id="ITEM_NAME">%1$s</xliff:g>"</string>
+    <string name="picker_video_item_content_desc" msgid="7828900089119214801">"视频拍摄于 <xliff:g id="TIME">%1$s</xliff:g>，时长 <xliff:g id="DURATION">%2$s</xliff:g>"</string>
+    <string name="picker_photo" msgid="1739342083494962153">"照片"</string>
+    <string name="picker_gif" msgid="8333318083107368726">"GIF"</string>
+    <string name="picker_motion_photo" msgid="4385182195289546308">"动态照片"</string>
+    <string name="picker_mute_video" msgid="2496585809229800096">"将视频静音"</string>
+    <string name="picker_unmute_video" msgid="6611741290641963568">"将视频取消静音"</string>
+    <string name="picker_not_selected" msgid="2244008151669896758">"未选择"</string>
+
+    <string name="picker_crop_label_original">Original</string>
+    <string name="picker_crop_label_edit_photo">Edit Photo</string>
+    <string name="picker_crop_menu_crop">Crop</string>
+    <string name="picker_crop_error_input_data_is_absent" translatable="false">Both input and output Uri must be specified</string>
+    <string name="picker_crop_mutate_exception_hint" translatable="false">Therefore, override color resource (ucrop_color_toolbar_widget) in your app to make it work on pre-L devices</string>
+    <string name="picker_crop_rotate">Rotate</string>
+    <string name="picker_crop_scale">Scale</string>
+    <string name="picker_crop_crop">Crop</string>
+    <string name="picker_crop_not_crop">not supported crop type</string>
+</resources>

@@ -15,15 +15,12 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.WindowInsetsController
 import android.view.accessibility.AccessibilityManager
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.withStyledAttributes
 import androidx.core.view.isVisible
-import com.fz.common.utils.dLog
-import com.fz.common.utils.getColorCompat
-import com.fz.common.utils.getDrawableCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
 import com.peihua.photopicker.R
@@ -35,9 +32,10 @@ import com.peihua.selector.util.LayoutModeUtils
 import com.peihua.selector.util.LayoutModeUtils.MODE_PHOTOS_TAB
 import com.peihua.selector.util.isAtLeastT
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.utils.dLog
+import com.peihua8858.tools.utils.getColorCompat
+import com.peihua8858.tools.utils.getDrawableCompat
 import kotlin.math.roundToInt
-import androidx.core.content.withStyledAttributes
-import com.fz.common.array.splicing
 
 /**
  * Photo Picker allows users to choose one or more photos and/or videos to share with an app. The

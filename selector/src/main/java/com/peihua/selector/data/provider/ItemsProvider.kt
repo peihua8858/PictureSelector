@@ -11,9 +11,6 @@ import android.os.Bundle
 import android.os.RemoteException
 import android.provider.MediaStore
 import android.util.Log
-import com.fz.common.text.isNonEmpty
-import com.fz.common.utils.isAtLeastN
-import com.fz.common.utils.toLong
 import com.peihua.selector.data.model.Category
 import com.peihua.selector.data.model.ConfigModel
 import com.peihua.selector.data.model.Item
@@ -23,6 +20,8 @@ import com.peihua.selector.util.isAtLeastO
 import com.peihua.selector.util.isAtLeastQ
 import com.peihua.selector.util.isAtLeastR
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.utils.isAtLeastN
+import com.peihua8858.tools.utils.isNonEmpty
 import java.io.File
 
 /**

@@ -17,15 +17,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
-import com.fz.common.utils.getColorCompat
 import com.peihua.photopicker.R
 import com.peihua.photopicker.databinding.PickerFragmentPreviewBinding
-import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.data.MuteStatus
 import com.peihua.selector.data.Selection
 import com.peihua.selector.data.model.Item
+import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.util.LayoutModeUtils
 import com.peihua.selector.viewmodel.PickerViewModel
+import com.peihua8858.tools.utils.getColorCompat
 import java.text.NumberFormat
 import java.util.Locale
 

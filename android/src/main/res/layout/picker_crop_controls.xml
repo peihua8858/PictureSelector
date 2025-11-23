@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/wrapper_controls"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picker_height_wrapper_controls"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="0dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/picker_crop_wrapper_controls_shape" />
+
+        <LinearLayout
+            android:id="@+id/layout_aspect_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
+        <include
+            android:id="@+id/layout_rotate_wheel"
+            layout="@layout/picker_crop_layout_rotate_wheel" />
+
+        <include
+            android:id="@+id/layout_scale_wheel"
+            layout="@layout/picker_crop_layout_scale_wheel" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/controls_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_alignBottom="@+id/wrapper_controls"
+        android:src="@drawable/picker_crop_shadow_upside" />
+
+    <LinearLayout
+        android:id="@+id/wrapper_states"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/picker_height_wrapper_states"
+        android:layout_below="@+id/controls_shadow"
+        android:background="@color/picker_color_widget_background"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/state_aspect_ratio"
+            style="@style/PickerWrapperIconState">
+
+            <ImageView
+                android:id="@+id/image_view_state_aspect_ratio"
+                style="@style/PickerImageViewWidgetIcon"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:srcCompat="@drawable/picker_crop" />
+
+            <TextView
+                android:id="@+id/text_view_crop"
+                style="@style/PickerTextViewWidget"
+                android:text="@string/picker_crop_crop" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/state_rotate"
+            style="@style/PickerWrapperIconState">
+
+            <ImageView
+                android:id="@+id/image_view_state_rotate"
+                style="@style/PickerImageViewWidgetIcon"
+                app:srcCompat="@drawable/picker_crop_rotate" />
+
+            <TextView
+                android:id="@+id/text_view_rotate"
+                style="@style/PickerTextViewWidget"
+                android:text="@string/picker_crop_rotate" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/state_scale"
+            style="@style/PickerWrapperIconState">
+
+            <ImageView
+                android:id="@+id/image_view_state_scale"
+                style="@style/PickerImageViewWidgetIcon"
+                app:srcCompat="@drawable/picker_crop_scale" />
+
+            <TextView
+                android:id="@+id/text_view_scale"
+                style="@style/PickerTextViewWidget"
+                android:text="@string/picker_crop_scale" />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
