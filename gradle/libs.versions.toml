@@ -195,6 +195,7 @@ skie = { id = "co.touchlab.skie", version.ref = "skie" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 parcelize = { id = "kotlin-parcelize", version.ref = "kotlin" }
 maven-publish = { id = "maven-publish" }
+android-fusedlibrary = { id = "com.android.fused-library", version.ref = "agp" }
 
 
 
