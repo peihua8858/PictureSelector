@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace 'com.peihua.picker.compose'
+    namespace 'com.peihua8858.picker'
     compileSdk 36
 
     defaultConfig {

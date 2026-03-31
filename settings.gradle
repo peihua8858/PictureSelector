@@ -25,6 +25,6 @@ dependencyResolutionManagement {
 rootProject.name = "PictureSelector"
 include ':simple'
 include ':selector'
-//include ':compose'
-//include ':core'
-//include ':android'
+include ':compose'
+include ':core'
+include ':android'
