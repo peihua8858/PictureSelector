@@ -1,28 +1,28 @@
 package com.peihua.selector.result
 
 import android.graphics.Bitmap
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.*
-import java.io.File
+import android.net.Uri
+import com.peihua.selector.result.contract.PhotoVisualMedia
 
-fun TakeCameraVisualMediaRequest(outputFile: File,
-    mediaType: VisualMediaType = ImageOnly
+fun TakeCameraVisualMediaRequest(outputFile: Uri,
+    mediaType: PhotoVisualMedia.VisualMediaType = PhotoVisualMedia.ImageOnly
 ) = TakeCameraVisualMediaRequest.Builder().setMediaType(mediaType)
     .setOutputFile(outputFile).build()
 
 class TakeCameraVisualMediaRequest internal constructor() {
 
-    var mediaType: VisualMediaType =
-        ImageAndVideo
+    var mediaType: PhotoVisualMedia.VisualMediaType =
+        PhotoVisualMedia.ImageAndVideo
         internal set
-    var outputFile: File = File("")
+    var outputFile: Uri = Uri.EMPTY
         internal set
 
     /**
      * A builder for constructing [PickCropVisualMediaRequest] instances.
      */
     class Builder {
-        private var mediaType: VisualMediaType = ImageAndVideo
-        private var outputFile: File = File("")
+        private var mediaType: PhotoVisualMedia.VisualMediaType = PhotoVisualMedia.ImageAndVideo
+        private var outputFile: Uri = Uri.EMPTY
         private var outputFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG
 
         /**
@@ -34,7 +34,7 @@ class TakeCameraVisualMediaRequest internal constructor() {
          * @param mediaType type to go into the PickVisualMediaRequest
          * @return This builder.
          */
-        fun setMediaType(mediaType: VisualMediaType): Builder {
+        fun setMediaType(mediaType: PhotoVisualMedia.VisualMediaType): Builder {
             this.mediaType = mediaType
             return this
         }
@@ -44,7 +44,7 @@ class TakeCameraVisualMediaRequest internal constructor() {
             this.outputFormat = outputFormat
             return this
         }
-        fun setOutputFile(outputFile: File): Builder {
+        fun setOutputFile(outputFile: Uri): Builder {
             this.outputFile = outputFile
             return this
         }

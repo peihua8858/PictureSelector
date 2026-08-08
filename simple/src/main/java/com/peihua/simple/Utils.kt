@@ -1,10 +1,15 @@
 package com.peihua.simple
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.Window
+import androidx.core.content.FileProvider
+import id.zelory.compressor.createFile
+import java.io.File
 
 
 /**
@@ -95,6 +100,28 @@ inline var View.isTranslucentLightLayoutStable: Boolean
             }
         }
     }
+
 fun View.unsetSystemUiFlag(systemUiFlag: Int): Int {
     return (systemUiVisibility and systemUiFlag.inv())
+}
+
+val Context.fileProvider: Uri
+    get() {
+        val file =createFile(this)
+        if (file.exists()) {
+            file.delete()
+        }
+        file.parentFile.mkdirs()
+        return fileProvider(file)
+    }
+
+fun Context.fileProvider(file: File): Uri {
+    val mImageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        /*7.0以上要通过FileProvider将File转化为Uri*/
+        FileProvider.getUriForFile(this, "$packageName.PickerProvider", file)
+    } else {
+        /*7.0以下则直接使用Uri的fromFile方法将File转化为Uri*/
+        Uri.fromFile(file)
+    }
+    return mImageUri
 }

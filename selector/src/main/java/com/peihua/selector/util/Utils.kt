@@ -2,6 +2,8 @@
 @file:JvmMultifileClass
 package com.peihua.selector.util
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.fz.common.permissions.PermissionCallbacksDSL
@@ -10,8 +12,6 @@ import com.peihua.selector.data.model.ConfigModel
 import java.io.Closeable
 import java.io.File
 import java.io.IOException
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 fun File.getFolderName(): String {
     return parentFile.name
@@ -52,4 +52,24 @@ internal fun Fragment.requestPermissionsDsl(config: ConfigModel, requestBlock: P
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
     requestPermissionsDsl(*permissions.toTypedArray()) { requestBlock() }
+}
+ fun Intent.getClipDataUris(): List<Uri> {
+    // Use a LinkedHashSet to maintain any ordering that may be
+    // present in the ClipData
+    val resultSet = LinkedHashSet<Uri>()
+    data?.let { data ->
+        resultSet.add(data)
+    }
+    val clipData = clipData
+    if (clipData == null && resultSet.isEmpty()) {
+        return emptyList()
+    } else if (clipData != null) {
+        for (i in 0 until clipData.itemCount) {
+            val uri = clipData.getItemAt(i).uri
+            if (uri != null) {
+                resultSet.add(uri)
+            }
+        }
+    }
+    return ArrayList(resultSet)
 }

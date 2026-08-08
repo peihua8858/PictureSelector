@@ -1,5 +1,6 @@
 package com.peihua.selector.crop
 
+import android.content.ClipData
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Animatable
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.fz.common.collections.isNonEmpty
 import com.fz.common.utils.getDrawableCompat
 import com.fz.common.utils.getParcelableArrayListExtraCompat
 import com.fz.common.utils.getParcelableCompat
@@ -47,6 +49,7 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
 
     @DrawableRes
     private var mToolbarCropDrawable = 0
+
     @ColorInt
     private var mToolBarIconColor = Color.WHITE
     private var mShowLoader = false
@@ -351,6 +354,19 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
             }
         }
         val intent = Intent()
+        val items = uris.map { ClipData.Item(it) }
+        if (items.isNonEmpty()) {
+            val clipData = ClipData(null, items[0])
+            if (items.size > 1) {
+                for ((index, item) in items.withIndex()) {
+                    if (index > 0) {
+                        clipData.addItem(item)
+                    }
+                }
+            }
+            intent.clipData = clipData
+        }
+
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uris)
@@ -402,7 +418,7 @@ class UCropMultipleActivity : AppCompatActivity(), UCropFragmentCallback {
         val menuItemLoaderIcon = menuItemLoader.icon
         if (menuItemLoaderIcon != null) {
             try {
-                val drawable= menuItemLoaderIcon.mutate()
+                val drawable = menuItemLoaderIcon.mutate()
                 drawable.setTint(mToolBarIconColor)
                 menuItemLoader.icon = drawable
             } catch (e: IllegalStateException) {

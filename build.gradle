@@ -32,13 +32,17 @@ allprojects {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        maven {
+            name = "mavenLocalFile"
+            url = uri("../../plugin_libs")
+        }
     }
     configurations.all {
         resolutionStrategy {
             force 'androidx.lifecycle:lifecycle-livedata-core:2.6.1'
             force 'androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1'
-            force 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-            force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+//            force 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+//            force 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 //            force 'androidx.activity:activity:1.6.1'
 //            force 'androidx.fragment:fragment:1.5.7'
         }

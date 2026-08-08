@@ -12,12 +12,13 @@ import android.os.Parcelable
 import android.os.ext.SdkExtensions
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.*
 import androidx.annotation.CallSuper
 import com.fz.common.array.splicing
 import com.peihua.selector.photos.PhotoPickerActivity
 import com.peihua.selector.result.PhotoVisualMediaRequest
+import com.peihua.selector.util.getClipDataUris
 import kotlinx.parcelize.Parcelize
 
 open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Uri?>() {
@@ -190,26 +191,6 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
             }
         }
 
-        internal fun Intent.getClipDataUris(): List<Uri> {
-            // Use a LinkedHashSet to maintain any ordering that may be
-            // present in the ClipData
-            val resultSet = LinkedHashSet<Uri>()
-            data?.let { data ->
-                resultSet.add(data)
-            }
-            val clipData = clipData
-            if (clipData == null && resultSet.isEmpty()) {
-                return emptyList()
-            } else if (clipData != null) {
-                for (i in 0 until clipData.itemCount) {
-                    val uri = clipData.getItemAt(i).uri
-                    if (uri != null) {
-                        resultSet.add(uri)
-                    }
-                }
-            }
-            return ArrayList(resultSet)
-        }
 
         internal fun createCustomIntent(context: Context, input: PhotoVisualMediaRequest): Intent {
             return Intent(context, PhotoPickerActivity::class.java).apply {
@@ -289,13 +270,17 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
         // Check if Photo Picker is available on the device
         return if (input.isForceCustomUi || input.mediaType is MultipleMimeType) {
             createCustomIntent(context, input)
-        } else if (isSystemPickerAvailable()) {
+        }else if (isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
                 type = getVisualMimeType(input.mediaType)
             }
         } else if (isSystemFallbackPickerAvailable(context)) {
-            val fallbackPicker = checkNotNull(getSystemFallbackPicker(context)).activityInfo
-            Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
+            val fallbackPicker = checkNotNull(
+                getSystemFallbackPicker(
+                    context
+                )
+            ).activityInfo
+            Intent(ActivityResultContracts.PickVisualMedia.ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
                 type = getVisualMimeType(input.mediaType)
             }
@@ -306,7 +291,19 @@ open class PhotoVisualMedia : ActivityResultContract<PhotoVisualMediaRequest, Ur
                 type = getVisualMimeType(input.mediaType)
             }
         } else {
-            createCustomIntent(context, input)
+            // For older devices running KitKat and higher and devices running Android 12
+            // and 13 without the SDK extension that includes the Photo Picker, rely on the
+            // ACTION_OPEN_DOCUMENT intent
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = getVisualMimeType(input.mediaType)
+
+                if (type == null) {
+                    // ACTION_OPEN_DOCUMENT requires to set this parameter when launching the
+                    // intent with multiple mime types
+                    type = "*/*"
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
+                }
+            }
         }
     }
 

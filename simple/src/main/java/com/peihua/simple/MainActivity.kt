@@ -1,5 +1,7 @@
 package com.peihua.simple
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
@@ -52,16 +54,24 @@ import com.fz.imageloader.widget.RatioImageView
 import com.peihua.selector.result.PhotoCropVisualMediaRequestBuilder
 import com.peihua.selector.result.PhotoVisualMediaRequestBuilder
 import com.peihua.selector.result.SystemPhotoCropVisualMediaRequestBuilder
+import com.peihua.selector.result.TakeCameraVisualMediaRequest
+import com.peihua.selector.result.contract.CameraVisualMedia
 import com.peihua.selector.result.contract.PhotoCropVisualMedia
 import com.peihua.selector.result.contract.PhotoMultipleVisualMedia
 import com.peihua.selector.result.contract.PhotoVisualMedia
 import com.peihua.selector.result.contract.SytemPhotoCropVisualMedia
+import com.peihua.selector.util.getClipDataUris
 import com.peihua.simple.ui.theme.PictureSelectorTheme
 import com.peihua.simple.ui.theme.Purple40
+import com.peihua8858.permissions.compose.rememberPermissionsState
 import id.zelory.compressor.createFile
 import java.io.File
 
 class MainActivity : ComponentActivity() {
+    val outputUri by lazy { fileProvider }
+    val cameraRequest by lazy {
+        TakeCameraVisualMediaRequest(outputUri, PhotoVisualMedia.ImageAndVideo)
+    }
     val multiSelectPhotoRequest by lazy {
         PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
             .setForceCustomUi(false)
@@ -71,7 +81,7 @@ class MainActivity : ComponentActivity() {
     }
     val singleSelectPhotoRequest by lazy {
         PhotoVisualMediaRequestBuilder(PhotoVisualMedia.ImageAndVideo)
-            .setForceCustomUi(false)
+            .setForceCustomUi(true)
             .setShowGif(false)
     }
     val cropPhotoRequest by lazy {
@@ -84,28 +94,40 @@ class MainActivity : ComponentActivity() {
 
 
     val launchMultipleImage = registerForActivityResult(PhotoMultipleVisualMedia(3)) {
-        Log.d("MainActivity", "Uri=$it")
+        Log.d("MainActivity", "launchMultipleImage>>>Uri=$it")
         if (it.isNonEmpty()) {
             selectUrisState.value = it
             launchCrop.launch(cropPhotoRequest)
         }
     }
     val launchImage = registerForActivityResult(PhotoVisualMedia()) {
-        Log.d("MainActivity", "Uri=$it")
+        Log.d("MainActivity", "launchImage>>>Uri=$it")
         if (it != null) {
             selectUrisState.value = arrayListOf(it)
             viewModel.state.postValue(it)
             launchCrop.launch(cropPhotoRequest)
         }
     }
+    val launchCamera = registerForActivityResult(CameraVisualMedia()) {
+        Log.d("MainActivity", "launchCamera>>>Uri=$it")
+        if (it.resultCode == Activity.RESULT_OK) {
+            val uri = it.data?.run {
+                // Check both the data URI and ClipData since the GMS picker
+                // only returns results through getClipDataUris()
+                data ?: getClipDataUris().firstOrNull()
+            } ?: outputUri
+            Log.d("MainActivity", "launchCamera>>>Uri=$uri")
+            selectUrisState.value = arrayListOf(uri)
+            viewModel.state.postValue(uri)
+            launchCrop.launch(cropPhotoRequest)
+        }
+    }
     val selectUrisState = mutableStateOf<List<Uri>>(arrayListOf())
     val cropUrisState = mutableStateOf<List<Uri>>(arrayListOf())
     val launchCrop = registerForActivityResult(PhotoCropVisualMedia()) {
-        val uris =
-            it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
-        if (uris.isNonEmpty()) {
-            Log.d("MainActivity->Crop", "Uri=${uris}")
-            cropUrisState.value = uris
+        if (it.isNonEmpty()) {
+            Log.d("MainActivity->Crop", "launchCrop>>>Uri=${it}")
+            cropUrisState.value = it
             return@registerForActivityResult
         }
     }
@@ -113,7 +135,7 @@ class MainActivity : ComponentActivity() {
         val uris =
             it.data?.getParcelableArrayListExtraCompat(MediaStore.EXTRA_OUTPUT, Uri::class.java)
         if (uris.isNonEmpty()) {
-            Log.d("MainActivity->Crop", "Uri=${uris}")
+            Log.d("MainActivity->Crop", "launchSystemCrop>>>Uri=${uris}")
             cropUrisState.value = uris
             return@registerForActivityResult
         }
@@ -287,6 +309,24 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun CustomImageViewWrapper() {
+        val requestPermissions = rememberPermissionsState(
+            Manifest.permission.CAMERA,
+            onPermissionsResult = {
+                if (it.allPermissionsGranted) {
+                    launchCamera.launch(cameraRequest)
+                }
+            })
+        Text(
+            text = "打开相机",
+            color = Color.White,
+            fontSize = 20.sp,
+            modifier = Modifier.clickable {
+                if (requestPermissions.allPermissionsGranted) {
+                    launchCamera.launch(cameraRequest)
+                } else {
+                    requestPermissions.launchMultiplePermissionRequest()
+                }
+            })
         Text(
             text = "单选相册",
             color = Color.White,

@@ -7,12 +7,17 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.EXTRA_SYSTEM_FALLBACK_PICK_IMAGES_MAX
 import androidx.annotation.CallSuper
-import com.fz.common.utils.dLog
 import com.peihua.selector.data.Selection
 import com.peihua.selector.result.PhotoVisualMediaRequest
 import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.ACTION_SYSTEM_FALLBACK_PICK_IMAGES
-import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.getClipDataUris
+import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.getVisualMimeType
+import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.isGmsPickerAvailable
+import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.isSystemFallbackPickerAvailable
+import com.peihua.selector.result.contract.PhotoVisualMedia.Companion.isSystemPickerAvailable
+import com.peihua.selector.util.getClipDataUris
 
 class PhotoMultipleVisualMedia(
     private val maxItems: Int = getMaxItems()
@@ -30,41 +35,43 @@ class PhotoMultipleVisualMedia(
             maxItems = this.maxItems
         }
         require(maxItems > 0) { "Max items must be higher than 0" }
-        dLog { "selectedUris>>>00000mSelection<><><><><>" }
-        // Check to see if the photo picker is available
-        return if (input.isForceCustomUi || input.mediaType is PhotoVisualMedia.MultipleMimeType) {
-            dLog { "selectedUris>>>00000mSelection<><><><><>" }
-            PhotoVisualMedia.createCustomIntent(context, input).apply {
-                if (maxItems > 1) putExtra(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX, maxItems)
-            }
-        } else if (PhotoVisualMedia.isSystemPickerAvailable()) {
-            dLog { "selectedUris>>>00000mSelection<><><><><>" }
+
+        return if (isSystemPickerAvailable()) {
             Intent(MediaStore.ACTION_PICK_IMAGES).apply {
-                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
+                type = getVisualMimeType(input.mediaType)
                 require(maxItems <= MediaStore.getPickImagesMaxLimit()) {
                     "Max items must be less or equals MediaStore.getPickImagesMaxLimit()"
                 }
-                if (maxItems > 1) putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
+
+                putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxItems)
             }
-        } else if (PhotoVisualMedia.isSystemFallbackPickerAvailable(context)) {
-            dLog { "selectedUris>>>00000mSelection<><><><><>" }
+        } else if (isSystemFallbackPickerAvailable(context)) {
             val fallbackPicker = checkNotNull(PhotoVisualMedia.getSystemFallbackPicker(context)).activityInfo
-            Intent(ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
+            Intent(PickVisualMedia.ACTION_SYSTEM_FALLBACK_PICK_IMAGES).apply {
                 setClassName(fallbackPicker.applicationInfo.packageName, fallbackPicker.name)
-                type = PhotoVisualMedia.getVisualMimeType(input.mediaType)
-                if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
+                type = getVisualMimeType(input.mediaType)
+                putExtra(EXTRA_SYSTEM_FALLBACK_PICK_IMAGES_MAX, maxItems)
             }
-        } else if (PhotoVisualMedia.isGmsPickerAvailable(context)) {
-            dLog { "selectedUris>>>00000mSelection<><><><><>" }
+        } else if (isGmsPickerAvailable(context)) {
             val gmsPicker = checkNotNull(PhotoVisualMedia.getGmsPicker(context)).activityInfo
             Intent(PhotoVisualMedia.GMS_ACTION_PICK_IMAGES).apply {
                 setClassName(gmsPicker.applicationInfo.packageName, gmsPicker.name)
-                if (maxItems > 1) putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
+                putExtra(PhotoVisualMedia.GMS_EXTRA_PICK_IMAGES_MAX, maxItems)
             }
         } else {
-            dLog { "selectedUris>>>00000mSelection<><><><><>" }
-            PhotoVisualMedia.createCustomIntent(context, input).apply {
-                if (maxItems > 1) putExtra(PhotoVisualMedia.EXTRA_PICK_IMAGES_MAX, maxItems)
+            // For older devices running KitKat and higher and devices running Android 12
+            // and 13 without the SDK extension that includes the Photo Picker, rely on the
+            // ACTION_OPEN_DOCUMENT intent
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = getVisualMimeType(input.mediaType)
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+
+                if (type == null) {
+                    // ACTION_OPEN_DOCUMENT requires to set this parameter when launching the
+                    // intent with multiple mime types
+                    type = "*/*"
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
+                }
             }
         }
     }
@@ -92,7 +99,7 @@ class PhotoMultipleVisualMedia(
          * @see MediaStore.EXTRA_PICK_IMAGES_MAX
          */
         @SuppressLint("NewApi", "ClassVerificationFailure")
-        internal fun getMaxItems() = if (PhotoVisualMedia.isSystemPickerAvailable()) {
+        internal fun getMaxItems() = if (isSystemPickerAvailable()) {
             MediaStore.getPickImagesMaxLimit()
         } else {
             Selection.PICK_IMAGES_MAX_LIMIT
